@@ -12,6 +12,9 @@
     display: block;    
 }*/
 
+--breakpoint-sm {
+ 400px !important;
+}
 .dropdown-toggle::after {
     display:none !important;
 }
@@ -25,6 +28,17 @@ div.dropdown-menu {
     padding: 0;
     margin-top: -1px;
 }
+
+
+.navbar-expand-lg .navbar-nav {
+    -ms-flex-direction: row !important;
+    flex-direction: row !important;
+}
+
+div.dropdown-menu { position: absolute !important;}
+a.nav-link {padding:8px !important;}
+
+#navbarSupportedContent {flex-wrap:nowrap !important; flex-direction:row !important; padding-left: 15px !important; padding-right:15px !important;}
 </style>
     <title>brand</title>
   </head>
@@ -33,7 +47,7 @@ div.dropdown-menu {
   <!--<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>-->
-  <div id="navbarSupportedContent" class="container  bg-dark text-light">
+  <div id="navbarSupportedContent" class="container-fluid bg-dark text-light">
    <a class="navbar-brand text-light" href="index.html">brand</a>
     <ul class="navbar-nav mr-auto">
       <li class="nav-item dropdown ">
