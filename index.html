@@ -38,6 +38,13 @@ div.dropdown-menu {
 div.dropdown-menu { position: absolute !important;}
 a.nav-link {padding:8px !important;}
 
+@media (max-width: 500px) {
+    #rl {
+	right: 0;
+    left: auto;
+	}
+}
+
 #navbarSupportedContent {flex-wrap:nowrap !important; flex-direction:row !important; padding-left: 15px !important; padding-right:15px !important;}
 </style>
     <title>brand</title>
@@ -47,7 +54,7 @@ a.nav-link {padding:8px !important;}
   <!--<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>-->
-  <div id="navbarSupportedContent" class="container-fluid bg-dark text-light">
+  <div id="navbarSupportedContent" class="container bg-dark text-light">
    <a class="navbar-brand text-light" href="index.html">brand</a>
     <ul class="navbar-nav mr-auto">
       <li class="nav-item dropdown ">
@@ -75,7 +82,7 @@ a.nav-link {padding:8px !important;}
         <a class="nav-link dropdown-toggle text-light bg-dark" href="./utilities.html" id="navbarUtilityDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Finance
         </a>
-        <div class="dropdown-menu text-light bg-dark" aria-labelledby="navbarUtilityDropdown">
+        <div class="dropdown-menu text-light bg-dark" id="rl" aria-labelledby="navbarUtilityDropdown">
 		  <a class="dropdown-item text-light bg-dark" href="https://drive.google.com/open?id=1RNN-JeCMIfzSXf4A33fUsHP3HfrNegLK2md1qX476RU"><img src="./icons/googleSpreadsheet.ico" width="16" height="16" class="favico" />My Data</a>		
 		  <h6 class="dropdown-header text-light bg-dark">Resources</h6>
 		  <a class="dropdown-item text-light bg-dark" href="https://104.ua/ua/"><img src="./icons/104.png" class="favico" />104.ua</a>
