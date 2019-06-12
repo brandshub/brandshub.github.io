@@ -8,9 +8,6 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 	<style>
-	/*ul.navbar-nav li.dropdown:hover > div.dropdown-menu {
-    display: block;    
-}*/
 
 --breakpoint-sm {
  400px !important;
@@ -21,12 +18,13 @@
 
 img.favico {
     padding-bottom: 3px;
-    margin-right: 5px;
+    margin-right: 7px;
 }
 
 div.dropdown-menu {
     padding: 0;
     margin-top: -1px;
+	position: absolute !important;
 }
 
 
@@ -35,13 +33,24 @@ div.dropdown-menu {
     flex-direction: row !important;
 }
 
-div.dropdown-menu { position: absolute !important;}
 a.nav-link {padding:8px !important;}
 
-@media (max-width: 500px) {
+a.dropdown-item {
+	padding: .25rem .85rem !important;
+}
+
+@media (max-width: 400px) {
     #rl {
 	right: 0;
     left: auto;
+	}
+}
+
+@media (max-width: 400px) {
+    #rd {
+	 left: 50% !important;
+  right: auto !important;  
+  transform: translate(-50%, 0) !important;
 	}
 }
 
@@ -49,33 +58,36 @@ a.nav-link {padding:8px !important;}
 </style>
     <title>brand</title>
   </head>
-  <body style="background-color:#212529">
-  <nav class="navbar navbar-nav navbar-expand-lg  bg-dark text-light" style="padding:0" >
+  <body style="background-color:#212529;" class="text-light">
+  <nav class="navbar navbar-nav navbar-expand-lg  bg-dark text-light justify-content-md-center" style="padding:0" >
   <!--<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>-->
-  <div id="navbarSupportedContent" class="container bg-dark text-light">
-   <a class="navbar-brand text-light" href="index.html">brand</a>
-    <ul class="navbar-nav mr-auto">
+  <div id="navbarSupportedContent" class="container bg-dark text-light">   
+    <ul class="navbar-nav mr-auto nav justify-content-center mx-auto">
+		<li class="nav-item my-auto">
+                <a class="nav-link navbar-brand mx-0 d-inline text-light" href="index.html">brand</a>
+            </li>
       <li class="nav-item dropdown ">
         <a class="nav-link dropdown-toggle text-light bg-dark" href="#" id="navbarProfileDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Profile
         </a>
         <div class="dropdown-menu  bg-dark text-light" aria-labelledby="navbarProfileDropdown">
-          <a class="dropdown-item bg-dark text-light" href="https://github.com/brandshub">GitHub</a>
+          <a class="dropdown-item bg-dark text-light" href="https://github.com/brandshub"><img src="./icons/git.png" class="favico" />GitHub</a>
           <a class="dropdown-item  bg-dark text-light" href="http://uk.dotabuff.com/players/196272157">DotaBuff</a>    
         </div>
       </li>
 	<li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle text-light bg-dark" href="#" id="navbarLinksDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Dev Links
+          Dev
         </a>
-        <div class="dropdown-menu" aria-labelledby="navbarLinksDropdown">
-		  <a class="dropdown-item text-light bg-dark" href="https://dotnetfiddle.net/">C# Online Compiler</a>		
-		  <a class="dropdown-item text-light bg-dark" href="https://www.campaignmonitor.com/css/">CSS Support</a>
-		  <a class="dropdown-item text-light bg-dark" href="https://htmlfiddle.net/">HTML Snippets</a>		  
-		  <a class="dropdown-item text-light bg-dark" href="https://regex101.com/">Regex Tester</a>       
-		  <a class="dropdown-item text-light bg-dark" href="https://www.freeformatter.com/sql-escape.html">SQL Escape</a>       
+        <div class="dropdown-menu"  id="rd" aria-labelledby="navbarLinksDropdown">
+		  <a class="dropdown-item text-light bg-dark" href="https://getbootstrap.com/docs/4.3/components/alerts/"><img src="./icons/bootstrap.png" class="favico" />Bootstrap</a>			
+		  <a class="dropdown-item text-light bg-dark" href="https://dotnetfiddle.net/"><img src="./icons/cs.png" class="favico" />C# Online Compiler</a>		
+		  <a class="dropdown-item text-light bg-dark" href="https://www.campaignmonitor.com/css/"><img src="./icons/css.png" class="favico" />CSS Support</a>
+		  <a class="dropdown-item text-light bg-dark" href="https://htmlfiddle.net/"><img src="./icons/html.png" class="favico" />HTML Snippets</a>		  
+		  <a class="dropdown-item text-light bg-dark" href="https://regex101.com/"><img src="./icons/rgx.png" class="favico" />Regex Tester</a>       
+		  <a class="dropdown-item text-light bg-dark" href="https://www.freeformatter.com/sql-escape.html"><img src="./icons/xml.png" class="favico" />SQL Escape</a>       
         </div>
       </li>
 	  <li class="nav-item dropdown">
@@ -100,13 +112,18 @@ a.nav-link {padding:8px !important;}
     </form>-->
   </div>
   </nav>
-    
+    <div class="container" style="margin-top:20px">
+	<h2 class="text-center">19:20:31</h2>
+	<h5 class="text-center">Wednesday, 12 June</h5>
+	</div>
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <!--<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>-->
+	<script src="https://code.jquery.com/jquery-3.3.1.min.js" ></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+	
 	<script>
 	/*$('li.dropdown a').on('click', function()     
     {
@@ -115,6 +132,14 @@ a.nav-link {padding:8px !important;}
             location.href = $a.attr('href');
         }
     });*/
+	$(function() {
+	                
+               /*   var t1 = doc.querySelectorAll('#ltbl tr')[1].children[2].innerText;
+				  var t2 = doc.querySelectorAll('#ltbl tr')[1].children[2].innerText;
+				  console.log(t1 + ' '+t2);*/
+    
+	   
+	});
 </script>
   </body>
 </html>
