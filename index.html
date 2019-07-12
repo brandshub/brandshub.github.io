@@ -60,6 +60,9 @@ a.dropdown-item {
 .pmu-selected { font-weight:bold; color:white !important;}
 .pickmeup-twitter-bootstrap {position:static !important;}
 #navbarSupportedContent {flex-wrap:nowrap !important; flex-direction:row !important; padding-left: 15px !important; padding-right:15px !important;}
+.tooltip-inner {
+    white-space:pre-wrap;
+}
 </style>
     <title>brand</title>
   </head>
@@ -128,7 +131,7 @@ a.dropdown-item {
 	</div>
 	<div class="row justify-content-center">
 		<div class="col-12 text-center">
-			<h5  class="text-center" id="currentDate">Monday, 30 February</h5>
+			<h5  class="text-center" id="currentDate">Monday, 32 February</h5>
 		</div>
 	</div>	
 	<div class="row pt-3 justify-content-center">
@@ -136,6 +139,13 @@ a.dropdown-item {
 		</div>
 	</div>
 	</div>
+	<nav id="liesPerDay" class="navbar navbar-nav fixed-bottom navbar-expand-lg  bg-dark text-light justify-content-center px-1 py-1" style="font-size:12px">
+	<span>If you are a woman, click 
+		<a class="bg-dark text-light justify-content-center" href="lietome.html" style="text-decoration:underline">here</a>
+		.
+		</span>
+	</nav>
+
 
 
     <!-- Optional JavaScript -->
@@ -146,14 +156,33 @@ a.dropdown-item {
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>	
 	<script src="js/pickmeup.js" ></script>
 	<script src="js/jquery.pickmeup.twitter-bootstrap.js" ></script>
+	<script src="js/common.js" ></script>
 	<script>
 	
 	var daysInWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 	var month= ["January","February","March","April","May","June","July","August","September","October","November","December"];
-	var dates = [{ date:'09/09', name:'serhiy'}, {date:'10/04', name:'0lya'}, {date:'13/11', name:'0xana'}, {date:'03/02', name:'Taras'} , {date:'01/02', name:'Vadim'}, {date:'03/12', name:'Ivanka'}, {date:'15/07', name:'Elvis'}, {date:'04/02', name:'Muhal\''} ]
+	var dates = [
+	{ date:'09/09', name:'serhiy'}, 
+	{ date:'05/07', name:'Lena'},
+	{ date:'05/07', name:'Plyuhin'},
+	{ date:'10/04', name:'0lya'}, 
+	{ date:'13/11', name:'0xana'}, 
+	{ date:'03/02', name:'Taras'} , 
+	{ date:'01/02', name:'Vadim'}, 
+	{ date:'03/12', name:'Ivanka'}, 
+	{ date:'15/07', name:'Elvis'}, 
+	{ date:'04/02', name:'Muhal\''},
+	{ date:'02/08', name:'Illya'},
+	{ date:'03/13', name:'Yarik'}
+	];
 	
 	$(function() {	
-					timerTick();
+				   var perDay = getCookie('perDay');
+				   if(!isNaN(perDay) || parseInt(perDay)<0) {
+					 $('#liesPerDay').hide();
+				   }
+				   
+				   timerTick();
 					
 				   var div = $('#cla');
 				   div.pickmeup_twitter_bootstrap({mode	: 'multiple'});
@@ -162,14 +191,8 @@ a.dropdown-item {
 				   div[0].addEventListener('pickmeup-hide', function (e) {
 						e.preventDefault(); 
 					});					
-					
-					div[0].addEventListener('pickmeup-fill', function (e) {
-						var instance = pickmeup('#cla');
-						//instance.clear();
-						//instance.set_date(new Date('09/09/2019'));
-					});
 
-					div.append($('.pmu-instance').parent());
+					div.append($('.pmu-instance').parent());					
 					
 					refreshTooltips();
 					$('.pmu-instance').on('click', '.pmu-button', function() {
@@ -207,8 +230,18 @@ a.dropdown-item {
 				var dday = dt.split('/')[0];
 				var dmonth = dt.split('/')[1];
 				if(dmonth-1 == monthDate) {
-					selectedDates.push(new Date(options.current.getFullYear(),monthDate,dday));
-					selectedNames.push(dates[i].name);
+					var found = false;
+					for(var k=0;k<selectedDates.length;k++) {						
+						if(selectedDates[k].getDay() == dday) {
+							selectedNames[k]+="\n"+dates[i].name;
+							found = true;
+							break;
+						}
+					}
+					if(!found) {
+						selectedDates.push(new Date(options.current.getFullYear(),monthDate,dday));
+						selectedNames.push(dates[i].name);
+					}
 				}
 			}
 			if(selectedDates.length>0) {

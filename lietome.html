@@ -1,0 +1,278 @@
+<html>
+<title>Компліменти</title>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+
+<!-- Bootstrap CSS -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">		
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+	
+
+--breakpoint-sm {
+ 400px !important;
+}
+.dropdown-toggle::after {
+    display:none !important;
+}
+
+img.favico {
+    padding-bottom: 3px;
+    margin-right: 7px;
+	width:16px;
+	height:16px;
+}
+
+div.dropdown-menu {
+    padding: 0;
+    margin-top: -1px;
+	position: absolute !important;
+}
+
+
+.navbar-expand-lg .navbar-nav {
+    -ms-flex-direction: row !important;
+    flex-direction: row !important;
+}
+
+a.nav-link {padding:8px !important;}
+
+a.dropdown-item {
+	padding: .25rem .85rem !important;
+}
+
+@media (max-width: 400px) {
+    #rl {
+	right: 0;
+    left: auto;
+	}
+}
+
+@media (max-width: 400px) {
+    #rd {
+	 left: 50% !important;
+  right: auto !important;  
+  transform: translate(-50%, 0) !important;
+	}
+}
+.pmu-selected { font-weight:bold; color:white !important;}
+.pickmeup-twitter-bootstrap {position:static !important;}
+#navbarSupportedContent {flex-wrap:nowrap !important; flex-direction:row !important; padding-left: 15px !important; padding-right:15px !important;}
+</style>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js" ></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>	
+<script src="js/common.js" ></script>
+
+<script type="text/javascript">
+
+
+
+$(function() {
+  setLie();
+});
+
+
+function verifyCookie() {
+ var cookie = getCookie('perDay');
+ var number = 3;
+ if(!cookie) {
+	setCookie('perDay',10,0.05);	
+ }
+ else {
+	number = parseInt(cookie);
+	number--;
+	document.cookie = "perDay="+number;
+ }
+ return number;
+}
+
+
+function setLie() {
+ var leftAttempts = verifyCookie();
+ if(leftAttempts < 0) { 
+	$('#attempts').text(0);
+ }
+ else {
+	$('#attempts').text(leftAttempts);
+	 var num = getRndInteger(0,lies.length-1);  
+	 var lie = lies[num];  
+	 $('#Not_A_Lie').css('font-size', lie.length > 60 ? '1.25rem' : '1.5rem').text(lie);  
+ }
+}
+
+
+/* Привіт 0ксано. Таки полізла сюди? ))) */
+
+var lies = 
+[
+'Твої очі і посмішка просто чарівні.',
+'Ти розумниця! Ти красуня! Ти принцеса!',
+'У тебе чудові очі.',
+'Мені подобаються твоє руде вогненне волосся.',
+'В твоїх очах шматочок неба.',
+'Всі дівчата — ангели. Але ти особливий ангел!',
+'Ти — мій ангел-охоронець!',
+'У тебе дивовижна усмішка — ти йдеш, а вона залишається.',
+'Ти — сама досконалість! Карколомна у всьому.',
+'Ти найчарівніша і найпривабливіша дівчина.',
+'Іноді ти буваєш несерйозною, немов маленька дівчинка, і мені це подобається. Адже тоді можна теж стати дитиною і трохи подуріти.',
+'Ти справжня мрія чоловіка!',
+'У тебе найкрасивіші очі, що приховують в собі якусь таємницю.',
+'У тебе такий виразний погляд, що я відчуваю твої дотики на відстані.',
+'Ти як золота рибка з казки — можеш виконати будь-яке бажання!',
+'Твої очі — два бездонних озера, що відображають блакитне небо.',
+'Ти — неповторна! Ти — чарівна! Ти — неперевершена!',
+'Заворожливий погляд тигриці, червоні губи, наповнені пристрастю — це твій портрет.',
+'Твої очі і посмішка просто чарівні.',
+'Ти розумниця! Ти красуня! Ти принцеса!',
+'Мене зачаровують твої ямочки на щоках, коли ти посміхаєшся.',
+'У тебе дивовижна усмішка — ти йдеш, а вона залишається.',
+'Ти найчарівніша і найпривабливіша дівчина.',
+'Іноді ти буваєш несерйозною, немов маленька дівчинка, і мені це подобається. Адже тоді можна теж стати дитиною і трохи подуріти.',
+'З тобою я згоден на все! Особливо на «довго і щасливо»!',
+'У тебе найкрасивіші очі, що приховують в собі якусь таємницю.',
+'У тебе такий виразний погляд, що я відчуваю його на відстані.',
+'Ти — неповторна! Ти — чарівна! Ти — неперевершена!',
+'Ти як магніт притягуєш мене! Я з нетерпінням чекаю зустрічі!',
+'Твоя промениста усмішка захоплює навіть небо!',
+'Ого-го, які ніжки! А яка фігура! Карколомно виглядаєш!',
+'Ти до неможливості красива і чарівна, приваблива і неймовірна!',
+'Ти особлива і незвичайна. Я ніколи не зустрічав дівчат, хоч трохи схожих на тебе.',
+'У твої очі неможливо не закохатися!',
+'Ти моє лагідне весняне сонечко.',
+'Я б присвоїв вам титул «найкрасивішої дівчини світу».',
+'Твоя усмішка сяє яскравіше сонця!',
+'Якщо через твою сліпучу красу у мене погіршиться зір, то відповідальність буде цілком на тобі!',
+'Не можна бути такою яскравою і безкарно полонити чоловіків!',
+'Є в тобі щось невловиме, що приваблює і зачаровує!',
+'Дивлячись на твою неземну красу, мені хочеться складати вірші і присвячувати їх тільки тобі одній.',
+'Ти виглядаєш як супер-модель перед важливою фотосесією!',
+'У тебе приголомшлива засмага, немов палюче полум’я заходу!',
+'Ти моя крапля води в пустелі, ковток повітря в морській безодні.',
+'Твої блакитні очі — як небо, твоє золотисте волосся — як сонце!',
+'Таке відчуття, що в твоїх милих руках зосереджена доброта: від твоїх дотиків стає тепло і затишно.',
+'Ти — та, про кого я думаю кожну секунду, хвилину, годину, добу!',
+'Я не можу повірити в те, що я зустрів таку чарівну дівчину як ти!',
+'Немає нічого краще, ніж хвилини, проведені з тобою!',
+'Я хочу подарувати тобі весь світ навколо! Просто тому, що не можу жити без тебе!',
+'Ти найпрекрасніша дівчина на Землі!',
+'Поряд з тобою я завжди відчуваю себе справжнім чоловіком!',
+'Коли я дивлюся в твої чарівні очі, я бачу погляд ангела!',
+'Таку дівчину я ще не зустрічав — красиву, ніжну, добру, милу, одним словом — неповторну!',
+'Приємно перебувати поруч з втіленням краси!',
+'У тебе очі, як два коштовні камені — яскраві, мерехтять сліпучим блиском!',
+'Ти така чудова, що я просто не можу відірвати від тебе погляду!',
+ 'У моєму житті ти як світло блискавки в нічному небі — яскраве, блискуче і незабутнє!',
+'Ти виглядаєш вбивчо! Всі хлопці дивляться на тебе з голодними очима і згодні на все заради тебе!',
+'Ти зморщуєш свій носика дуже мило!',
+'Тобі вдається ідеально підкреслити свій жіночий шарм і неповторність навіть на фотографіях!',
+'Хто ж був творцем цих прекрасних ніжок, які я бачу перед собою! Тепер я не можу спати спокійно, вони завжди в моїй уяві!',
+'Ти як Попелюшка — повна доброти і дбаєш про всіх!',
+'У тебе такі приємні форми! Твоя фігура просто приголомшує!',
+'Ці густі брови, цей звабливий, хитрий грайливий погляд, рум’яні щоки … Я обожнюю твоє обличчя!',
+'Твій сміх зачаровує!',
+'Я не збираюся тобі брехати: хлопці дивляться на тебе як коти на канарку!',
+'Ти виглядаєш казково!',
+'Ці золоті кучері реально тобі підходять!',
+'Всі думають, що сонце на небі, але я то знаю, що сонечко, це ти! Твоя посмішка, набагато осяйніше і тепліше!',
+'Якби в нашій країні правила монархія, то я неодмінно вибрав би тебе королевою!',
+'Я з самого ранку чекав зустрічі з тобою, про це мені розповіли промені сонця, заспівали птахи, а зараз я відчув це серцем! Ти найпрекрасніша і найніжніша з усіх дівчат на планеті!',
+'Ти бачила коли-небудь лісову галявину, вкриту безліччю найкращих польових квітів?! Так ось, вона порівнянна тільки з тобою, прекрасна леді!',
+'Стильна, яскрава, красива, чудова, а головне неповторна, саме такою я бачу тебе!',
+'Ти прекрасна немов ніжна троянда, ти смачна, як полуниця з вершками, твоя жіночність просто зачаровує!',
+'Вийшовши на балкон або на вулицю, ти побачиш найяскравішу зірку. Знай, я дарую її тобі в цей прекрасний вечір і вона буде горіти до тих пір поки б’ється моє серце!',
+'Коли я дивлюся на тебе, я розумію, що на Землі мене тримає не тяжіння, а ти!',
+'Сонечко, твоя посмішка подібна сяйву падаючої зірки.',
+'Ти як море на заході сонця: одного разу побачивши, запам’ятаю назавжди.',
+'Ти володієш дивовижним даром — змушуєш забувати про все.',
+'Твоя посмішка осяває світ навколо.',
+'Немає нічого приємнішого, ніж просто дивитися на тебе.',
+'Найважче, з чим мені довелося зіткнутися в житті, це відвести погляд від тебе.',
+'Мені не можна дивитися тобі в очі, коли потрібен тверезий розум.',
+'Твої спокусливі ніжні губи манять мене немов магніт.',
+'Не знав, що можна сп’яніти від жіночої краси, поки не зустрів тебе.',
+'Ти ковток чистого повітря, з тобою я забуваю про все.',
+'Коли ти посміхаєшся, стає ясно, неможливо не посміхнутися тобі у відповідь.',
+'Щира як дитина, чиста як джерельна вода, красива як богиня — все це про тебе.',
+'Життєрадісна, турботлива, чудова — три слова, здатні лише частково описати тебе.',
+'Твій ніжний голос, ласкаві губи, бездонні очі назавжди підкорили мене.',
+'З тобою не треба прикидатися. Можливість бути самим собою — найбільший подарунок в житті.',
+'Складно придумати комплімент, гідний тебе!',
+'Кожен день вражаєш своєю красою, але сьогодні ти виглядаєш особливо чарівно.',
+'Моїй дівчині не потрібен макіяж і багато прикрас, всі вони тьмяніють поруч з її природною красою.',
+'У тебе прекрасно все: характер, зовнішність, смак, манери.',
+'Люди шукають ідеал, вони не знають про твоє існування?',
+'Дівчина, стріляючи очками, не залишайте поранених хлопців на полі.',
+'Не кожен день зустрінеш дівчину, яка красива в темряві і при світлі!',
+'Мене кидає в жар від одного твого погляду, хоч моргай, щоб я не згорів.'
+];
+
+</script>
+</head>
+<body style="background-color:#212529;" class="text-light">
+<nav class="navbar navbar-nav navbar-expand-lg  bg-dark text-light justify-content-center" style="padding:0" >
+  <!--<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>-->
+  <div id="navbarSupportedContent" class="bg-dark text-light">   
+    <ul class="navbar-nav mr-auto nav justify-content-center mx-auto">
+		<li class="nav-item my-auto">
+                <a class="nav-link navbar-brand mx-0 d-inline text-light" href="https://brandshub.github.io">brand</a>
+            </li>
+      <li class="nav-item dropdown ">
+        <a class="nav-link dropdown-toggle text-light bg-dark" href="#" id="navbarProfileDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Profile
+        </a>
+        <div class="dropdown-menu  bg-dark text-light" aria-labelledby="navbarProfileDropdown">
+          <a class="dropdown-item  bg-dark text-light" href="https://github.com/brandshub"><img src="./icons/gh.png" class="favico" />GitHub</a>
+          <a class="dropdown-item  bg-dark text-light" href="http://uk.dotabuff.com/players/196272157"><img src="./icons/db.png" class="favico" />DotaBuff</a>    
+        </div>
+      </li>
+	<li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle text-light bg-dark" href="#" id="navbarLinksDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Dev
+        </a>
+        <div class="dropdown-menu"  id="rd" aria-labelledby="navbarLinksDropdown">
+		  <a class="dropdown-item text-light bg-dark" href="https://getbootstrap.com/docs/4.3/components/alerts/"><img src="./icons/bootstrap.png" class="favico" />Bootstrap</a>			
+		  <a class="dropdown-item text-light bg-dark" href="https://dotnetfiddle.net/"><img src="./icons/cs.png" class="favico" />C# Online Compiler</a>		
+		  <a class="dropdown-item text-light bg-dark" href="https://www.campaignmonitor.com/css/"><img src="./icons/css.png" class="favico" />CSS Support</a>
+		  <a class="dropdown-item text-light bg-dark" href="https://htmlfiddle.net/"><img src="./icons/html.png" class="favico" />HTML Snippets</a>		  
+		  <a class="dropdown-item text-light bg-dark" href="https://regex101.com/"><img src="./icons/rgx.png" class="favico" />Regex Tester</a>       
+		  <a class="dropdown-item text-light bg-dark" href="https://www.freeformatter.com/sql-escape.html"><img src="./icons/xml.png" class="favico" />SQL Escape</a>       
+        </div>
+      </li>
+	  <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle text-light bg-dark" href="./utilities.html" id="navbarUtilityDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Finance
+        </a>
+        <div class="dropdown-menu text-light bg-dark" id="rl" aria-labelledby="navbarUtilityDropdown">
+		  <a class="dropdown-item text-light bg-dark" href="https://drive.google.com/open?id=1RNN-JeCMIfzSXf4A33fUsHP3HfrNegLK2md1qX476RU"><img src="./icons/googleSpreadsheet.ico" width="16" height="16" class="favico" />My Data</a>		
+		  <h6 class="dropdown-header text-light bg-dark">Resources</h6>
+		  <a class="dropdown-item text-light bg-dark" href="https://104.ua/ua/"><img src="./icons/104.png" class="favico" />104.ua</a>
+		  <a class="dropdown-item text-light bg-dark" href="https://pay.kyivstar.ua/"><img src="./icons/kyivstar.png" class="favico" />Kyivstar</a>
+		  <a class="dropdown-item text-light bg-dark" href="http://vodarivne.com/"><img src="./icons/voda.png" class="favico" />Rivneoblvodokanal</a>
+		  <a class="dropdown-item text-light bg-dark" href="https://my.roe.vsei.ua/cabinet/login/"><img src="./icons/roe.png" class="favico" />Rivneoblenergo</a>
+		  <a class="dropdown-item text-light bg-dark" href="https://my.ez.rv.ua/cabinet/login/"><img src="./icons/roek.png" class="favico" />ROEK</a>
+		  <a class="dropdown-item text-light bg-dark" href="https://my.volia.com/rovno/uk/cockpit/dashboard"><img src="./icons/volia.png" class="favico" />Volia</a>		  
+        </div>
+      </li>	  
+    </ul>
+  </div>
+  </nav>
+
+ 
+<div class="container justify-content-center mx-auto text-center">
+    <div class="row" style="padding-top:64px; margin-top:-64px;height: calc(100% - 40px)">
+		<div id='Not_A_Lie'  class="col-md-12 my-auto">			.
+		</div>
+    </div>
+	  <div class="row p-2" style="position: relative;bottom:0;">
+		<button type="button" onclick="setLie();" id="refresh" class="btn btn-dark btn-lg btn-block" style="background-color:#343a40 !important"><i class="fa fa-repeat" style="margin-right:15px"></i><span id="attempts">5</span> more remaining</button>
+	</div>
+</div>
+
+</body>
+</html>
