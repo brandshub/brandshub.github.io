@@ -177,8 +177,8 @@ a.dropdown-item {
 	];
 	
 	$(function() {	
-				   var perDay = getCookie('perDay');
-				   if(!isNaN(perDay) || parseInt(perDay)<0) {
+				   var perDay = getCookie('perDay');				   
+				   if(perDay.length > 0 && !isNaN(perDay) && parseInt(perDay)<0) {
 					 $('#liesPerDay').hide();
 				   }
 				   
