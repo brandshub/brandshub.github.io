@@ -1,0 +1,52 @@
+--breakpoint-sm {
+ 400px !important;
+}
+.dropdown-toggle::after {
+    display:none !important;
+}
+
+img.favico {
+    padding-bottom: 3px;
+    margin-right: 7px;
+	width:16px;
+	height:16px;
+}
+
+div.dropdown-menu {
+    padding: 0;
+    margin-top: -1px;
+	position: absolute !important;
+}
+
+
+.navbar-expand-lg .navbar-nav {
+    -ms-flex-direction: row !important;
+    flex-direction: row !important;
+}
+
+a.nav-link {padding:8px !important;}
+
+a.dropdown-item {
+	padding: .25rem .85rem !important;
+}
+
+@media (max-width: 400px) {
+    #rl {
+	right: 0;
+    left: auto;
+	}
+}
+
+@media (max-width: 400px) {
+    #rd {
+	 left: 50% !important;
+  right: auto !important;  
+  transform: translate(-50%, 0) !important;
+	}
+}
+.pmu-selected { font-weight:bold; color:white !important;}
+.pickmeup-twitter-bootstrap {position:static !important;}
+#navbarSupportedContent {flex-wrap:nowrap !important; flex-direction:row !important; padding-left: 15px !important; padding-right:15px !important;}
+.tooltip-inner {
+    white-space:pre-wrap;
+}

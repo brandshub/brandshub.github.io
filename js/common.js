@@ -5,6 +5,13 @@ function setCookie(cname, cvalue, exdays) {
   document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
 }
 
+function setCookie2(cookieName, cookieValue, exdays){
+	
+    var expireDate = document.cookie.indexOf(cookieName) === -1
+            ? new Date(new Date().setTime(new Date().getTime()+ (exdays * 24 * 60 * 60 * 1000)))
+            : unescape(document.cookie).split('expireDate=')[1]; // split out date to reuse
+    document.cookie = cookieName + '=' + cookieValue + ',expireDate=' + expireDate + ';expires=' + expireDate;
+}
 
 function getCookie(cname) {
   var name = cname + "=";
@@ -21,6 +28,11 @@ function getCookie(cname) {
   return "";
 }
 
+function eraseCookie(name) {   
+    document.cookie = name+'=; Max-Age=-99999999;';  
+}
+
 function getRndInteger(min, max) {
   return Math.floor(Math.random() * (max - min + 1) ) + min;
 }
+

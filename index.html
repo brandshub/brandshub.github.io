@@ -8,62 +8,8 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 	<link rel="stylesheet" href="css/pickmeup.css">
-	<style>
+	<link rel="stylesheet" href="css/common.css"> 
 	
-
---breakpoint-sm {
- 400px !important;
-}
-.dropdown-toggle::after {
-    display:none !important;
-}
-
-img.favico {
-    padding-bottom: 3px;
-    margin-right: 7px;
-	width:16px;
-	height:16px;
-}
-
-div.dropdown-menu {
-    padding: 0;
-    margin-top: -1px;
-	position: absolute !important;
-}
-
-
-.navbar-expand-lg .navbar-nav {
-    -ms-flex-direction: row !important;
-    flex-direction: row !important;
-}
-
-a.nav-link {padding:8px !important;}
-
-a.dropdown-item {
-	padding: .25rem .85rem !important;
-}
-
-@media (max-width: 400px) {
-    #rl {
-	right: 0;
-    left: auto;
-	}
-}
-
-@media (max-width: 400px) {
-    #rd {
-	 left: 50% !important;
-  right: auto !important;  
-  transform: translate(-50%, 0) !important;
-	}
-}
-.pmu-selected { font-weight:bold; color:white !important;}
-.pickmeup-twitter-bootstrap {position:static !important;}
-#navbarSupportedContent {flex-wrap:nowrap !important; flex-direction:row !important; padding-left: 15px !important; padding-right:15px !important;}
-.tooltip-inner {
-    white-space:pre-wrap;
-}
-</style>
     <title>brand</title>
   </head>
   <body style="background-color:#212529;" class="text-light">
@@ -139,9 +85,9 @@ a.dropdown-item {
 		</div>
 	</div>
 	</div>
-	<nav id="liesPerDay" class="navbar navbar-nav fixed-bottom navbar-expand-lg  bg-dark text-light justify-content-center px-1 py-1" style="font-size:12px">
+	<nav id="liesPerDay" class="navbar navbar-nav fixed-bottom navbar-expand-lg  bg-dark text-light justify-content-center px-1 py-1 d-none" style="font-size:12px">
 	<span>If you are a woman, click 
-		<a class="bg-dark text-light justify-content-center" href="lietome.html" style="text-decoration:underline">here</a>
+		<a class="bg-dark text-light justify-content-center" href="https://brandshub.github.io/lietome" style="text-decoration:underline">here</a>
 		.
 		</span>
 	</nav>
@@ -178,8 +124,8 @@ a.dropdown-item {
 	
 	$(function() {	
 				   var perDay = getCookie('perDay');				   
-				   if(perDay.length > 0 && !isNaN(perDay) && parseInt(perDay)<0) {
-					 $('#liesPerDay').hide();
+				   if(!(perDay.length > 0 && !isNaN(perDay) && parseInt(perDay)<0)) {
+					 $('#liesPerDay').show();
 				   }
 				   
 				   timerTick();
