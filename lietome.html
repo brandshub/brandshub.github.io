@@ -25,7 +25,7 @@ function verifyCookie() {
  var cookie = getCookie('perDay');
  var number = 4;
  if(!cookie) {
-	setCookie2('perDay',9, 2.0/24);	
+	setCookie2('perDay',4, 2.0/24);	
  }
  else {
 	var parts = cookie.split(',expireDate=');
@@ -38,7 +38,7 @@ function verifyCookie() {
 	}
 	else {
 		eraseCookie('perDay');
-		setCookie2('perDay',9,2.0/24);
+		setCookie2('perDay',4,2.0/24);
 	}
 	
  }
