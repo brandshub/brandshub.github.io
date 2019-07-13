@@ -85,7 +85,7 @@
 		</div>
 	</div>
 	</div>
-	<nav id="liesPerDay" class="navbar navbar-nav fixed-bottom navbar-expand-lg  bg-dark text-light justify-content-center px-1 py-1 d-none" style="font-size:12px">
+	<nav id="liesPerDay" class="navbar navbar-nav fixed-bottom navbar-expand-lg  bg-dark text-light justify-content-center px-1 py-1" style="font-size:12px;display:none">
 	<span>If you are a woman, click 
 		<a class="bg-dark text-light justify-content-center" href="https://brandshub.github.io/lietome" style="text-decoration:underline">here</a>
 		.
@@ -123,7 +123,7 @@
 	];
 	
 	$(function() {	
-				   var perDay = getCookie('perDay');				   
+				   var perDay = getCookie('perDay').split(',expireDate=')[0];				   
 				   if(!(perDay.length > 0 && !isNaN(perDay) && parseInt(perDay)<0)) {
 					 $('#liesPerDay').show();
 				   }
