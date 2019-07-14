@@ -120,11 +120,11 @@
 	{ date:'04/02', name:'Muhal\''},
 	{ date:'02/08', name:'Illya'},
 	{ date:'03/13', name:'Yarik'}
-	];
-	
+	];	
+
+
 	$(function() {	
-				   var perDay = getCookie('perDay').split(',expireDate=')[0];				   
-				   if(!(perDay.length > 0 && !isNaN(perDay) && parseInt(perDay)<0)) {
+				   if(showLiesFooter()) {
 					 $('#liesPerDay').show();
 				   }
 				   
@@ -209,6 +209,21 @@
 				pickmeup('#cla').clear();
 			}
 		}
+		
+		function showLiesFooter() {
+			 var cookie = getCookie('perDay');			
+			 if(!cookie) 
+				return true;			 
+			var parts = cookie.split(',expireDate=');
+			var dt = Date.parse(parts[1]);
+			var currentDate = new Date();
+			if(dt > currentDate) {
+				var number = parseInt(parts[0]);
+				return number > 0;
+			}
+			return true;
+		}
+		
 </script>
   </body>
 </html>
