@@ -116,7 +116,7 @@
 	{ date:'15/07', name:'Elvis'}, 
 	{ date:'04/02', name:'Muhal\''},
 	{ date:'02/08', name:'Illya'},
-	{ date:'03/13', name:'Yarik'}
+	{ date:'13/03', name:'Yarik'}
 	];	
 
 
@@ -175,7 +175,7 @@
 				if(dmonth-1 == monthDate) {
 					var found = false;
 					for(var k=0;k<selectedDates.length;k++) {						
-						if(selectedDates[k].getDay() == dday) {
+						if(selectedDates[k].getDate() == dday) {
 							selectedNames[k]+="\n"+dates[i].name;
 							found = true;
 							break;
