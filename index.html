@@ -380,7 +380,7 @@
 		}
 		
 		function formatGrowth(n,d) {
-			var str = n3(n) + '<br/>(';
+			var str = n3(n) + '<br/><span class="csmf">(';
 			if(d < 0) {
 				str+= n3(d);
 				str+=' | ';
@@ -401,7 +401,7 @@
 				str+='%)';
 			}		
 			
-			return str;
+			return '</span>'+str;
 		}
 		
 		function n3(x) {

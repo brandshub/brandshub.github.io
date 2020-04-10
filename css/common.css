@@ -59,11 +59,19 @@ a.dropdown-item {
 .c19tested {color: #cc7bff;}
 
 
+ .csmf {
+	font-size: 12px;
+}
+
 @media screen and (max-width: 400px) {
  #covidGrid {
 	 font-size:10px;
  }
  
+ .csmf {
+	font-size: 8px;
+}
+
  #covidGrid .col-1{
 	 padding-left:0px !important;
 	 padding-right:0px !important;
@@ -76,10 +84,16 @@ a.dropdown-item {
 }
 
 
+
 @media screen and (max-width: 768px) {
  #covidGrid {
 	 font-size:12px;
  }
+ 
+ .csmf {
+	font-size: 10px;
+}
+
  
  #covidGrid .col-1, #covidGrid .col-2{
 	 padding-left:0px !important;
