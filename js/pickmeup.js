@@ -881,7 +881,7 @@
 		options.bound.fill();
 		return true;
 	}
-
+	
 	function prepare_date (options) {
 		var result;
 		if (options.mode === 'single') {
@@ -1100,6 +1100,10 @@
 		}
 	}
 
+	function get_current(target,formatted) {
+		var options       = target.__pickmeup.options;
+		return options.current;
+	}
 	/**
 	 * @param {Element}                                       target
 	 * @param {(Date|Date[]|number|number[]|string|string[])} date
@@ -1272,7 +1276,8 @@
 				next        : next.bind(target, target),
 				get_date    : get_date.bind(target, target),
 				set_date    : set_date.bind(target, target),
-				destroy     : destroy.bind(target, target)
+				destroy     : destroy.bind(target, target),
+				get_current    : get_current.bind(target,target),
 			};
 			dom_add_class(element, 'pmu-view-' + options.view);
 			var content_template = options.instance_template(options),
@@ -1311,7 +1316,8 @@
 			next     : options.bound.next,
 			get_date : options.bound.get_date,
 			set_date : options.bound.set_date,
-			destroy  : options.bound.destroy
+			destroy  : options.bound.destroy,
+			get_current: options.bound.get_current
 		};
 	}
 

@@ -63,32 +63,37 @@
   </div>
   </nav>  
     <div class="container">
-	<div class="row pb-3">
-		<div class="col-12 justify-content-center text-center">
-			<div style="width:208px;font-size:10px" class="text-right d-inline-block" id="usdDiv">
-			
+		<div class="row pb-3">
+			<div class="col-12 justify-content-center text-center">
+				<div style="width:208px;font-size:10px" class="text-right d-inline-block" id="usdDiv">
+				
+				</div>
+			</div>
+		</div>
+		<div class="row justify-content-center">
+			<div class="col-12 text-center">
+				<h2  class="text-center" id="currentTime">00:00:00</h2>
+			</div>
+		</div>
+		<div class="row justify-content-center">
+			<div class="col-12 text-center">
+				<h5  class="text-center" id="currentDate">Monday, 32 February</h5>
+			</div>
+		</div>	
+		<div class="row pt-3 justify-content-center">
+			<div class="col-12 justify-content-center  text-center" id="cla">
 			</div>
 		</div>
 	</div>
-	<div class="row justify-content-center">
-		<div class="col-12 text-center">
-			<h2  class="text-center" id="currentTime">00:00:00</h2>
+	<div class="container-fluid">
+		<div class="row text-center justify-content-center pt-4" ><h4 class="text-center" id="covidLbl" >COVID-19 Data</h4></div>
+		<div class="row pt-3 justify-content-center text-center col-12 col-xl-6" style="word-break:break-word;margin:auto" id="covidGrid">		
+			<!--<div class="col-12 col-xl-6  justify-content-center  text-center" >
+			 <object data="img/Ukraine.svg" type="image/svg+xml"
+			 id="mapSvg" style="height:auto;width:100%"></object>
+			</div>-->
 		</div>
-	</div>
-	<div class="row justify-content-center">
-		<div class="col-12 text-center">
-			<h5  class="text-center" id="currentDate">Monday, 32 February</h5>
-		</div>
-	</div>	
-	<div class="row pt-3 justify-content-center">
-		<div class="col-12 justify-content-center  text-center" id="cla">
-		</div>
-	</div>
-	<div class="row pt-3 justify-content-center">		
-		<div class="col-12 col-xl-6  justify-content-center  text-center">
-		 <object data="img/Ukraine.svg" type="image/svg+xml"
-         id="mapSvg" style="height:auto;width:100%"></object>
-		</div>
+		<div  class="row" style="height:75px"></div>
 	</div>
 	</div>
 	<nav id="liesPerDay" class="navbar navbar-nav fixed-bottom navbar-expand-lg  bg-dark text-light justify-content-center px-1 py-1" style="font-size:12px;display:none">
@@ -106,6 +111,7 @@
 	<script src="js/pickmeup.js" ></script>
 	<script src="js/jquery.pickmeup.twitter-bootstrap.js" ></script>
 	<script src="js/common.js" ></script>
+	<script src="js/covid19.js" ></script>
 	<script>
 	
 	var daysInWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -124,7 +130,9 @@
 	{ date:'02/08', name:'Illya'},
 	{ date:'13/03', name:'Yarik'}
 	];	
-
+	
+	var baseRegions = ['Rivne','Kyiv','Lviv'];
+	var covidSelDate = '';
 
 	$(function() {	
 				   if(showLiesFooter()) {
@@ -144,20 +152,69 @@
 					div.append($('.pmu-instance').parent());					
 					
 					refreshTooltips();
+					
+					$('.pmu-instance').on('click', '.pmu-days div', function() {
+					  if($(this).hasClass('pmu-not-in-month'))
+						return;
+					   let dt = pickmeup('#cla').get_current();
+					   let month = dt.getMonth()+1;
+					   let year = dt.getFullYear();
+					   let dday =  parseInt($(this).text());
+					   
+					   let frmt  = year+'-'+d2(month)+'-'+d2(dday);
+					   let newDt = new Date(frmt+' 00:00');					   
+					   covidSelDate = frmt;
+						
+					   if(newDt < new Date()) {					   
+						   console.log(frmt);
+						   covidSelDate = frmt;
+						   
+						   var cvObj = window['CV_allByDate'];
+						   if(!cvObj || !cvObj[frmt])
+							   covidGetByDate(frmt,function(dateStr, data) { renderDataForDate(dateStr, data, window.expUkFlag ?  baseRegions: null );});
+						   else
+								renderDataForDate(frmt, cvObj[frmt],  window.expUkFlag ? ['Rivne','Kyiv','Lviv'] : null );
+						}
+						else {
+							renderDataForDate(frmt,null);
+						}
+					
+					});	
+					
+					window.expUkFlag = true;
+					covidSelDate = toCovidDate(new Date());					
+					covidGetToday(function(dateStr, data) { renderDataForDate(dateStr, data,  window.expUkFlag ? baseRegions : null );});
+					
 					$('.pmu-instance').on('click', '.pmu-button', function() {
 						if(!$(this).parent().hasClass('pmu-days')) {								
 								setTimeout(refreshTooltips,50);
 							}});						
 					
-					$.getJSON('https://jsonp.afeld.me/?callback=?&url=http://rulya-bank.com.ua/', function(data){
+					$('#covidGrid').on('click','#expUk',function(e) {
+						var state = $(this).hasClass('expoff');
+						window.expUkFlag = !state;
+						
+						$(this).toggleClass('expoff').toggleClass('expon').text(state ? '(—)' : '(+)');
+						
+						getCovidForSelectedDate();
+					});
+					
+					
+					var $rate = $.getJSON('https://jsonp.afeld.me/?callback=?&url=http://rulya-bank.com.ua/', function(data){
 						var text = data.data;					
 						var rgx = /USD\<\/font\>\<b\>\<\/td\>\s+?\<td\sclass\=\"tbl\"\s+?align\=\"center\"\>\<b\>([\.\d]+)\<\/b\>\<\/td\>\s+?\<td\sclass\=\"tbl\"\s*?align\=\"center\"\>\<b\>([\.\d]+)\<\/b\>\<\/td\>/igs;
 						var obj = rgx.exec(text);
 						$('#usdDiv').text('USD '+obj[1]+' / '+obj[2]);						
 					});
+					setTimeout(function(){ $rate.abort(); }, 7000);
+  
+  
+  
+  
   
 					setInterval(timerTick,500);
 		});
+		
 		
 		function timerTick() {
 			var d = new Date();
@@ -166,6 +223,8 @@
 			$('#currentTime').text(timeStr);
 			$('#currentDate').text(dateStr);			
 		}
+		
+		
 		function d2(n){ return n<10?('0'+n):n; }
 		
 		function refreshTooltips() {
@@ -225,6 +284,128 @@
 				return number > 0;
 			}
 			return true;
+		}
+		
+		
+		function getCovidForSelectedDate() {
+			  covidGetByDate(window.covidSelDate, function(dateStr, data) { renderDataForDate(dateStr, data, window.expUkFlag ? baseRegions : null );});
+		}
+		
+		
+		function renderDataForDate(dateStr, data, selectedRegions) {
+			$('#covidLbl').html('COVID-19 Data ('+dateStr+')');
+			if(!data)
+				$('#covidGrid').html('<h6>No Data Available</h6>');
+			else
+				$('#covidGrid').html(buildCovidGrid(dateStr, data, selectedRegions));		
+		}
+		
+		
+		function buildCovidGrid(dateStr, data, selectedRegions) {
+			let arr = [];
+			let w = covidGetWorldTotal(data.world);
+			let Ukraine = covidGetUkraineTotal(data.ukraine);
+			
+			if(selectedRegions) {
+				for(let i=0;i<selectedRegions.length;i++) {
+					let l = selectedRegions[i];
+					let found = false;
+					for(let j=0;j<data.ukraine.length;j++) {
+						if(data.ukraine[j].label.en.indexOf(l) == 0) {
+							arr.push(data.ukraine[j]);
+							found = true;
+						}
+					}
+					
+					if(!found){
+						for(let j=0;j<data.world.length;j++) {
+							if(data.world[j].label.en.indexOf(l) == 0) {
+								arr.push(data.world[j]);
+								found = true;
+							}
+						}
+					}
+				
+				}
+			}
+			else {
+				for(let j=0;j<data.ukraine.length;j++)
+					arr.push(data.ukraine[j]);
+				arr.sort(function(a, b) {
+				  var nameA = a.label.en.toUpperCase(); // ignore upper and lowercase
+				  var nameB = b.label.en.toUpperCase(); // ignore upper and lowercase
+				  if (nameA < nameB) {
+					return -1;
+				  }
+				  if (nameA > nameB) {
+					return 1;
+				  }
+
+				  // names must be equal
+				  return 0;
+				});
+			}
+			
+			let html = '';
+			html+='<div class="col-3 border">Region</div><div class="col-2 border">Confirmed</div><div class="col-2 border">Died</div><div class="col-2 border">Recovered</div><div class="col-2 border">Suspicion</div><div class="col-1 border">Hit %</div>';
+			html+=getRow(w);
+			html+=getRow(Ukraine);
+			for(let i=0;i<arr.length;i++)
+				html+= getRow(arr[i]);		
+			
+			return html;
+		}
+		
+		function getRow(obj) {			
+			var html='';
+			
+			
+			if(obj.label2 == 'Ukraine')
+				html+='<div class="col-3 border">Ukraine<br/><span id="expUk" class="'+(window.expUkFlag? "expoff" : "expon")+'" style="cursor:pointer">'+(window.expUkFlag? "(+)" : "(—)")+'</span></div>'
+			else
+				html+='<div class="col-3 border">'+(obj.label2 ? obj.label2 : obj.label.en )+'</div>'
+				
+				
+			html+='<div class="col-2 border c19confirm">'+formatGrowth(obj.confirmed, obj.delta_confirmed)+'</div>';
+			html+='<div class="col-2 border c19death">'+formatGrowth(obj.deaths, obj.delta_deaths)+'</div>';
+			html+='<div class="col-2 border c19recover">'+formatGrowth(obj.recovered, obj.delta_recovered)+'</div>';
+			if(obj.suspicion != 0) {
+				html+='<div class="col-2 border c19suspicion">'+formatGrowth(obj.suspicion, obj.delta_suspicion)+'</div>';			
+				html+='<div class="col-1 border c19tested">'+(100*obj.confirmed/obj.suspicion).toFixed(2)+'%</div>';
+			}
+			else {
+				html+='<div class="col-2 border c19suspicion"></div><div class="col-1 c19tested border"></div>';
+			}			
+			return html;
+		}
+		
+		function formatGrowth(n,d) {
+			var str = n3(n) + '<br/>(';
+			if(d < 0) {
+				str+= n3(d);
+				str+=' | ';
+				str+= (100*d/(n-d)).toFixed(1);
+				str+='%)';
+			}
+			else if(d==0) {
+				str+='+0)';				
+			}
+			else {
+				str+='+'+n3(d);
+				str+=' | +';
+				if(n == d)
+					str+= "100%";
+				else
+					str+= (100*d/(n-d)).toFixed(1);
+				
+				str+='%)';
+			}		
+			
+			return str;
+		}
+		
+		function n3(x) {
+			return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
 		}
 		
 </script>

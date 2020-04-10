@@ -9,9 +9,8 @@
    mapsvg:geoViewBox="22.138577 52.380834 40.220623 44.387017"
    stroke="lightgray"
    fill="#212529"  
-   viewBox="0 0 615 600"
-   width="100vw"
-   height="auto">
+   viewBox="0 0 615 600"  
+   style=" width:100vw;height:auto;cursor:pointer">
    
 
   <path
