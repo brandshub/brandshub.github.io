@@ -133,7 +133,8 @@
 	
 	var baseRegions = ['Rivne','Kyiv','Lviv'];
 	var covidSelDate = '';
-
+	var expUkrFlag = false;
+	
 	$(function() {	
 				   if(showLiesFooter()) {
 					 $('#liesPerDay').show();
@@ -166,24 +167,24 @@
 					   covidSelDate = frmt;
 						
 					   if(newDt < new Date()) {					   
-						   console.log(frmt);
+						   //console.log(frmt);
 						   covidSelDate = frmt;
 						   
 						   var cvObj = window['CV_allByDate'];
 						   if(!cvObj || !cvObj[frmt])
-							   covidGetByDate(frmt,function(dateStr, data) { renderDataForDate(dateStr, data, window.expUkFlag ?  baseRegions: null );});
+							   covidGetByDate(frmt,function(dateStr, data) { renderDataForDate(dateStr, data);});
 						   else
-								renderDataForDate(frmt, cvObj[frmt],  window.expUkFlag ? ['Rivne','Kyiv','Lviv'] : null );
+								renderDataForDate(frmt, cvObj[frmt] );
 						}
 						else {
 							renderDataForDate(frmt,null);
 						}
 					
-					});	
+					});						
 					
-					window.expUkFlag = true;
-					covidSelDate = toCovidDate(new Date());					
-					covidGetToday(function(dateStr, data) { renderDataForDate(dateStr, data,  window.expUkFlag ? baseRegions : null );});
+					covidSelDate = toCovidDate(new Date());
+					loadRegionsFromCookie();
+					covidGetToday(function(dateStr, data) { renderDataForDate(dateStr, data);});
 					
 					$('.pmu-instance').on('click', '.pmu-button', function() {
 						if(!$(this).parent().hasClass('pmu-days')) {								
@@ -192,7 +193,7 @@
 					
 					$('#covidGrid').on('click','#expUk',function(e) {
 						var state = $(this).hasClass('expoff');
-						window.expUkFlag = !state;
+						expUkrFlag = state;
 						
 						$(this).toggleClass('expoff').toggleClass('expon').text(state ? '(—)' : '(+)');
 						
@@ -211,7 +212,7 @@
   
   
   
-  
+					$(window).resize(function() { setTimeout(refreshTooltips,100);});
 					setInterval(timerTick,500);
 		});
 		
@@ -229,8 +230,7 @@
 		
 		function refreshTooltips() {
 			var options = document.getElementById('cla').__pickmeup.options;
-			var monthDate = options.current.getMonth();
-			console.log(options);
+			var monthDate = options.current.getMonth();			
 			var selectedDates = [];
 			var selectedNames = [];
 			for(var i=0;i<dates.length;i++) {
@@ -287,28 +287,35 @@
 		}
 		
 		
-		function getCovidForSelectedDate() {
-			  covidGetByDate(window.covidSelDate, function(dateStr, data) { renderDataForDate(dateStr, data, window.expUkFlag ? baseRegions : null );});
+		function loadRegionsFromCookie() {
+			var rgns = getCookie('covidRgn');
+			if(!rgns)
+			   baseRegions = ['World','Ukraine','Rivne','Kyiv','Lviv','Sweden'];	
+			else
+			   baseRegions = rgns.split(';');
 		}
 		
 		
-		function renderDataForDate(dateStr, data, selectedRegions) {
+		function getCovidForSelectedDate() {
+			  covidGetByDate(window.covidSelDate, function(dateStr, data) { renderDataForDate(dateStr, data);});
+		}
+		
+		
+		function renderDataForDate(dateStr, data) {
 			$('#covidLbl').html('COVID-19 Data ('+dateStr+')');
 			if(!data)
 				$('#covidGrid').html('<h6>No Data Available</h6>');
 			else
-				$('#covidGrid').html(buildCovidGrid(dateStr, data, selectedRegions));		
+				$('#covidGrid').html(buildCovidGrid(dateStr, data, baseRegions));		
 		}
 		
 		
 		function buildCovidGrid(dateStr, data, selectedRegions) {
 			let arr = [];
-			let w = covidGetWorldTotal(data.world);
-			let Ukraine = covidGetUkraineTotal(data.ukraine);
 			
-			if(selectedRegions) {
-				for(let i=0;i<selectedRegions.length;i++) {
-					let l = selectedRegions[i];
+			for(let i=0;i<selectedRegions.length;i++) {
+				let l = selectedRegions[i];
+				if(l != 'Ukraine' && l != 'World') {
 					let found = false;
 					for(let j=0;j<data.ukraine.length;j++) {
 						if(data.ukraine[j].label.en.indexOf(l) == 0) {
@@ -325,31 +332,32 @@
 							}
 						}
 					}
-				
 				}
-			}
-			else {
-				for(let j=0;j<data.ukraine.length;j++)
-					arr.push(data.ukraine[j]);
-				arr.sort(function(a, b) {
-				  var nameA = a.label.en.toUpperCase(); // ignore upper and lowercase
-				  var nameB = b.label.en.toUpperCase(); // ignore upper and lowercase
-				  if (nameA < nameB) {
-					return -1;
-				  }
-				  if (nameA > nameB) {
-					return 1;
-				  }
-
-				  // names must be equal
-				  return 0;
-				});
+			
 			}
 			
+			
 			let html = '';
-			html+='<div class="col-3 border">Region</div><div class="col-2 border">Confirmed</div><div class="col-2 border">Died</div><div class="col-2 border">Recovered</div><div class="col-2 border">Suspicion</div><div class="col-1 border">Hit %</div>';
-			html+=getRow(w);
-			html+=getRow(Ukraine);
+			html+='<div class="col-3 border">Region</div><div class="col-2 border">Confirmed</div><div class="col-2 border">Died</div><div class="col-2 border">Recovered</div><div class="col-2 border">Suspicion</div><div class="col-1 border">Hit %</div>';			
+			
+			
+			if(selectedRegions.indexOf('World')>=0)
+				html+=getRow(covidGetWorldTotal(data.world));
+				
+			if(selectedRegions.indexOf('Ukraine')>=0)
+				html+=getRow(covidGetUkraineTotal(data.ukraine));
+			
+			if(expUkrFlag) {
+				let ukrRegions = [];
+				for(let j=0;j<data.ukraine.length;j++) 
+					ukrRegions.push(data.ukraine[j]);
+				ukrRegions.sort(rgnCmp);
+				
+				for(let j=0;j<ukrRegions.length;j++)
+					html+= getRow(ukrRegions[j]);	
+			}		
+			
+			
 			for(let i=0;i<arr.length;i++)
 				html+= getRow(arr[i]);		
 			
@@ -361,7 +369,7 @@
 			
 			
 			if(obj.label2 == 'Ukraine')
-				html+='<div class="col-3 border">Ukraine<br/><span id="expUk" class="'+(window.expUkFlag? "expoff" : "expon")+'" style="cursor:pointer">'+(window.expUkFlag? "(+)" : "(—)")+'</span></div>'
+				html+='<div class="col-3 border">Ukraine<br/><span id="expUk" class="'+(expUkrFlag? "expon" : "expoff"  )+'" style="cursor:pointer">'+(expUkrFlag?  "(—)" : "(+)" )+'</span></div>'
 			else
 				html+='<div class="col-3 border">'+(obj.label2 ? obj.label2 : obj.label.en )+'</div>'
 				
@@ -371,7 +379,7 @@
 			html+='<div class="col-2 border c19recover">'+formatGrowth(obj.recovered, obj.delta_recovered)+'</div>';
 			if(obj.suspicion != 0) {
 				html+='<div class="col-2 border c19suspicion">'+formatGrowth(obj.suspicion, obj.delta_suspicion)+'</div>';			
-				html+='<div class="col-1 border c19tested">'+(100*obj.confirmed/obj.suspicion).toFixed(2)+'%</div>';
+				html+='<div class="col-1 border c19tested">'+(100*obj.confirmed/obj.suspicion).toFixed(1)+'</div>';
 			}
 			else {
 				html+='<div class="col-2 border c19suspicion"></div><div class="col-1 c19tested border"></div>';

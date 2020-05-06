@@ -40,3 +40,4 @@ function getRandomElement(arr) {
 	var rnd = getRndInteger(0,arr.length-1);
 	return arr[rnd];	
 }
+

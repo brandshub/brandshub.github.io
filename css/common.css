@@ -53,7 +53,7 @@ a.dropdown-item {
 
 
 .c19confirm { color:#ffc107;} 
-.c19death { color:#dc3545;} 
+.c19death { color:#ff6271;} 
 .c19recover{ color:#00ba80;}
 .c19suspicion{ color: #007bff;}
 .c19tested {color: #cc7bff;}
@@ -63,13 +63,34 @@ a.dropdown-item {
 	font-size: 12px;
 }
 
-@media screen and (max-width: 400px) {
+
+
+
+
+@media screen and (max-width: 768px) {
  #covidGrid {
-	 font-size:10px;
+	 font-size:13px;
  }
  
  .csmf {
-	font-size: 8px;
+	font-size: 11px;
+}
+
+ 
+ #covidGrid .col-1, #covidGrid .col-2{
+	 padding-left:0px !important;
+	 padding-right:0px !important;
+ } 
+ 
+}
+
+@media screen and (max-width: 400px) {
+ #covidGrid {
+	 font-size:12px;
+ }
+ 
+ .csmf {
+	font-size: 10px;
 }
 
  #covidGrid .col-1{
@@ -80,24 +101,5 @@ a.dropdown-item {
 	 padding-left:0px !important;
 	 padding-right:0px !important;
  }
- 
-}
-
-
-
-@media screen and (max-width: 768px) {
- #covidGrid {
-	 font-size:12px;
- }
- 
- .csmf {
-	font-size: 10px;
-}
-
- 
- #covidGrid .col-1, #covidGrid .col-2{
-	 padding-left:0px !important;
-	 padding-right:0px !important;
- } 
  
 }

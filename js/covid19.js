@@ -76,6 +76,20 @@ function covidGetUkraineTotal(arr) {
 	return w;
 }
 
+function rgnCmp(a, b) {
+  var nameA = a.label.en.toUpperCase(); // ignore upper and lowercase
+  var nameB = b.label.en.toUpperCase(); // ignore upper and lowercase
+  if (nameA < nameB) {
+	return -1;
+  }
+  if (nameA > nameB) {
+	return 1;
+  }
+
+  // names must be equal
+  return 0;
+}
+
 function d2(n){ return n<10?('0'+n):n; }
 
 $(window).on('load', function() {
