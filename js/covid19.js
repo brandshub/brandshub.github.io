@@ -6,6 +6,8 @@ function covidGetByDate(dateStr, handler) {
 			obj = {};
 		 obj[dateStr] = data;
 		 window['CV_allByDate'] = obj;
+		 
+		 window['allRegions'] = getAllCountries(data);
 		 console.log(data);
 		 if(handler)
 			handler(dateStr, data);
@@ -16,6 +18,18 @@ function covidGetByDate(dateStr, handler) {
 			handler(dateStr, null);
 	}
 	);
+}
+
+function getAllCountries(responseObj) {
+	let arr = [];
+	
+	for(let i=0;i<responseObj.world.length;i++)
+		arr.push( { id: responseObj.world[i].id, label: responseObj.world[i].label, text:responseObj.world[i].country});
+	
+	for(let i=0;i<responseObj.ukraine.length;i++)
+		arr.push( { id: responseObj.ukraine[i].country, label: responseObj.ukraine[i].label, text:'Ukraine: '+responseObj.ukraine[i].label.en});
+	
+	return arr;
 }
 
 function covidGetAllUkraine() {

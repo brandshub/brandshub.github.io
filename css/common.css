@@ -83,6 +83,19 @@ a.dropdown-item {
  } 
  
 }
+div.npd {
+	padding-left:3px !important;
+	padding-right:3px !important;
+	padding-top:3px !important;
+	padding-bottom:3px !important;
+}
+
+div.npd1{
+	padding-left:1px !important;
+	padding-right:1px !important;
+	padding-top:1px !important;
+	padding-bottom:1px !important;
+}
 
 @media screen and (max-width: 400px) {
  #covidGrid {
@@ -97,9 +110,10 @@ a.dropdown-item {
 	 padding-left:0px !important;
 	 padding-right:0px !important;
  }
- #covidGrid .col-2{
+ #covidGrid div.col-3{
 	 padding-left:0px !important;
 	 padding-right:0px !important;
  }
  
+
 }
