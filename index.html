@@ -339,7 +339,7 @@
 			
 			
 			let html = '';
-			html+='<div class="col-3 border">Region</div><div class="col-2 border">Confirmed</div><div class="col-2 border">Died</div><div class="col-2 border">Recovered</div><div class="col-2 border">Suspicion</div><div class="col-1 border">Hit %</div>';			
+			html+='<div class="col-3 border">Region</div><div class="col-3 border">Confirmed</div><div class="col-3 border">Died</div><div class="col-3 border">Recovered</div>';			
 			
 			
 			if(selectedRegions.indexOf('World')>=0)
@@ -375,16 +375,10 @@
 				html+='<div class="col-3 border">'+(obj.label2 ? obj.label2 : obj.label.en )+'</div>'
 				
 				
-			html+='<div class="col-2 border c19confirm">'+formatGrowth(obj.confirmed, obj.delta_confirmed)+'</div>';
-			html+='<div class="col-2 border c19death">'+formatGrowth(obj.deaths, obj.delta_deaths)+'</div>';
-			html+='<div class="col-2 border c19recover">'+formatGrowth(obj.recovered, obj.delta_recovered)+'</div>';
-			if(obj.suspicion != 0) {
-				html+='<div class="col-2 border c19suspicion">'+formatGrowth(obj.suspicion, obj.delta_suspicion)+'</div>';			
-				html+='<div class="col-1 border c19tested">'+(100*obj.confirmed/obj.suspicion).toFixed(1)+'</div>';
-			}
-			else {
-				html+='<div class="col-2 border c19suspicion"></div><div class="col-1 c19tested border"></div>';
-			}			
+			html+='<div class="col-3 border c19confirm">'+formatGrowth(obj.confirmed, obj.delta_confirmed)+'</div>';
+			html+='<div class="col-3 border c19death">'+formatGrowth(obj.deaths, obj.delta_deaths)+'</div>';
+			html+='<div class="col-3 border c19recover">'+formatGrowth(obj.recovered, obj.delta_recovered)+'</div>';
+			
 			return html;
 		}
 		
