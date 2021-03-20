@@ -265,8 +265,11 @@
 		function refreshTooltips() {
 			var options = document.getElementById('cla').__pickmeup.options;
 			var monthDate = options.current.getMonth();			
+			var yearDate = options.current.getFullYear();
+			
 			var selectedDates = [];
 			var selectedNames = [];
+			
 			for(var i=0;i<dates.length;i++) {
 				var dt = dates[i].date;
 				var dday = dt.split('/')[0];
@@ -303,6 +306,19 @@
 			}
 			else {
 				pickmeup('#cla').clear();
+			}
+			
+			if(covidSelDate != '') {
+				if(covidSelDate.substr(0,7) == yearDate+'-'+(monthDate < 9 ? ('0'+(monthDate+1)):(monthDate+1))) {
+					var sel_Day = parseInt(covidSelDate.substr(8));
+					var allDays = $('.pmu-instance div.pmu-days div');
+					for(var i=0;i<allDays.length;i++) {
+						if(allDays.eq(i).not('.pmu-not-in-month') && parseInt(allDays.eq(i).text()) == sel_Day) {
+						  allDays.eq(i).addClass('dselected');
+						  break;
+						}
+					}
+				}
 			}
 		}
 		
