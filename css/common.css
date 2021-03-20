@@ -114,6 +114,13 @@ div.npd1{
 	 padding-left:0px !important;
 	 padding-right:0px !important;
  }
- 
 
 }
+
+ div.pmu-today {
+	 box-shadow: inset 0px 0px 0px 2px yellowgreen !important;
+ }
+ 
+ div.dselected {
+	 box-shadow: inset 0px 0px 0px 2px red !important;
+ }

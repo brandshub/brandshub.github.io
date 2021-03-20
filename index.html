@@ -187,6 +187,8 @@
 					   let year = dt.getFullYear();
 					   let dday =  parseInt($(this).text());
 					   
+					   $('.dselected').removeClass('dselected');
+					   $(this).addClass('dselected');
 					   let frmt  = year+'-'+d2(month)+'-'+d2(dday);
 					   let newDt = new Date(frmt+' 00:00');					   
 					   covidSelDate = frmt;
