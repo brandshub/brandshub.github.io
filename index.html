@@ -10,7 +10,7 @@
 	<link rel="stylesheet" href="css/pickmeup.css">
 	<link rel="stylesheet" href="css/common.css"> 
 	<link rel="stylesheet" href="css/autocomplete.css">
-	
+	<link rel="stylesheet" href="css/Chart.min.css">
     <title>brand</title>
   </head>
   <body style="background-color:#212529;" class="text-light">
@@ -137,6 +137,7 @@
 	<script src="js/common.js" ></script>
 	<script src="js/covid19.js" ></script>
 	<script src="js/autocomplete.js" ></script>
+	<script src="js/charts/Chart.bundle.min.js" ></script>	
 	<script>
 	
 	var daysInWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -532,7 +533,7 @@ https://api-covid19.rnbo.gov.ua/charts/main-data?mode=ukraine&country=4900
 			
 			
 			if(obj.label2 == 'Ukraine') {
-				html+='<div class="row m-0 rgn" id="rgn-ukraine"><div class="col-3 npd border">Ukraine<br/><span id="expUk" class="'+(expUkrFlag? "expon" : "expoff"  )+'" style="cursor:pointer">'+(expUkrFlag?  "(—)" : "(+)" )+'</span></div>';
+				html+='<div class="row m-0 rgn" id="rgn-ukraine"><div class="col-3 npd border">Ukraine&nbsp;<span style="padding-left:3px;cursor:pointer" onclick="showUkraineChart()">&#128202;</span><br/><span id="expUk" class="'+(expUkrFlag? "expon" : "expoff"  )+'" style="cursor:pointer">'+(expUkrFlag?  "(—)" : "(+)" )+'</span></div>';
 			}
 			else if(obj.label2 == 'World') {								
 				html+='<div class="row m-0 rgn" id="rgn-world"><div class="col-3 npd border">'+(obj.label2 ? obj.label2 : obj.label.en )+'</div>';
@@ -601,22 +602,22 @@ https://api-covid19.rnbo.gov.ua/charts/main-data?mode=ukraine&country=4900
 			var str = n3(n) + '<br/><span class="csmf">(';
 			if(d < 0) {
 				str+= n3(d);
-				str+=' | ';
-				str+= (100*d/(n-d)).toFixed(1);
-				str+='%)';
+				/*str+=' | ';
+				str+= (100*d/(n-d)).toFixed(1) + '%';*/
+				str+=')';
 			}
 			else if(d==0) {
 				str+='+0)';				
 			}
 			else {
 				str+='+'+n3(d);
-				str+=' | +';
+				/*str+=' | +';
 				if(n == d)
 					str+= "100%";
 				else
-					str+= (100*d/(n-d)).toFixed(1);
+					str+= (100*d/(n-d)).toFixed(1)+'%';*/
 				
-				str+='%)';
+				str+=')';
 			}		
 			
 			return '</span>'+str;
