@@ -467,7 +467,13 @@ https://api-covid19.rnbo.gov.ua/charts/main-data?mode=ukraine&country=4900
 			if(!data)
 				$('#covidGrid').html('<h6>No Data Available</h6>');
 			else
+			{
+				var chartElem = $('#main-chart-ukr');
 				$('#covidGrid').html(buildCovidGrid(dateStr, data, baseRegions));		
+				if(chartElem.length>0)
+					$('#rgn-ukraine').after(chartElem);
+				  //createDivForChart(window['CV_allUkraine'], $('#rgn-ukraine'),'ukr')
+			}
 		}
 		
 		
@@ -506,8 +512,9 @@ https://api-covid19.rnbo.gov.ua/charts/main-data?mode=ukraine&country=4900
 			if(selectedRegions.indexOf('World')>=0)
 				html+=getRow(covidGetWorldTotal(data.world));
 				
-			if(selectedRegions.indexOf('Ukraine')>=0)
+			if(selectedRegions.indexOf('Ukraine')>=0) {
 				html+=getRow(covidGetUkraineTotal(data.ukraine));
+			}
 			
 			if(expUkrFlag) {
 				let ukrRegions = [];

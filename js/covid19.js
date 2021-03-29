@@ -8,7 +8,7 @@ function covidGetByDate(dateStr, handler) {
 		 window['CV_allByDate'] = obj;
 		 
 		 window['allRegions'] = getAllCountries(data);
-		 console.log(data);
+		 //console.log(data);
 		 if(handler)
 			handler(dateStr, data);
 	}).fail(
@@ -191,11 +191,19 @@ function arrSlice(arr, n) {
 	return arr.slice(Math.max(arr.length - n, 0));			
 }
 
+function ensureConfigCorrect(obj) {
+	if(!obj)
+		return { 'deaths': true, 'cases': true, 'display':'line', 'mode':'both', 'range':180 };
+	
+	if(!obj.display)
+		obj.display='line';
+	
+	return obj;
+}
+
 function createDivForChart(inputData,baseDiv,id) {	
-	var userChartConfig = getLocalStorageObjectItem('userChartConfig');
-	if(!userChartConfig) {
-		userChartConfig = { 'deaths': true, 'cases': true, 'mode':'both', 'range':180 };
-	}
+	var userChartConfig = ensureConfigCorrect(getLocalStorageObjectItem('userChartConfig'));
+	
 	var cId = 'chart-'+id;
 	$(baseDiv).after('<div id="main-'+cId+'" class="row m-0 border" style="color:#666666">' +
 	'<div class="col-12" style="height:25px" id="header-'+cId+'"><div style="float:right;padding-top: 5px;cursor: pointer;color:#666666" onclick="hideChart(\''+cId+'\')">[x]</div></div>' +
@@ -204,15 +212,18 @@ function createDivForChart(inputData,baseDiv,id) {
 	//'<label for="chartLen">Date Range Length:</label><input id="chartLen" type="number" step="1"></input>' +
 	'<input type="checkbox" id="cases-'+cId+'" style="font-size:12px" '+(userChartConfig.cases?'checked':'')+' onclick="updateChart(\''+cId+'\')">&nbsp;Cases</input>'+
 	'<input type="checkbox" id="deaths-'+cId+'" class="ml-3" style="font-size:12px" '+(userChartConfig.deaths?'checked':'')+' onclick="updateChart(\''+cId+'\')">&nbsp;Deaths</input>'+
+	'<select id="display-'+cId+'" class="ml-3" style="font-size:12px" onchange="updateChart(\''+cId+'\')"><option value="bar">Bar</option><option value="line">Line</option></select>'+
 	'<select id="avg-'+cId+'" class="ml-3" style="font-size:12px" onchange="updateChart(\''+cId+'\')">' +
 	'<option value="data">Data Only</option><option value="avg">Avg Only</option><option value="both" selected>Data & Avg</option></select>'+
 	'</div></div>');
 	
-	$('#avg-'+cId).val(userChartConfig.mode);
+	$('#main-'+cId).hide();
 	
+	$('#avg-'+cId).val(userChartConfig.mode);
+	$('#display-'+cId).val(userChartConfig.display ? userChartConfig.display : 'line');
 	
 	var ctx = document.getElementById(cId).getContext('2d');
-	ctx.canvas.height = 300;
+	ctx.canvas.height = 400;
 	ctx.canvas.width = 1000;
 
 	document.getElementById(cId).style.backgroundColor = '#212529'		
@@ -235,7 +246,7 @@ function createDivForChart(inputData,baseDiv,id) {
 				fill: false,
 				lineTension: 0,
 				borderWidth: 3,
-				yAxisID: 'y-axis-2',
+				yAxisID: 'y-deaths',
 				hidden: !(userChartConfig.deaths && (userChartConfig.mode == 'both' || userChartConfig.mode == 'avg'))
 			},
 			{
@@ -248,7 +259,7 @@ function createDivForChart(inputData,baseDiv,id) {
 				fill: false,
 				lineTension: 0,
 				borderWidth: 3,
-				yAxisID: 'y-axis-1',
+				yAxisID: 'y-cases',
 				hidden: !(userChartConfig.cases && (userChartConfig.mode == 'both' || userChartConfig.mode == 'avg'))
 			},
 			{
@@ -256,12 +267,12 @@ function createDivForChart(inputData,baseDiv,id) {
 				backgroundColor: ('#ffc107'+(f_avg?'35':'')),
 				borderColor: ('#ffc107'+(f_avg?'35':'')),
 				data: arrSlice(getRaw(inputData,'deltaCases'),180),
-				type: 'line',
+				type: userChartConfig.display,
 				pointRadius: 0,
 				fill: false,
 				lineTension: 0,
 				borderWidth: 3,
-				yAxisID: 'y-axis-1',
+				yAxisID: 'y-cases',
 				hidden: !(userChartConfig.cases && (userChartConfig.mode == 'both' || userChartConfig.mode == 'data'))
 			},
 			{
@@ -269,12 +280,12 @@ function createDivForChart(inputData,baseDiv,id) {
 				backgroundColor: ('#ff6271'+(f_avg?'35':'')),
 				borderColor: ('#ff6271'+(f_avg?'35':'')),
 				data: arrSlice(getRaw(inputData,'deltaDeaths'),180),
-				type: 'line',
+				type: userChartConfig.display,
 				pointRadius: 0,
 				fill: false,
 				lineTension: 0,
 				borderWidth: 3,
-				yAxisID: 'y-axis-2',
+				yAxisID: 'y-deaths',
 				hidden: !(userChartConfig.deaths && (userChartConfig.mode == 'both' || userChartConfig.mode == 'data'))
 			}
 			
@@ -282,7 +293,7 @@ function createDivForChart(inputData,baseDiv,id) {
 		},
 		options: {
 			animation: {
-				duration: 0
+				duration: 50
 			},
 			legend: {
 				display: false
@@ -300,44 +311,7 @@ function createDivForChart(inputData,baseDiv,id) {
 						sampleSize: 100							
 					}
 				}],
-				yAxes: [{
-					position: 'left',
-					id: 'y-axis-1',
-					display: true,
-					gridLines: {
-						drawBorder: false,
-						color:'#333'
-					},
-					scaleLabel: {
-						display: true,
-						lineWidth:0.5,
-						labelString: 'Cases'
-					},
-					ticks: {
-						max: 20000,
-						min: 0,
-						stepSize: 2000
-					}
-				},
-				{
-					position: 'right',
-					id: 'y-axis-2',
-					display: true,
-					gridLines: {
-						drawBorder: false,		
-						display:false
-					},
-					scaleLabel: {
-						display: true,
-						labelString: 'Deaths'
-					},
-					ticks: {
-						max: 1000,
-						min: 0,
-						stepSize: 100
-					}
-				}
-				]
+				yAxes: [ getCasesAxis(inputData,userChartConfig), getDeathsAxis(inputData,userChartConfig) ]
 			},
 			tooltips: {
 				intersect: false,
@@ -358,12 +332,72 @@ function createDivForChart(inputData,baseDiv,id) {
 
 		var chart = new Chart(ctx, cfg);
 	
-	
+	$('#main-'+cId).fadeIn(1000);
 }
+
+function getCasesAxis(obj,config) {
+	//data.maxDc = maxDc;
+	//data.maxDd = maxDd;
+	var max = obj.maxDc;	
+	var realMax = 5000 * (1 + Math.floor(max / 5000));	
+	
+	var axis = 
+	{
+		position: (config.cases ? 'right':'left'),
+		id: 'y-cases',
+		display: config.cases,
+		gridLines: {
+			drawBorder: false,
+			color:'#333'
+		},
+		scaleLabel: {
+			display: true,
+			lineWidth:0.5,
+			labelString: 'Cases'
+		},
+		ticks: {
+			max: realMax,
+			min: 0,
+			stepSize: realMax/10
+		}
+	};
+	return axis;
+}
+
+function getDeathsAxis(obj,config) {
+	var max = obj.maxDd;	
+	var div = config.cases ? 1000 : 250
+	var realMax = div * (1 + Math.floor(max / div));
+	
+	var axis =
+	{
+		position: config.cases ? 'left':'right',
+		id: 'y-deaths',
+		display: config.deaths,
+		gridLines: {
+			drawBorder: false,
+			color:'#333'
+		},
+		scaleLabel: {
+			display: true,
+			lineWidth:0.5,
+			labelString: 'Deaths'
+		},
+		ticks: {
+			max: realMax,
+			min: 0,
+			stepSize: realMax/10
+		}
+	};
+	return axis;
+}
+
+
 
 
 function updateChart(id) {
 	var mode = document.getElementById('avg-'+id).value;
+	var display = document.getElementById('display-'+id).value;
 	
 	var f_avg = mode == 'avg' || mode == 'both';
 	var f_data = mode == 'data' || mode == 'both';
@@ -371,7 +405,8 @@ function updateChart(id) {
 	var f_deaths = document.getElementById('deaths-'+id).checked;
 	var f_cases = document.getElementById('cases-'+id).checked;
 	
-	var userChartConfig = { 'deaths': f_deaths, 'cases': f_cases, 'mode':mode, 'range':180 };
+	var userChartConfig = { 'deaths': f_deaths, 'cases': f_cases, 'display': display,'mode':mode, 'range':180 };
+	
 	setLocalStorageObjectItem('userChartConfig',userChartConfig);
 	
 	var inst;
@@ -395,14 +430,20 @@ function updateChart(id) {
 		
 		inst.config.data.datasets[3].backgroundColor = '#ff6271' + (f_avg ? '35':'');
 		inst.config.data.datasets[3].borderColor = '#ff6271' + (f_avg ? '35':'');
-					
+		
+		inst.config.data.datasets[2].type= userChartConfig.display;
+		inst.config.data.datasets[3].type= userChartConfig.display;
+		
+		inst.config.options.scales.yAxes[0] = getCasesAxis(window['CV_allUkraine'], userChartConfig);
+		inst.config.options.scales.yAxes[1] = getDeathsAxis(window['CV_allUkraine'], userChartConfig);
+		
 		inst.update();		
 	}
 }
 
 
 function hideChart(id) {
-	$('#main-'+id).remove();
+	$('#main-'+id).fadeOut(400, function(){ $(this).remove(); });	
 } 
 
 $(window).on('load', function() {
