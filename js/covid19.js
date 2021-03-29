@@ -210,10 +210,10 @@ function createDivForChart(inputData,baseDiv,id) {
 	'<div class="col-12" id="c-'+cId+'"><canvas id="'+cId+'"></canvas></div>'+
 	'<div class="col-12 text-right" style="float:right;height:30px">' +
 	//'<label for="chartLen">Date Range Length:</label><input id="chartLen" type="number" step="1"></input>' +
-	'<input type="checkbox" id="cases-'+cId+'" style="font-size:12px" '+(userChartConfig.cases?'checked':'')+' onclick="updateChart(\''+cId+'\')">&nbsp;Cases</input>'+
-	'<input type="checkbox" id="deaths-'+cId+'" class="ml-3" style="font-size:12px" '+(userChartConfig.deaths?'checked':'')+' onclick="updateChart(\''+cId+'\')">&nbsp;Deaths</input>'+
-	'<select id="display-'+cId+'" class="ml-3" style="font-size:12px" onchange="updateChart(\''+cId+'\')"><option value="bar">Bar</option><option value="line">Line</option></select>'+
-	'<select id="avg-'+cId+'" class="ml-3" style="font-size:12px" onchange="updateChart(\''+cId+'\')">' +
+	'<input type="checkbox" id="cases-'+cId+'" style="font-size:11px" '+(userChartConfig.cases?'checked':'')+' onclick="updateChart(\''+cId+'\')">&nbsp;Cases</input>'+
+	'<input type="checkbox" id="deaths-'+cId+'" class="ml-1" style="font-size:11px" '+(userChartConfig.deaths?'checked':'')+' onclick="updateChart(\''+cId+'\')">&nbsp;Deaths</input>'+
+	'<select id="display-'+cId+'" class="ml-2" style="font-size:11px" onchange="updateChart(\''+cId+'\')"><option value="bar">Bar</option><option value="line">Line</option></select>'+
+	'<select id="avg-'+cId+'" class="ml-1" style="font-size:11px" onchange="updateChart(\''+cId+'\')">' +
 	'<option value="data">Data Only</option><option value="avg">Avg Only</option><option value="both" selected>Data & Avg</option></select>'+
 	'</div></div>');
 	
