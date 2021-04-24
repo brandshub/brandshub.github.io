@@ -240,7 +240,7 @@ function createDivForChart(inputData,baseDiv,id) {
 				label: 'Deaths 7d',
 				backgroundColor: '#ff6271',
 				borderColor: '#ff6271',
-				data: arrSlice(getSmoothed(inputData,'deltaDeaths',7),180),
+				data: arrSlice(getSmoothed(inputData,'deltaDeaths',7),userChartConfig.range),
 				type: 'line',
 				pointRadius: 0,
 				fill: false,
@@ -253,7 +253,7 @@ function createDivForChart(inputData,baseDiv,id) {
 				label: 'Cases 7d',
 				backgroundColor: '#ffc107',
 				borderColor: '#ffc107',					
-				data: arrSlice(getSmoothed(inputData,'deltaCases',7),180),
+				data: arrSlice(getSmoothed(inputData,'deltaCases',7),userChartConfig.range),
 				type: 'line',
 				pointRadius: 0,
 				fill: false,
@@ -266,7 +266,7 @@ function createDivForChart(inputData,baseDiv,id) {
 				label: 'Cases',
 				backgroundColor: ('#ffc107'+(f_avg?'35':'')),
 				borderColor: ('#ffc107'+(f_avg?'35':'')),
-				data: arrSlice(getRaw(inputData,'deltaCases'),180),
+				data: arrSlice(getRaw(inputData,'deltaCases'),userChartConfig.range),
 				type: userChartConfig.display,
 				pointRadius: 0,
 				fill: false,
@@ -279,7 +279,7 @@ function createDivForChart(inputData,baseDiv,id) {
 				label: 'Deaths',
 				backgroundColor: ('#ff6271'+(f_avg?'35':'')),
 				borderColor: ('#ff6271'+(f_avg?'35':'')),
-				data: arrSlice(getRaw(inputData,'deltaDeaths'),180),
+				data: arrSlice(getRaw(inputData,'deltaDeaths'),userChartConfig.range),
 				type: userChartConfig.display,
 				pointRadius: 0,
 				fill: false,
@@ -405,7 +405,9 @@ function updateChart(id) {
 	var f_deaths = document.getElementById('deaths-'+id).checked;
 	var f_cases = document.getElementById('cases-'+id).checked;
 	
-	var userChartConfig = { 'deaths': f_deaths, 'cases': f_cases, 'display': display,'mode':mode, 'range':180 };
+	var range = ensureConfigCorrect(getLocalStorageObjectItem('userChartConfig')).range;
+	
+	var userChartConfig = { 'deaths': f_deaths, 'cases': f_cases, 'display': display,'mode':mode, 'range': range  };
 	
 	setLocalStorageObjectItem('userChartConfig',userChartConfig);
 	
