@@ -212,7 +212,10 @@
 					
 					covidSelDate = toCovidDate(new Date());
 					loadSavedRegions();
-					covidGetToday(function(dateStr, data) { renderDataForDate(dateStr, data); autocomplete(document.getElementById("txtRegion"), window['allRegions']);});
+					covidGetToday(function(dateStr, data){
+						renderDataForDate(dateStr, data); 
+						autocomplete(document.getElementById("txtRegion"), window['allRegions']);
+					});
 					
 					$('.pmu-instance').on('click', '.pmu-button', function() {
 						if(!$(this).parent().hasClass('pmu-days')) {								
@@ -514,6 +517,7 @@ https://api-covid19.rnbo.gov.ua/charts/main-data?mode=ukraine&country=4900
 				
 			if(selectedRegions.indexOf('Ukraine')>=0) {
 				html+=getRow(covidGetUkraineTotal(data.ukraine));
+				html+=getUkraineVaccinationsRow(dateStr);
 			}
 			
 			if(expUkrFlag) {
@@ -541,7 +545,7 @@ https://api-covid19.rnbo.gov.ua/charts/main-data?mode=ukraine&country=4900
 			
 			if(obj.label2 == 'Ukraine') {
 				html+='<div class="row m-0 rgn" id="rgn-ukraine"><div class="col-3 npd border">Ukraine&nbsp;<span style="padding-left:3px;cursor:pointer" onclick="showUkraineChart()">&#128202;</span><br/><span id="expUk" class="'+(expUkrFlag? "expon" : "expoff"  )+'" style="cursor:pointer">'+(expUkrFlag?  "(—)" : "(+)" )+'</span></div>';
-			}
+			}	
 			else if(obj.label2 == 'World') {								
 				html+='<div class="row m-0 rgn" id="rgn-world"><div class="col-3 npd border">'+(obj.label2 ? obj.label2 : obj.label.en )+'</div>';
 			}
@@ -555,6 +559,39 @@ https://api-covid19.rnbo.gov.ua/charts/main-data?mode=ukraine&country=4900
 			html+='<div class="col-3 npd border c19confirm">'+formatGrowth(obj.confirmed, obj.delta_confirmed)+'</div>';
 			html+='<div class="col-3 npd border c19death">'+formatGrowth(obj.deaths, obj.delta_deaths)+'</div>';
 			html+='<div class="col-3 npd border c19recover">'+formatGrowth(obj.recovered, obj.delta_recovered)+'</div>';
+			
+			html+='</div>';
+			
+			return html;
+		}
+		
+		function getUkraineVaccinationsRow(date) {
+			var html='';
+			
+			var vacData = window['CV_allUkraine_V'];
+			if(!vacData)
+				return '';
+				
+			var dtIndex = -1;
+			if(new Date(date)>new Date()) {
+				dtIndex= -100;
+			}
+			if(dtIndex!=-100) {
+				for(var i=0;i<vacData.daily.dates.length;i++) {
+				  if(vacData.daily.dates[i] == date) {
+					dtIndex = i;
+					break;
+				  }
+				}		
+			}
+			
+			
+			html+='<div class="row m-0 rgn" id="ukraine-vac"><div class="col-3 npd border">Vaccinations (1st dose)<br/><br/>'+n3(vacData.allSum)+'</div>';					
+				
+				
+			html+='<div class="col-3 npd border c19confirm">'+formatVacGrowth(vacData, 'AstraZeneca', dtIndex)+'</div>';
+			html+='<div class="col-3 npd border c19death">'+formatVacGrowth(vacData, 'Sinovac Biotech', dtIndex)+'</div>';			
+			html+='<div class="col-3 npd border c19recover">'+formatVacGrowth(vacData,'Pfizer-BioNTech', dtIndex)+'</div>';
 			
 			html+='</div>';
 			
@@ -604,6 +641,44 @@ https://api-covid19.rnbo.gov.ua/charts/main-data?mode=ukraine&country=4900
 			}			
 		}
 		
+		
+		function formatVacGrowth(obj,key,index) {
+		
+			if(index == -1) {
+				return key+'<br/><br/>0';
+			}
+			
+			var lastDay = false;
+			
+			if(index == -100)
+			{
+				index = obj.daily.dates.length-1;
+				lastDay = true;
+			}
+			
+			var cumulative = obj.daily.cumulative[key][index];
+			var delta = obj.daily.quantity[key][index];
+			
+			var percent = 100*cumulative / obj.daily.cumulative.totals[index];
+			var deltaPercent = 100*delta / obj.daily.cumulative.qtotals[index];
+			
+			var str = key+'<br/><br/>'+n3(cumulative) +' ('+ percent.toFixed(1)+'%)';
+			if(!lastDay) 
+			{
+			str+='<br/><span class="csmf">('
+			if(delta==0) {
+				str+='+0)';				
+			}
+			else {
+				str+='+'+n3(delta);
+				str+=' | +';
+				str+= deltaPercent.toFixed(1)+'%';				
+				str+=')';
+			}
+			}			
+			
+			return '</span>'+str;
+		}
 		
 		function formatGrowth(n,d) {
 			var str = n3(n) + '<br/><span class="csmf">(';
