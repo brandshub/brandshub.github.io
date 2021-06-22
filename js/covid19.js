@@ -45,11 +45,17 @@ function covidGetToday(handler) {
 	let dt = new Date();
 	let frmt = toCovidDate(dt);
 	
-	var cvObj = window['CV_allByDate'];
-	if(!cvObj || !cvObj[frmt])
-		covidGetByDate(frmt, handler);
-	else if(handler)
-		handler(frmt, cvObj[frmt]);	
+	var cvvObj = window['CV_allUkraine_V'];
+	if(!cvvObj)
+	{
+		covidGetUkraineAllTimeVaccinations(function(data) {			
+			var cvObj = window['CV_allByDate'];
+			if(!cvObj || !cvObj[frmt])
+				covidGetByDate(frmt, handler);
+			else if(handler)
+				handler(frmt, cvObj[frmt]);	
+		});
+	}
 }
 
 
@@ -113,6 +119,49 @@ function covidGetUkraineAllTime(callback) {
 			addDeltaData(data);			
 			window['CV_allUkraine'] = data;
 			callback(data);
+		});
+	
+}
+
+
+function covidGetUkraineAllTimeVaccinations(callback) {
+	if(window['CV_allUkraine_V']) {
+		callback(window['CV_allUkraine_V']);
+		return;
+	}
+	
+	$.get('https://m-health-security.rnbo.gov.ua/api/vaccination/process/chart?vaccines=&dose=1&distributionBy=vaccine&regionId=',
+		function(data,res,resp) {
+		    
+			var keys = Object.keys(data.daily.quantity).slice(1);					
+			var arr = new Array(data.daily.dates.length);
+			var qarr = new Array(data.daily.dates.length);
+			
+			for(var i=0;i<data.daily.dates.length;i++)
+			{
+				var sum = 0;
+				var qsum = 0;
+				for(var j=0;j<keys.length;j++) {
+					sum += data.daily.cumulative[keys[j]][i];
+					qsum+= data.daily.quantity[keys[j]][i];
+				}
+				arr[i]=sum;
+				qarr[i]=qsum;
+			}
+			data.daily.cumulative.totals = arr;
+			data.daily.cumulative.qtotals = qarr;
+			
+			var allSum =0;
+			var dtlen= data.monthly.dates.length-1;
+			
+			for(var j=0;j<keys.length;j++)
+				allSum+= data.monthly.cumulative[keys[j]][dtlen];
+			
+			data.allSum = allSum;
+			window['CV_allUkraine_V'] = data;
+			
+			if(callback)
+				callback(data);
 		});
 	
 }
