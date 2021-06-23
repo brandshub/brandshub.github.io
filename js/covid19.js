@@ -58,8 +58,6 @@ function covidGetToday(handler) {
 	}
 }
 
-
-
 function covidGetWorldTotal(worldArr) {
 	let w = { confirmed:0, deaths:0, recovered: 0, suspicion: 0, delta_confirmed:0, delta_deaths:0, delta_recovered:0, delta_suspicion: 0, label2: 'World'};
 	for(let i=0;i<worldArr.length; i++) {
@@ -123,21 +121,37 @@ function covidGetUkraineAllTime(callback) {
 	
 }
 
-function getHealthApiByClient() {
-	if( /Android|webOS|iPhone|iPad|Mac|Macintosh|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) 
-		return 'https://m-health-security.rnbo.gov.ua/api/vaccination/process/chart?vaccines=&dose=1&distributionBy=vaccine&regionId=';
-	return 'https://health-security.rnbo.gov.ua/api/vaccination/process/chart?vaccines=&dose=1&distributionBy=vaccine&regionId=';
-
-	
+function tryGetHealthApiIndex() {
+	var apiIndex = localStorage.getItem('apiIndex');
+	if(!apiIndex) {		
+		apiIndex = getApiIndexFromUserAgent();
+		localStorage.setItem('apiIndex',apiIndex);		
+	}
+	return apiIndex;
 }
+
+function getApiIndexFromUserAgent() {
+	if( /Android|webOS|iPhone|iPad|Mac|Macintosh|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) 
+		return 0;
+	return 1;
+}
+
+
+function getHealthApiByClient(index) {
+	
+	return ['https://m-health-security.rnbo.gov.ua/api/vaccination/process/chart?vaccines=&dose=1&distributionBy=vaccine&regionId=',
+	 'https://health-security.rnbo.gov.ua/api/vaccination/process/chart?vaccines=&dose=1&distributionBy=vaccine&regionId='][index];	
+}
+
+
 function covidGetUkraineAllTimeVaccinations(callback) {
 	if(window['CV_allUkraine_V']) {
 		callback(window['CV_allUkraine_V']);
 		return;
 	}
-	
-	$.get(getHealthApiByClient(),
-		function(data,res,resp) {
+	var apiIndex = tryGetHealthApiIndex();
+	 
+	var innerHanlder = function(data,res,resp) {
 		    
 			var keys = Object.keys(data.daily.quantity).slice(1);					
 			var arr = new Array(data.daily.dates.length);
@@ -164,11 +178,27 @@ function covidGetUkraineAllTimeVaccinations(callback) {
 				allSum+= data.monthly.cumulative[keys[j]][dtlen];
 			
 			data.allSum = allSum;
+			localStorage.setItem('apiIndex', apiIndex);
+			
 			window['CV_allUkraine_V'] = data;
 			
 			if(callback)
 				callback(data);
-		});
+		};
+	
+	$.ajax({
+		type: 'GET',
+		url: getHealthApiByClient(apiIndex),
+		success: innerHanlder,
+		error: function() {
+		if(apiIndex==0)
+			apiIndex = 1;
+		else
+			apiIndex = 0;
+	
+	console.log('swapped apiIndex to '+apiIndex);
+		$.get(getHealthApiByClient(apiIndex),innerHanlder);		
+	}});
 	
 }
 
