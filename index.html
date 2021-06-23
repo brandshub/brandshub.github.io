@@ -575,8 +575,16 @@ https://api-covid19.rnbo.gov.ua/charts/main-data?mode=ukraine&country=4900
 			var dtIndex = -1;
 			var now = new Date();
 			
-			if(toCovidDate(now) == date || (new Date(date,'00:00')>now)) {
+			if((new Date(date,'00:00')>now)) {
 				dtIndex= -100;
+			}
+			else {			
+			// today
+				var cd = toCovidDate(now);
+				if(cd == date && vacData.daily.dates[vacData.daily.dates.length-1]!=cd) {
+					console.log('today is selected but last data is '+vacData.daily.dates[vacData.daily.dates.length-1]);
+					dtIndex= -100;
+				}
 			}
 			
 			if(dtIndex!=-100) {
