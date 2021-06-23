@@ -123,14 +123,20 @@ function covidGetUkraineAllTime(callback) {
 	
 }
 
+function getHealthApiByClient() {
+	if( /Android|webOS|iPhone|iPad|Mac|Macintosh|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) 
+		return 'https://m-health-security.rnbo.gov.ua/api/vaccination/process/chart?vaccines=&dose=1&distributionBy=vaccine&regionId=';
+	return 'https://health-security.rnbo.gov.ua/api/vaccination/process/chart?vaccines=&dose=1&distributionBy=vaccine&regionId=';
 
+	
+}
 function covidGetUkraineAllTimeVaccinations(callback) {
 	if(window['CV_allUkraine_V']) {
 		callback(window['CV_allUkraine_V']);
 		return;
 	}
 	
-	$.get('https://m-health-security.rnbo.gov.ua/api/vaccination/process/chart?vaccines=&dose=1&distributionBy=vaccine&regionId=',
+	$.get(getHealthApiByClient(),
 		function(data,res,resp) {
 		    
 			var keys = Object.keys(data.daily.quantity).slice(1);					
