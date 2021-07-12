@@ -597,9 +597,9 @@ https://api-covid19.rnbo.gov.ua/charts/main-data?mode=ukraine&country=4900
 			}
 			
 			
-			html+='<div class="row m-0 rgn" id="ukraine-vac"><div class="col-3 npd border">Vaccinations (1st dose)<br/><br/>'+n3(vacData.allSum)+'</div>';					
+			html+='<div class="row m-0 rgn" id="ukraine-vac"><div class="col-3 npd border">Vaccinations (1st dose)'+formatTotalVacGrowth(vacData,dtIndex)+'</div>';
 				
-				
+
 			html+='<div class="col-3 npd border c19confirm">'+formatVacGrowth(vacData, 'AstraZeneca', dtIndex)+'</div>';
 			html+='<div class="col-3 npd border c19death">'+formatVacGrowth(vacData, 'Sinovac Biotech', dtIndex)+'</div>';			
 			html+='<div class="col-3 npd border c19recover">'+formatVacGrowth(vacData,'Pfizer-BioNTech', dtIndex)+'</div>';
@@ -673,9 +673,7 @@ https://api-covid19.rnbo.gov.ua/charts/main-data?mode=ukraine&country=4900
 			var percent = 100*cumulative / obj.daily.cumulative.totals[index];
 			var deltaPercent = 100*delta / obj.daily.cumulative.qtotals[index];
 			
-			var str = key+'<br/><br/>'+n3(cumulative) +' ('+ percent.toFixed(1)+'%)';
-			if(!lastDay) 
-			{
+			var str = key+'<br/><br/>'+n3(cumulative) +' ('+ percent.toFixed(1)+'%)';			
 			str+='<br/><span class="csmf">('
 			if(delta==0) {
 				str+='+0)';				
@@ -686,7 +684,44 @@ https://api-covid19.rnbo.gov.ua/charts/main-data?mode=ukraine&country=4900
 				str+= deltaPercent.toFixed(1)+'%';				
 				str+=')';
 			}
-			}			
+			if(lastDay)
+				str+='<sup title="Yesterday">*</sup>'
+						
+			
+			return '</span>'+str;
+		}
+		
+		function formatTotalVacGrowth(obj,index) {
+		
+			if(index == -1) {
+				return '<br/><br/>0';
+			}
+			
+			var lastDay = false;
+			
+			if(index == -100)
+			{
+				index = obj.daily.dates.length-1;
+				lastDay = true;
+			}
+			
+			var cumulative = obj.daily.cumulative.totals[index];
+			var delta = obj.daily.cumulative.qtotals[index];		
+			var allPopulation = 41588400; // 2021
+			var percent = 100*cumulative/allPopulation;
+			
+			var str = '<br/><br/>'+n3(cumulative) +' <span title="UA Population: '+n3(allPopulation)+'">('+ percent.toFixed(1)+'%)</span>';
+			
+			str+='<br/><span class="csmf">('
+			if(delta==0) {
+				str+='+0)';				
+			}
+			else {
+				str+='+'+n3(delta);						
+				str+=')';
+			}
+			if(lastDay)
+				str+='<sup title="Yesterday">*</sup>'						
 			
 			return '</span>'+str;
 		}
