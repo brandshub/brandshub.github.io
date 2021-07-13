@@ -272,6 +272,12 @@ function showUkraineChart () {
 	}
 }
 
+function showUkraineVacChart() {
+	if($('#main-chart-vac-ukr').length == 0) {
+		createDivForVacChart(window['CV_allUkraine_V'], $('#ukraine-vac'),'ukr');
+	}
+}
+
 function arrSlice(arr, n) {
 	return arr.slice(Math.max(arr.length - n, 0));			
 }
@@ -415,9 +421,91 @@ function createDivForChart(inputData,baseDiv,id) {
 		}
 	};
 
-		var chart = new Chart(ctx, cfg);
+	var chart = new Chart(ctx, cfg);
 	
 	$('#main-'+cId).fadeIn(1000);
+}
+
+
+
+function createDivForVacChart(inputData,baseDiv,id) {	
+
+	var lastVacDisplay = localStorage.getItem('vacDisplay');
+	if(!lastVacDisplay)
+		lastVacDisplay = 'weekly';
+	
+	var cId = 'chart-vac-'+id;
+	$(baseDiv).after('<div id="main-'+cId+'" class="row m-0 border" style="color:#666666">' +
+	'<div class="col-12" style="height:25px" id="header-'+cId+'"><div style="float:right;padding-top: 5px;cursor: pointer;color:#666666" onclick="hideChart(\''+cId+'\')">[x]</div></div>' +
+	'<div class="col-12" id="c-'+cId+'"><canvas id="'+cId+'"></canvas></div>'+
+	'<div class="col-12 text-right" style="float:right;height:30px">' +	
+	'<select id="display-'+cId+'" class="ml-2" style="font-size:11px" onchange="updateVacChart(\''+cId+'\')"><option value="monthly">Monthly</option><option value="weekly">Weekly</option><option value="daily">Daily</option></select></div></div>');
+	
+	$('#main-'+cId).hide();
+	
+	
+	$('#display-'+cId).val(lastVacDisplay);
+	
+	var ctx = document.getElementById(cId).getContext('2d');
+	ctx.canvas.height = 400;
+	ctx.canvas.width = 1000;
+
+	document.getElementById(cId).style.backgroundColor = '#212529';
+	
+	var vaccines = [{t:'AstraZeneca',c:'#ffc107'},{t:'Sinovac Biotech',c:'#ff6271'},{t:'Pfizer-BioNTech',c:'#00ba80'}];
+	
+	var chartDatasets = new Array(vaccines.length);
+	for(var i=0;i<vaccines.length;i++) {
+		chartDatasets[i] = {
+				label: vaccines[i].t,
+				backgroundColor: vaccines[i].c,
+				borderColor:'pink',
+				data: getVacData(inputData,lastVacDisplay,'quantity',vaccines[i].t),
+				borderWidth:0
+		};		
+	}
+	
+	var cfg = {
+		type: 'bar',
+		data: {
+			labels: inputData[lastVacDisplay].dates,
+			datasets: chartDatasets
+		},
+		options: {
+			animation: {
+				duration: 50
+			},
+			legend: {
+				display: true
+			},
+			/*scales: {
+				xAxes: [{					
+					stacked:true
+				}],
+				yAxes: [{
+					stacked:true
+				}]
+			},*/
+			tooltips: {
+				intersect: false,
+				mode: 'index',
+				
+			}
+		}
+	};
+
+	var chart2 = new Chart(ctx, cfg);
+	
+	$('#main-'+cId).fadeIn(1000);
+}
+
+
+function getVacData(mainObj, dateType, optionType, vacName) {
+	var data = new Array(mainObj[dateType].dates.length);
+	for(var i=0;i<data.length;i++) {
+		data[i] = {x:mainObj[dateType].dates,y:mainObj[dateType][optionType][vacName][i]};
+	}
+	return data;	
 }
 
 function getCasesAxis(obj,config) {
@@ -525,6 +613,28 @@ function updateChart(id) {
 		inst.config.options.scales.yAxes[1] = getDeathsAxis(window['CV_allUkraine'], userChartConfig);
 		
 		inst.update();		
+	}
+}
+
+function updateVacChart(id) {
+	var display = document.getElementById('display-'+id).value;	
+	localStorage.setItem('vacDisplay', display);
+	
+	var vaccines = [{t:'AstraZeneca',c:'#ffc107'},{t:'Sinovac Biotech',c:'#ff6271'},{t:'Pfizer-BioNTech',c:'#00ba80'}];
+	
+	var inst;
+	Chart.helpers.each(Chart.instances, function(instance){
+	  if(instance.chart.canvas.id == id) {
+		  inst = instance;
+		  return;
+	  }
+	});
+		
+	if(inst) {
+		for(var i=0;i<3;i++)
+			inst.config.data.datasets[i].data  = getVacData(window['CV_allUkraine_V'],display,'quantity',vaccines[i].t),
+		inst.config.data.labels = window['CV_allUkraine_V'][display].dates,
+		inst.update();
 	}
 }
 

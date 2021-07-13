@@ -597,7 +597,7 @@ https://api-covid19.rnbo.gov.ua/charts/main-data?mode=ukraine&country=4900
 			}
 			
 			
-			html+='<div class="row m-0 rgn" id="ukraine-vac"><div class="col-3 npd border">Vaccinations (1st dose)'+formatTotalVacGrowth(vacData,dtIndex)+'</div>';
+			html+='<div class="row m-0 rgn" id="ukraine-vac"><div class="col-3 npd border">Vaccinations (1st dose)&nbsp;<span style="padding-left:3px;cursor:pointer" onclick="showUkraineVacChart()">&#128202;</span>'+formatTotalVacGrowth(vacData,dtIndex)+'</div>';
 				
 
 			html+='<div class="col-3 npd border c19confirm">'+formatVacGrowth(vacData, 'AstraZeneca', dtIndex)+'</div>';
