@@ -473,9 +473,14 @@ https://api-covid19.rnbo.gov.ua/charts/main-data?mode=ukraine&country=4900
 			else
 			{
 				var chartElem = $('#main-chart-ukr');
+				var vacChartElem = $('#main-chart-vac-ukr');
+				
 				$('#covidGrid').html(buildCovidGrid(dateStr, data, baseRegions));		
+				
 				if(chartElem.length>0)
 					$('#rgn-ukraine').after(chartElem);
+				if(vacChartElem.length>0)
+					$('#ukraine-vac').after(vacChartElem);
 				  //createDivForChart(window['CV_allUkraine'], $('#rgn-ukraine'),'ukr')
 			}
 		}
@@ -599,11 +604,12 @@ https://api-covid19.rnbo.gov.ua/charts/main-data?mode=ukraine&country=4900
 			
 			
 			html+='<div class="row m-0 rgn" id="ukraine-vac"><div class="col-3 npd border">Vaccinations (1st dose)&nbsp;<span style="padding-left:3px;cursor:pointer" onclick="showUkraineVacChart()">&#128202;</span>'+formatTotalVacGrowth(vacData,dtIndex)+'</div>';
-			html+='<div class="col-9 p-0" style="display:flex;justify-content: space-evenly">';
+			html+='<div id="vacBlock" class="col-9 p-0" style="display:flex;justify-content: space-evenly;flex-wrap:wrap">';
 				
 			var vaccines = window.CV_VacMap;
+			
 			for(var i=0;i<vaccines.length;i++)
-				html += '<div class="p-2 border" style="color:'+vaccines[i].c+'; flex:1 1 0px">'+formatVacGrowth(vacData, vaccines[i].t, dtIndex)+'</div>';		
+				html += '<div class="p-2 border wrap2" style="color:'+vaccines[i].c+';">'+formatVacGrowth(vacData, vaccines[i].t, dtIndex)+'</div>';		
 			
 			html+='</div></div>';
 			

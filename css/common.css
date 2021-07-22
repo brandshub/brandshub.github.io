@@ -30,6 +30,11 @@ a.dropdown-item {
 	padding: .25rem .85rem !important;
 }
 
+.wrap2 {
+	flex:1 1 0px; 
+ }
+ 
+ 
 @media (max-width: 400px) {
     #rl {
 	right: 0;
@@ -114,7 +119,15 @@ div.npd1{
 	 padding-left:0px !important;
 	 padding-right:0px !important;
  }
+ 
 
+
+}
+
+@media (max-width: 600px) {
+   .wrap2 {
+	flex:50%; 
+ }
 }
 
  div.pmu-today {

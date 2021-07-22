@@ -153,7 +153,7 @@ function covidGetUkraineAllTimeVaccinations(callback) {
 	 
 	var innerHanlder = function(data,res,resp) {
 		    
-			var keys = Object.keys(data.daily.quantity).slice(1);					
+			var keys = Object.keys(data.daily.quantity);//.slice(1);					
 			var arr = new Array(data.daily.dates.length);
 			var qarr = new Array(data.daily.dates.length);
 			
@@ -457,7 +457,7 @@ function createDivForVacChart(inputData,baseDiv,id) {
 	$('#display-'+cId).val(lastVacDisplay);
 	
 	var ctx = document.getElementById(cId).getContext('2d');
-	ctx.canvas.height = 400;
+	ctx.canvas.height = 500;
 	ctx.canvas.width = 1000;
 
 	document.getElementById(cId).style.backgroundColor = '#212529';
@@ -499,6 +499,18 @@ function createDivForVacChart(inputData,baseDiv,id) {
 			tooltips: {
 				intersect: false,
 				mode: 'index',
+				callbacks: {
+					label: function(tooltipItem, data) {
+							return data.datasets[tooltipItem.datasetIndex].label+" "+n3(parseInt(tooltipItem.yLabel));
+					},
+					footer: function(tooltipItems, data) {
+						let total = 0;
+						for (let i = 0; i < tooltipItems.length; i++) {
+							total += parseInt(tooltipItems[i].yLabel, 10);
+						}
+						return '\r\nTotal: ' + n3(total);
+					}
+				}
 				
 			}
 			/*plugins: {
