@@ -181,7 +181,7 @@ function covidGetUkraineAllTimeVaccinations(callback) {
 			localStorage.setItem('apiIndex', apiIndex);
 			
 			window['CV_allUkraine_V'] = data;
-			
+			window['CV_VacMap'] = [{t:'AstraZeneca',c:'#fb9e80'},{t:'Sinovac (CoronaVac)',c:'#e25d6d'},{t:'Pfizer-BioNTech',c:'#4584ca'},{t:'Moderna',c:'#3db19b'}];
 			if(callback)
 				callback(data);
 		};
@@ -417,7 +417,17 @@ function createDivForChart(inputData,baseDiv,id) {
 						return label;
 					}
 				}
-			}
+			}/*,
+			plugins: {
+						zoom: {							 
+							zoom: {
+							  enabled: true,
+							  mode: 'xy', // or 'x' for "drag" version
+							//  drag:{enabled:true,},
+							  
+							},
+						}
+					}*/
 		}
 	};
 
@@ -452,7 +462,7 @@ function createDivForVacChart(inputData,baseDiv,id) {
 
 	document.getElementById(cId).style.backgroundColor = '#212529';
 	
-	var vaccines = [{t:'AstraZeneca',c:'#ffc107'},{t:'Sinovac Biotech',c:'#ff6271'},{t:'Pfizer-BioNTech',c:'#00ba80'}];
+	var vaccines = window.CV_VacMap;
 	
 	var chartDatasets = new Array(vaccines.length);
 	for(var i=0;i<vaccines.length;i++) {
@@ -491,6 +501,21 @@ function createDivForVacChart(inputData,baseDiv,id) {
 				mode: 'index',
 				
 			}
+			/*plugins: {
+						zoom: {
+pan: {
+	enabled:true,
+	mode:'xy'
+},
+							
+							zoom: {
+							  enabled: true,
+							  mode: 'xy', // or 'x' for "drag" version
+							  //drag:{enabled:true,},
+							  
+							},
+						}
+					}*/
 		}
 	};
 
@@ -620,7 +645,7 @@ function updateVacChart(id) {
 	var display = document.getElementById('display-'+id).value;	
 	localStorage.setItem('vacDisplay', display);
 	
-	var vaccines = [{t:'AstraZeneca',c:'#ffc107'},{t:'Sinovac Biotech',c:'#ff6271'},{t:'Pfizer-BioNTech',c:'#00ba80'}];
+	var vaccines = window.CV_VacMap;
 	
 	var inst;
 	Chart.helpers.each(Chart.instances, function(instance){
@@ -631,7 +656,7 @@ function updateVacChart(id) {
 	});
 		
 	if(inst) {
-		for(var i=0;i<3;i++)
+		for(var i=0;i<vaccines.length;i++)
 			inst.config.data.datasets[i].data  = getVacData(window['CV_allUkraine_V'],display,'quantity',vaccines[i].t),
 		inst.config.data.labels = window['CV_allUkraine_V'][display].dates,
 		inst.update();

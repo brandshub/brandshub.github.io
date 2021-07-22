@@ -127,8 +127,7 @@
 	</nav>
 
     <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <!--<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>-->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->    
 	<script src="https://code.jquery.com/jquery-3.3.1.min.js" ></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>	
@@ -137,7 +136,9 @@
 	<script src="js/common.js" ></script>
 	<script src="js/covid19.js" ></script>
 	<script src="js/autocomplete.js" ></script>
-	<script src="js/charts/Chart.bundle.min.js" ></script>	
+	<script src="js/charts/Chart.bundle.min.js" ></script>
+	<!--<script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8"></script>
+	<script src="js/charts/chartjs-plugin-zoom.min.js" ></script>-->
 	<script>
 	
 	var daysInWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -598,13 +599,13 @@ https://api-covid19.rnbo.gov.ua/charts/main-data?mode=ukraine&country=4900
 			
 			
 			html+='<div class="row m-0 rgn" id="ukraine-vac"><div class="col-3 npd border">Vaccinations (1st dose)&nbsp;<span style="padding-left:3px;cursor:pointer" onclick="showUkraineVacChart()">&#128202;</span>'+formatTotalVacGrowth(vacData,dtIndex)+'</div>';
+			html+='<div class="col-9 p-0" style="display:flex;justify-content: space-evenly">';
 				
-
-			html+='<div class="col-3 npd border c19confirm">'+formatVacGrowth(vacData, 'AstraZeneca', dtIndex)+'</div>';
-			html+='<div class="col-3 npd border c19death">'+formatVacGrowth(vacData, 'Sinovac Biotech', dtIndex)+'</div>';			
-			html+='<div class="col-3 npd border c19recover">'+formatVacGrowth(vacData,'Pfizer-BioNTech', dtIndex)+'</div>';
+			var vaccines = window.CV_VacMap;
+			for(var i=0;i<vaccines.length;i++)
+				html += '<div class="p-2 border" style="color:'+vaccines[i].c+'; flex:1 1 0px">'+formatVacGrowth(vacData, vaccines[i].t, dtIndex)+'</div>';		
 			
-			html+='</div>';
+			html+='</div></div>';
 			
 			return html;
 		}
