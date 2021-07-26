@@ -314,7 +314,7 @@ function createDivForChart(inputData,baseDiv,id) {
 	$('#display-'+cId).val(userChartConfig.display ? userChartConfig.display : 'line');
 	
 	var ctx = document.getElementById(cId).getContext('2d');
-	ctx.canvas.height = 400;
+	ctx.canvas.height = getViewportWidth() > 768 ? 500 : 640;
 	ctx.canvas.width = 1000;
 
 	document.getElementById(cId).style.backgroundColor = '#212529'		
@@ -456,8 +456,10 @@ function createDivForVacChart(inputData,baseDiv,id) {
 	
 	$('#display-'+cId).val(lastVacDisplay);
 	
+	var lrg = getViewportWidth() > 768;
+	
 	var ctx = document.getElementById(cId).getContext('2d');
-	ctx.canvas.height = 500;
+	ctx.canvas.height = lrg ? 500 : 840;
 	ctx.canvas.width = 1000;
 
 	document.getElementById(cId).style.backgroundColor = '#212529';
@@ -475,6 +477,7 @@ function createDivForVacChart(inputData,baseDiv,id) {
 		};		
 	}
 	
+	var legendObj = lrg ? ({display:true}) : ({display:true, labels : {boxWidth: 16, fontSize: 12}});
 	var cfg = {
 		type: 'bar',
 		data: {
@@ -485,9 +488,7 @@ function createDivForVacChart(inputData,baseDiv,id) {
 			animation: {
 				duration: 50
 			},
-			legend: {
-				display: true
-			},
+			legend: legendObj,
 			/*scales: {
 				xAxes: [{					
 					stacked:true
