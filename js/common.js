@@ -61,3 +61,15 @@ function getLocalStorageObjectItem(key) {
 function getViewportWidth() {
 	return Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
 }
+
+function scrollToSection2(element){
+
+
+    var headerOffset = 50;
+    var elementPosition = element.getBoundingClientRect().top;
+    var offsetPosition = elementPosition - headerOffset + document.body.scrollTop;
+
+    window.scrollTo({
+         top: offsetPosition
+    });
+}
