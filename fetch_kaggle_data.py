@@ -8,7 +8,7 @@ api.authenticate()
 api.dataset_download_files('piterfm/massive-missile-attacks-on-ukraine', unzip=True)
 
 df = pd.read_csv('missile_attacks_daily.csv')  # Adjust filename as needed
-latest = df.sort_values('date').tail(1).to_dict(orient='records')[0]
+latest = df.sort_values('time_end').tail(1).to_dict(orient='records')[0]
 
 
 os.makedirs('mdata', exist_ok=True)
