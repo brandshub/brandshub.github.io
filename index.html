@@ -9,7 +9,8 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 	<link rel="stylesheet" href="css/pickmeup.css">
 	<link rel="stylesheet" href="css/common.css"> 
-	
+	<link rel="stylesheet" href="css/autocomplete.css">
+	<link rel="stylesheet" href="css/Chart.min.css">
     <title>brand</title>
   </head>
   <body style="background-color:#212529;" class="text-light">
@@ -39,7 +40,8 @@
 		  <a class="dropdown-item text-light bg-dark" href="https://getbootstrap.com/docs/4.3/components/alerts/"><img src="./icons/bootstrap.png" class="favico" />Bootstrap</a>			
 		  <a class="dropdown-item text-light bg-dark" href="https://dotnetfiddle.net/"><img src="./icons/cs.png" class="favico" />C# Online Compiler</a>		
 		  <a class="dropdown-item text-light bg-dark" href="https://www.campaignmonitor.com/css/"><img src="./icons/css.png" class="favico" />CSS Support</a>
-		  <a class="dropdown-item text-light bg-dark" href="https://htmlfiddle.net/"><img src="./icons/html.png" class="favico" />HTML Snippets</a>		  
+		  <a class="dropdown-item text-light bg-dark" href="https://htmlfiddle.net/"><img src="./icons/html.png" class="favico" />HTML Snippets</a>
+		  <a class="dropdown-item text-light bg-dark" href="http://www.listdiff.com/"><img src="./icons/listdiff.ico" class="favico" />List Diff</a>       
 		  <a class="dropdown-item text-light bg-dark" href="https://regex101.com/"><img src="./icons/rgx.png" class="favico" />Regex Tester</a>       
 		  <a class="dropdown-item text-light bg-dark" href="https://www.freeformatter.com/sql-escape.html"><img src="./icons/xml.png" class="favico" />SQL Escape</a>       
         </div>
@@ -63,10 +65,10 @@
   </div>
   </nav>  
     <div class="container">
-		<div class="row pb-3">
+		<div class="row pb-4">
 			<div class="col-12 justify-content-center text-center">
-				<div style="width:208px;font-size:10px" class="text-right d-inline-block" id="usdDiv">
-				
+				<div style="width:208px;font-size:10px;cursor:pointer" class="text-right d-inline-block" id="usdDiv" onclick="getUsdRate();">
+				$
 				</div>
 			</div>
 		</div>
@@ -87,7 +89,7 @@
 	</div>
 	<div class="container-fluid">
 		<div class="row text-center justify-content-center pt-4" ><h4 class="text-center" id="covidLbl" >COVID-19 Data</h4></div>
-		<div class="row pt-3 justify-content-center text-center col-12 col-xl-8" style="word-break:break-word;margin:auto" id="covidGrid">		
+		<div class="pt-3 justify-content-center text-center col-12 col-xl-8" style="word-break:break-word;margin:auto" id="covidGrid">		
 			<!--<div class="col-12 col-xl-6  justify-content-center  text-center" >
 			 <object data="img/Ukraine.svg" type="image/svg+xml"
 			 id="mapSvg" style="height:auto;width:100%"></object>
@@ -96,6 +98,28 @@
 		<div  class="row" style="height:75px"></div>
 	</div>
 	</div>
+	
+<div class="modal fade" id="addRegionModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content" style="background-color: rgb(33, 37, 41);" >
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Add Region</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color:white">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+       <div class="autocomplete" style="width:275px;">
+		<input id="txtRegion" type="text" class="bg-dark text-light" style="width:275px" name="myCountry" placeholder="Country">
+	</div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-secondary bg-dark text-light" style="border-color:#343a40" onclick='tryAddRegion()'>Add Region</button>
+      </div>
+    </div>
+  </div>
+</div>
 	<nav id="liesPerDay" class="navbar navbar-nav fixed-bottom navbar-expand-lg  bg-dark text-light justify-content-center px-1 py-1" style="font-size:12px;display:none">
 	<span>If you are a woman, click 
 		<a class="bg-dark text-light justify-content-center" href="https://brandshub.github.io/lietome" style="text-decoration:underline">here</a>.
@@ -103,8 +127,7 @@
 	</nav>
 
     <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <!--<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>-->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->    
 	<script src="https://code.jquery.com/jquery-3.3.1.min.js" ></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>	
@@ -112,6 +135,10 @@
 	<script src="js/jquery.pickmeup.twitter-bootstrap.js" ></script>
 	<script src="js/common.js" ></script>
 	<script src="js/covid19.js" ></script>
+	<script src="js/autocomplete.js" ></script>
+	<script src="js/charts/Chart.bundle.min.js" ></script>
+	<!--<script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8"></script>
+	<script src="js/charts/chartjs-plugin-zoom.min.js" ></script>-->
 	<script>
 	
 	var daysInWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -135,6 +162,17 @@
 	var covidSelDate = '';
 	var expUkrFlag = false;
 	
+	function getUsdRate() {
+			console.log('get rate');
+			var $rate = $.getJSON('https://jsonp.afeld.me/?callback=?&url=http://rulya-bank.com.ua/', function(data){
+								var text = data.data;					
+								var rgx = /USD\<\/font\>\<b\>\<\/td\>\s+?\<td\sclass\=\"tbl\"\s+?align\=\"center\"\>\<b\>([\.\d]+)\<\/b\>\<\/td\>\s+?\<td\sclass\=\"tbl\"\s*?align\=\"center\"\>\<b\>([\.\d]+)\<\/b\>\<\/td\>/igs;
+								var obj = rgx.exec(text);
+								$('#usdDiv').text('USD '+obj[1]+' / '+obj[2]);						
+							});
+							setTimeout(function(){ $rate.abort(); }, 7000);
+	}
+		
 	$(function() {	
 				   if(showLiesFooter()) {
 					 $('#liesPerDay').show();
@@ -162,6 +200,8 @@
 					   let year = dt.getFullYear();
 					   let dday =  parseInt($(this).text());
 					   
+					   $('.dselected').removeClass('dselected');
+					   $(this).addClass('dselected');
 					   let frmt  = year+'-'+d2(month)+'-'+d2(dday);
 					   let newDt = new Date(frmt+' 00:00');					   
 					   covidSelDate = frmt;
@@ -172,7 +212,7 @@
 						   
 						   var cvObj = window['CV_allByDate'];
 						   if(!cvObj || !cvObj[frmt])
-							   covidGetByDate(frmt,function(dateStr, data) { renderDataForDate(dateStr, data);});
+							   covidGetByDate(frmt,function(dateStr, data) { renderDataForDate(dateStr, data); });
 						   else
 								renderDataForDate(frmt, cvObj[frmt] );
 						}
@@ -183,8 +223,11 @@
 					});						
 					
 					covidSelDate = toCovidDate(new Date());
-					loadRegionsFromCookie();
-					covidGetToday(function(dateStr, data) { renderDataForDate(dateStr, data);});
+					loadSavedRegions();
+					covidGetToday(function(dateStr, data){
+						renderDataForDate(dateStr, data); 
+						autocomplete(document.getElementById("txtRegion"), window['allRegions']);
+					});
 					
 					$('.pmu-instance').on('click', '.pmu-button', function() {
 						if(!$(this).parent().hasClass('pmu-days')) {								
@@ -198,24 +241,20 @@
 						$(this).toggleClass('expoff').toggleClass('expon').text(state ? '(—)' : '(+)');
 						
 						getCovidForSelectedDate();
-					});
-					
-					
-					var $rate = $.getJSON('https://jsonp.afeld.me/?callback=?&url=http://rulya-bank.com.ua/', function(data){
-						var text = data.data;					
-						var rgx = /USD\<\/font\>\<b\>\<\/td\>\s+?\<td\sclass\=\"tbl\"\s+?align\=\"center\"\>\<b\>([\.\d]+)\<\/b\>\<\/td\>\s+?\<td\sclass\=\"tbl\"\s*?align\=\"center\"\>\<b\>([\.\d]+)\<\/b\>\<\/td\>/igs;
-						var obj = rgx.exec(text);
-						$('#usdDiv').text('USD '+obj[1]+' / '+obj[2]);						
-					});
-					setTimeout(function(){ $rate.abort(); }, 7000);
-  
-  
+					});						
   
   
 					$(window).resize(function() { setTimeout(refreshTooltips,100);});
 					setInterval(timerTick,500);
+					
+					
+					$('#addRegionModal').on('shown.bs.modal', function() {
+						$(this).find('#txtRegion').removeAttr('selId').val('').focus();
+					});				
+					
 		});
 		
+
 		
 		function timerTick() {
 			var d = new Date();
@@ -231,8 +270,11 @@
 		function refreshTooltips() {
 			var options = document.getElementById('cla').__pickmeup.options;
 			var monthDate = options.current.getMonth();			
+			var yearDate = options.current.getFullYear();
+			
 			var selectedDates = [];
 			var selectedNames = [];
+			
 			for(var i=0;i<dates.length;i++) {
 				var dt = dates[i].date;
 				var dday = dt.split('/')[0];
@@ -270,6 +312,19 @@
 			else {
 				pickmeup('#cla').clear();
 			}
+			
+			if(covidSelDate != '') {
+				if(covidSelDate.substr(0,7) == yearDate+'-'+(monthDate < 9 ? ('0'+(monthDate+1)):(monthDate+1))) {
+					var sel_Day = parseInt(covidSelDate.substr(8));
+					var allDays = $('.pmu-instance div.pmu-days div');
+					for(var i=0;i<allDays.length;i++) {
+						if(allDays.eq(i).not('.pmu-not-in-month') && parseInt(allDays.eq(i).text()) == sel_Day) {
+						  allDays.eq(i).addClass('dselected');
+						  break;
+						}
+					}
+				}
+			}
 		}
 		
 		function showLiesFooter() {
@@ -286,14 +341,123 @@
 			return true;
 		}
 		
+		/*
 		
-		function loadRegionsFromCookie() {
-			var rgns = getCookie('covidRgn');
-			if(!rgns)
-			   baseRegions = ['World','Ukraine','Rivne','Kyiv','Lviv','Sweden'];	
-			else
-			   baseRegions = rgns.split(';');
+		https://api-covid19.rnbo.gov.ua/charts/main-data?mode=world
+https://api-covid19.rnbo.gov.ua/charts/main-data?mode=world&country=Brazil
+https://api-covid19.rnbo.gov.ua/charts/main-data?mode=ukraine
+https://api-covid19.rnbo.gov.ua/charts/main-data?mode=ukraine&country=4900
+*/
+		
+		function loadSavedRegions() {
+			baseRegions = ['World','Ukraine'];	
+			
+			var rgns = getLocalStorageObjectItem('covidRgn');			
+			if(rgns)						
+			   Array.prototype.push.apply(baseRegions, rgns);		   
+			
 		}
+		
+		function addRegion(id) {
+		
+			let found = false;
+			
+			if(id) {
+			  id=parseInt(id);
+			  var rgns = getLocalStorageObjectItem('covidRgn');
+			  if(!rgns || rgns.length==0) {
+				rgns = [];
+				rgns.push(parseInt(id));
+				baseRegions.push(parseInt(id));
+			  }
+			  else {
+				
+				for(var i=0;i<rgns.length;i++)
+				  if(rgns[i] == id) {
+					found = true;
+					alert('This country is already in the list!');
+					break;
+				  }
+				  
+				  if(!found) {
+					rgns.push(parseInt(id));
+					baseRegions.push(parseInt(id));
+				  }
+			  }
+			  
+			  setLocalStorageObjectItem('covidRgn',rgns);
+			  return !found;
+		  }
+		  return false;
+		}
+		
+		
+		function removeRegion(id) {		
+		  var index = baseRegions.indexOf(parseInt(id));
+		  if(index>-1) {
+			baseRegions.splice(index,1);			
+			setLocalStorageObjectItem('covidRgn',baseRegions.slice(2));
+			$('div[rgnid='+id+']').remove();
+			console.log('removed '+id);
+			}   
+		}
+		
+		
+		function tryAddRegion() {
+			var input = document.getElementById('txtRegion');
+			
+			if(input) {
+				 var id = input.getAttribute('selId');
+				 console.log(id);
+				 var flag = addRegion(id);
+				 
+				 if(flag) {
+					$('#addRegionModal').modal('hide');
+					input.removeAttribute('selId');
+				  }
+				 
+				   let dt = covidSelDate;
+				   let cvObj = window['CV_allByDate'];
+				   if(!cvObj || !cvObj[dt])
+					   covidGetByDate(dt,function(dateStr, data) { renderDataForDate(dateStr, data); });
+				   else
+						renderDataForDate(dt, cvObj[dt] );						
+			}
+		}
+		
+		function tryDeleteRegion(id) {		
+		
+			var index = baseRegions.indexOf(id);
+			if(index>-1) {
+				baseRegions.splice(index,1);
+				console.log('deleted '+id );				
+				setLocalStorageObjectItem('covidRgn',baseRegions.slice(2));
+			}
+		}
+		
+		function moveIdUp(id) {
+			var index = baseRegions.indexOf(id);
+			if(index>0) {
+				baseRegions.splice(index,1);
+				baseRegions.splice(index-1,0,id);
+				console.log('moveIdUp '+id );				
+				setLocalStorageObjectItem('covidRgn',baseRegions.slice(2));
+			}
+		
+		}
+		
+		function moveIdDown(id) {
+			var index = baseRegions.indexOf(id);
+			if(index< baseRegions.length-1) {
+				baseRegions.splice(index,1);
+				baseRegions.splice(index+1,0,id);
+				console.log('moveIdDownp '+id );				
+				setLocalStorageObjectItem('covidRgn',baseRegions.slice(2));
+			}
+		
+		}
+			
+		
 		
 		
 		function getCovidForSelectedDate() {
@@ -303,10 +467,22 @@
 		
 		function renderDataForDate(dateStr, data) {
 			$('#covidLbl').html('COVID-19 Data ('+dateStr+')');
+			
 			if(!data)
 				$('#covidGrid').html('<h6>No Data Available</h6>');
 			else
+			{
+				var chartElem = $('#main-chart-ukr');
+				var vacChartElem = $('#main-chart-vac-ukr');
+				
 				$('#covidGrid').html(buildCovidGrid(dateStr, data, baseRegions));		
+				
+				if(chartElem.length>0)
+					$('#rgn-ukraine').after(chartElem);
+				if(vacChartElem.length>0)
+					$('#ukraine-vac').after(vacChartElem);
+				  //createDivForChart(window['CV_allUkraine'], $('#rgn-ukraine'),'ukr')
+			}
 		}
 		
 		
@@ -318,7 +494,7 @@
 				if(l != 'Ukraine' && l != 'World') {
 					let found = false;
 					for(let j=0;j<data.ukraine.length;j++) {
-						if(data.ukraine[j].label.en.indexOf(l) == 0) {
+						if(data.ukraine[j].country == l) {
 							arr.push(data.ukraine[j]);
 							found = true;
 						}
@@ -326,7 +502,7 @@
 					
 					if(!found){
 						for(let j=0;j<data.world.length;j++) {
-							if(data.world[j].label.en.indexOf(l) == 0) {
+							if(data.world[j].id == l) {
 								arr.push(data.world[j]);
 								found = true;
 							}
@@ -338,14 +514,17 @@
 			
 			
 			let html = '';
-			html+='<div class="col-3 border">Region</div><div class="col-2 border">Confirmed</div><div class="col-2 border">Died</div><div class="col-2 border">Recovered</div><div class="col-2 border">Suspicion</div><div class="col-1 border">Hit %</div>';			
+			
+			html+='<div class="row m-0"><div class="col-3 npd1 d-inline-block border"><div class="col-2 npd1 d-inline-block"></div><div class="col-8  npd1 d-inline-block ">Region</div><div class="col-2 npd1 d-inline-block" style="font-size: 18px; font-weight: bold;cursor:pointer"><span data-toggle="modal" data-target="#addRegionModal" title="Add Region">+</span></div></div><div class="col-3 border">Confirmed</div><div class="col-3 border">Died</div><div class="col-3 border">Recovered</div></div>';			
 			
 			
 			if(selectedRegions.indexOf('World')>=0)
 				html+=getRow(covidGetWorldTotal(data.world));
 				
-			if(selectedRegions.indexOf('Ukraine')>=0)
+			if(selectedRegions.indexOf('Ukraine')>=0) {
 				html+=getRow(covidGetUkraineTotal(data.ukraine));
+				html+=getUkraineVaccinationsRow(dateStr);
+			}
 			
 			if(expUkrFlag) {
 				let ukrRegions = [];
@@ -367,46 +546,213 @@
 		function getRow(obj) {			
 			var html='';
 			
+			var rgnid = 'rgn-'+getObjId(obj);
 			
-			if(obj.label2 == 'Ukraine')
-				html+='<div class="col-3 border">Ukraine<br/><span id="expUk" class="'+(expUkrFlag? "expon" : "expoff"  )+'" style="cursor:pointer">'+(expUkrFlag?  "(—)" : "(+)" )+'</span></div>'
-			else
-				html+='<div class="col-3 border">'+(obj.label2 ? obj.label2 : obj.label.en )+'</div>'
-				
-				
-			html+='<div class="col-2 border c19confirm">'+formatGrowth(obj.confirmed, obj.delta_confirmed)+'</div>';
-			html+='<div class="col-2 border c19death">'+formatGrowth(obj.deaths, obj.delta_deaths)+'</div>';
-			html+='<div class="col-2 border c19recover">'+formatGrowth(obj.recovered, obj.delta_recovered)+'</div>';
-			if(obj.suspicion != 0) {
-				html+='<div class="col-2 border c19suspicion">'+formatGrowth(obj.suspicion, obj.delta_suspicion)+'</div>';			
-				html+='<div class="col-1 border c19tested">'+(100*obj.confirmed/obj.suspicion).toFixed(1)+'</div>';
+			
+			if(obj.label2 == 'Ukraine') {
+				html+='<div class="row m-0 rgn" id="rgn-ukraine"><div class="col-3 npd border">Ukraine&nbsp;<span style="padding-left:3px;cursor:pointer" onclick="showUkraineChart()">&#128202;</span><br/><span id="expUk" class="'+(expUkrFlag? "expon" : "expoff"  )+'" style="cursor:pointer">'+(expUkrFlag?  "(—)" : "(+)" )+'</span></div>';
+			}	
+			else if(obj.label2 == 'World') {								
+				html+='<div class="row m-0 rgn" id="rgn-world"><div class="col-3 npd border">'+(obj.label2 ? obj.label2 : obj.label.en )+'</div>';
 			}
 			else {
-				html+='<div class="col-2 border c19suspicion"></div><div class="col-1 c19tested border"></div>';
-			}			
+							
+				html+='<div class="row m-0 rgn" id="'+rgnid+'"><div class="col-3 npd border"><div class="row align-items-center m-0">';
+				html+='<div class="col-1 npd1 d-inline-block"><div style="cursor:pointer"><span onclick="moveUp(this);">↑</span><br/><span onclick="moveDown(this);">↓</span></div></div><div class="col-10 npd1 d-inline-block">' +(obj.label2 ? obj.label2 : obj.label.en )+'</div><div class="col-1 npd1 d-inline-block" style="cursor:pointer" onclick="deleteRow(this);">x</div></div></div>';
+			}
+				
+				
+			html+='<div class="col-3 npd border c19confirm">'+formatGrowth(obj.confirmed, obj.delta_confirmed)+'</div>';
+			html+='<div class="col-3 npd border c19death">'+formatGrowth(obj.deaths, obj.delta_deaths)+'</div>';
+			html+='<div class="col-3 npd border c19recover">'+formatGrowth(obj.recovered, obj.delta_recovered)+'</div>';
+			
+			html+='</div>';
+			
 			return html;
+		}
+		
+		function getUkraineVaccinationsRow(date) {
+			var html='';
+			
+			var vacData = window['CV_allUkraine_V'];
+			if(!vacData)
+				return '';
+				
+			var dtIndex = -1;
+			var now = new Date();
+			
+			if((new Date(date,'00:00')>now)) {
+				dtIndex= -100;
+			}
+			else {			
+			// today
+				var cd = toCovidDate(now);
+				if(cd == date && vacData.daily.dates[vacData.daily.dates.length-1]!=cd) {
+					console.log('today is selected but last data is '+vacData.daily.dates[vacData.daily.dates.length-1]);
+					dtIndex= -100;
+				}
+			}
+			
+			if(dtIndex!=-100) {
+				for(var i=0;i<vacData.daily.dates.length;i++) {
+				  if(vacData.daily.dates[i] == date) {
+					dtIndex = i;
+					break;
+				  }
+				}		
+			}
+			
+			
+			html+='<div class="row m-0 rgn" id="ukraine-vac"><div class="col-3 npd border">Vaccinations (1st dose)&nbsp;<span style="padding-left:3px;cursor:pointer" onclick="showUkraineVacChart()">&#128202;</span>'+formatTotalVacGrowth(vacData,dtIndex)+'</div>';
+			html+='<div id="vacBlock" class="col-9 p-0" style="display:flex;justify-content: space-evenly;flex-wrap:wrap">';
+				
+			var vaccines = window.CV_VacMap;
+			
+			for(var i=0;i<vaccines.length;i++)
+				html += '<div class="p-2 border wrap2" style="color:'+vaccines[i].c+';">'+formatVacGrowth(vacData, vaccines[i].t, dtIndex)+'</div>';		
+			
+			html+='</div></div>';
+			
+			return html;
+		}
+		
+		function getObjId(obj) {
+		 if(typeof obj.country == "string")
+			return obj.id;
+		  return obj.country;
+		}
+		
+		function deleteRow(e) {
+			
+			var row = (e).closest('div.rgn');			
+			var rgnId = row.id;
+			var id = parseInt(/\d+/.exec(rgnId)[0]);
+			
+			tryDeleteRegion(id);
+			
+			$(row).fadeOut(300, function() { $(this).remove(); });			
+		}
+		
+		function moveUp(e) {
+			
+			var row = e.closest('div.rgn');			
+			var rgnId = row.id;
+			var id = parseInt(/\d+/.exec(rgnId)[0]);
+			
+			var prev = $(row).prev();
+			if(prev[0].id !='rgn-ukraine' && prev[0].id !='rgn-world') {
+				moveIdUp(id);
+				prev.before($(row));
+			}			
+		}
+		
+		function moveDown(e) {
+			
+			var row = e.closest('div.rgn');			
+			var rgnId = row.id;
+			var id = parseInt(/\d+/.exec(rgnId)[0]);			
+			
+			var nxt = $(row).next();
+			if(nxt.hasClass('rgn')) {
+				moveIdDown(id);
+				nxt.after($(row));
+			}			
+		}
+		
+		
+		function formatVacGrowth(obj,key,index) {
+		
+			if(index == -1) {
+				return key+'<br/><br/>0';
+			}
+			
+			var lastDay = false;
+			
+			if(index == -100)
+			{
+				index = obj.daily.dates.length-1;
+				lastDay = true;
+			}
+			
+			var cumulative = obj.daily.cumulative[key][index];
+			var delta = obj.daily.quantity[key][index];
+			
+			var percent = 100*cumulative / obj.daily.cumulative.totals[index];
+			var deltaPercent = 100*delta / obj.daily.cumulative.qtotals[index];
+			
+			var str = key+'<br/><br/>'+n3(cumulative) +' ('+ percent.toFixed(1)+'%)';			
+			str+='<br/><span class="csmf">('
+			if(delta==0) {
+				str+='+0)';				
+			}
+			else {
+				str+='+'+n3(delta);
+				str+=' | +';
+				str+= deltaPercent.toFixed(1)+'%';				
+				str+=')';
+			}
+			if(lastDay)
+				str+='<sup title="Yesterday">*</sup>'
+						
+			
+			return '</span>'+str;
+		}
+		
+		function formatTotalVacGrowth(obj,index) {
+		
+			if(index == -1) {
+				return '<br/><br/>0';
+			}
+			
+			var lastDay = false;
+			
+			if(index == -100)
+			{
+				index = obj.daily.dates.length-1;
+				lastDay = true;
+			}
+			
+			var cumulative = obj.daily.cumulative.totals[index];
+			var delta = obj.daily.cumulative.qtotals[index];		
+			var allPopulation = 41588400; // 2021
+			var percent = 100*cumulative/allPopulation;
+			
+			var str = '<br/><br/>'+n3(cumulative) +' <span title="UA Population: '+n3(allPopulation)+'">('+ percent.toFixed(1)+'%)</span>';
+			
+			str+='<br/><span class="csmf">('
+			if(delta==0) {
+				str+='+0)';				
+			}
+			else {
+				str+='+'+n3(delta);						
+				str+=')';
+			}
+			if(lastDay)
+				str+='<sup title="Yesterday">*</sup>'						
+			
+			return '</span>'+str;
 		}
 		
 		function formatGrowth(n,d) {
 			var str = n3(n) + '<br/><span class="csmf">(';
 			if(d < 0) {
 				str+= n3(d);
-				str+=' | ';
-				str+= (100*d/(n-d)).toFixed(1);
-				str+='%)';
+				/*str+=' | ';
+				str+= (100*d/(n-d)).toFixed(1) + '%';*/
+				str+=')';
 			}
 			else if(d==0) {
 				str+='+0)';				
 			}
 			else {
 				str+='+'+n3(d);
-				str+=' | +';
+				/*str+=' | +';
 				if(n == d)
 					str+= "100%";
 				else
-					str+= (100*d/(n-d)).toFixed(1);
+					str+= (100*d/(n-d)).toFixed(1)+'%';*/
 				
-				str+='%)';
+				str+=')';
 			}		
 			
 			return '</span>'+str;

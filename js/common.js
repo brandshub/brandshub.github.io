@@ -41,3 +41,35 @@ function getRandomElement(arr) {
 	return arr[rnd];	
 }
 
+function setLocalStorageObjectItem(key, value) {
+  if (value === undefined) {
+    localStorage.removeItem(key);
+  } else {
+    localStorage.setItem(key, JSON.stringify(value));
+  }
+}
+
+function getLocalStorageObjectItem(key) {
+  var json = localStorage.getItem(key);
+  if (json === undefined) {
+    return undefined;
+  }
+  return JSON.parse(json);
+}
+
+
+function getViewportWidth() {
+	return Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+}
+
+function scrollToSection2(element){
+
+
+    var headerOffset = 50;
+    var elementPosition = element.getBoundingClientRect().top;
+    var offsetPosition = elementPosition - headerOffset + document.body.scrollTop;
+
+    window.scrollTo({
+         top: offsetPosition
+    });
+}
