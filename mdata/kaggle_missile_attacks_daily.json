@@ -1,0 +1,23 @@
+{
+  "time_start": "2025-07-20 21:00",
+  "time_end": "2025-07-21 09:30",
+  "model": "Shahed-136/131",
+  "launch_place": "Primorsko-Akhtarsk and Bryansk and Oryol oblast and Millerovo and Shatalovo",
+  "target": "Ukraine",
+  "target_main": NaN,
+  "launched": 426.0,
+  "destroyed": 200.0,
+  "not_reach_goal": 203.0,
+  "cross_border_belarus": NaN,
+  "back_russia": NaN,
+  "still_attacking": NaN,
+  "is_shahed": NaN,
+  "num_hit_location": 3.0,
+  "num_fall_fragment_location": 12.0,
+  "carrier": NaN,
+  "affected region": "['Kyiv oblast', Kharkiv oblast', 'Lviv oblast', 'Ivano-Frankivsk oblast', 'Khmelnytskyi oblast', 'Ternopil oblast']",
+  "destroyed_details": "{'south': 25, 'west': 20, 'east': NaN, 'north': NaN, 'center': NaN}",
+  "launched_details": NaN,
+  "launch_place_details": NaN,
+  "source": "kpszsu/posts/pfbid08Pp7rtMKkHg8a2gRBQJ64uBktBtiENYYeGgCPNzpwava5YwMnMncLKMDrzRryHhil"
+}
