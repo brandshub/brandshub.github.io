@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html ng-app="heroApp" ng-controller="MainCtrl">
+<head>
+  <meta charset="UTF-8">
+  <title>Hero Stats Dashboard</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+<style>
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    margin: 0;
+    background-color: #212529;
+    color: #f8f9fa;
+  }
+
+  header {
+    background-color: #343a40;
+    color: #f8f9fa;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-bottom: 1px solid #495057;
+	position:sticky;
+	top:0;
+  }
+
+  .tabs {
+    display: flex;
+    gap: 10px;	
+  }
+
+  .tab {
+    cursor: pointer;
+    padding: 8px 16px;
+    background-color: #495057;
+    color: #f8f9fa;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+  }
+
+  .tab:hover {
+    background-color: #6c757d;
+  }
+
+  .tab.active {
+    background-color: #0d6efd;
+  }
+
+  .add-btn {
+    background-color: #007bff;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .add-btn:hover {
+    background-color: #007bff;
+  }
+  
+  .add-btn:disabled {
+	  background-color: #6c757d;
+	  cursor: not-allowed;
+	  opacity: 0.65;
+	}
+
+
+  .content {
+    display: flex;
+    height: calc(100vh - 50px);
+	justify-content: center;
+	padding-top:50px;
+	
+  }
+
+  .left-panel, .right-panel {
+    padding: 10px;
+    overflow-y: auto;
+  }
+
+  .center-panel {
+    width: 70%;    
+  }
+  
+  .left-panel {
+    width: 60%;    
+  }
+
+  .right-panel {
+    width: 40%;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #343a40;
+  }
+
+  th, td {
+    padding: 8px;
+    border: 1px solid #495057;
+    text-align: left;
+    color: #f8f9fa;
+  }
+  
+  #selHero td {    
+    border: none;    
+  }
+
+  th {
+    background-color: #495057;
+	text-align:center;
+  }
+
+  .grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .grid-item {
+    position: relative;
+    width: 133px;
+    height: 133px;
+    background-color: #343a40;
+    border: 1px solid #495057;
+    border-radius: 4px;
+    overflow: hidden;
+	cursor:pointer;
+  }
+
+  .grid-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .overlay {
+    position: absolute;
+    bottom: 0;
+    background: rgba(0,0,0,0.6);
+    color: #f8f9fa;
+    width: 100%;
+    padding: 4px;
+    font-size: 14px;
+    text-align: center;
+	font-weight: bold;
+  }
+  
+  .stThumb {
+	width:80px;
+  }
+</style>
+
+</head>
+<body>
+
+<header>
+  <div class="tabs">
+    <div class="tab" ng-class="{active: activeTab === 'history'}" ng-click="activeTab = 'history'">Історія</div>
+    <div class="tab" ng-class="{active: activeTab === 'grid'}" ng-click="activeTab = 'grid'">Усі Герої</div>
+  </div>  
+</header>
+
+<div class="content">
+  <div class="center-panel" ng-show="activeTab === 'history'">
+    <table>
+      <thead>
+        <tr>
+          <th>Місце</th>
+          <th class="stThumb" style="padding-left:0px;padding-right:0px;">Герой</th>
+          <th>Імя</th>
+          <th style="width:170px">Дата</th>
+          <th>Інфо</th>
+		  <th style="width:30px"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="record in stats | orderBy:'-ticks' track by $index" ng-style="{		  
+        'background-color': record.rank == 1 ? '#c39011' :
+                           record.rank == 2 ? 'gray' :
+                           record.rank == 3 ? '#7B6139' : ''
+      }">
+          <td style="font-size:36px;font-weight:bold;text-align:center;" >{{record.rank}}</td>
+          <td style="padding:0px !important"><img class="stThumb" ng-src="{{getHeroImage(record.heroId)}}"></td>
+          <td style="text-align:center">{{getHero(record.heroId).name}}</td>
+          <td style="text-align:center">{{record.datetime}}</td>
+          <td>{{record.notes}}</td>
+		  <td>
+			<button ng-click="deleteRecord(stats.indexOf(record))" style="background:#dc3545; color:white; border:none; padding:4px 8px; border-radius:4px;cursor:pointer;">✖</button>
+		  </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+<div ng-show="activeTab === 'grid'" style="width:100%;display:flex">
+  <div class="left-panel">
+    <div class="grid">
+      <div class="grid-item" ng-repeat="hero in heroes" ng-click="selectHero(hero)">
+        <img ng-src="{{getHeroImage(hero.id)}}">
+        <div class="overlay">{{hero.name}}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="right-panel">
+	  <div ng-if="selectedHero" style="margin-bottom: 20px; display: flex; gap: 20px;">
+	  <img ng-src="{{getHeroImage(selectedHero.id)}}" style="width: 150px; height: 150px; object-fit: cover; border-radius: 8px;">
+	  <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;background-color: #212529;" id="selHero">
+  <tr>
+    <td style="padding: 8px; color: #adb5bd;">Герой</td>
+    <td style="padding: 8px; width:100px;text-align:right;font-size:24px;font-weight:bold">{{selectedHero.name}}</td>
+  </tr>
+  <tr>
+    <td style="padding: 8px; color: #adb5bd;">Ігр зіграно</td>
+    <td style="padding: 8px;width:100px;text-align:right">{{getHeroStats(selectedHero.id).gamesPlayed}}</td>
+  </tr>
+  <tr>
+    <td style="padding: 8px; color: #adb5bd;">Середнє Місце (Останні 5)</td>
+    <td style="padding: 8px;width:100px;text-align:right">{{getHeroStats(selectedHero.id).avg5 | number:1}}</td>
+  </tr>
+  <tr>
+    <td style="padding: 8px; color: #adb5bd;">Середнє Місце (Останні 25)</td>
+    <td style="padding: 8px;width:100px;text-align:right">{{getHeroStats(selectedHero.id).avg25 | number:1}}</td>
+  </tr>
+  <tr>
+    <td style="padding: 8px; color: #adb5bd;">Середнє Місце (Увесь час)</td>
+    <td style="padding: 8px;width:100px;text-align:right">{{getHeroStats(selectedHero.id).avgAll | number:1}}</td>
+  </tr>
+</table>
+	</div>
+
+	<div ng-if="selectedHero == null" style='color:red;font-size:24px;padding-bottom:15px'>Виберіть героя щоб додати гру!</div>
+	<div style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;">
+	<select ng-model="newRecord.rank" style="min-width: 80px; flex: 1; min-height: 32px;">
+		  <option value="" disabled selected>Місце</option>
+		  <option ng-repeat="n in [1,2,3,4,5,6,7,8]" value="{{n}}">{{n}}</option>
+	</select>	  
+	  <input type="text" ng-model="newRecord.datetime" placeholder="yyyy-mm-dd hh:mm" pattern="\d{4}-\d{2}-\d{2} \d{2}:\d{2}" style="min-width: 160px; flex: 2;" />
+	  <input type="text" ng-model="newRecord.notes" placeholder="Інфо (до 50 символів)" maxlength="50" style="min-width: 160px; flex: 2;" />
+	  <button class="add-btn" ng-click="addSelectedRecord()" ng-disabled="!isValidRecord()">Додати Гру</button>	  
+	</div>
+	
+  
+    <table>
+      <thead>
+        <tr>
+          <th>Місце</th>          
+          <th>Дата</th>
+          <th>Інфо</th>
+		  <th  style="width:30px"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-style="{		  
+        'background-color': record.rank == 1 ? '#c39011' :
+                           record.rank == 2 ? 'gray' :
+                           record.rank == 3 ? '#7B6139' : ''
+      }" ng-repeat="record in getSelectedHeroGames(selectedHero.id) track by $index">
+          <td style="text-align:center;font-size:32px;font-weight:bold">{{record.rank}}</td>          
+          <td style="text-align:center">{{record.datetime}}</td>
+          <td>{{record.notes}}</td>
+		  <td>
+			<button ng-click="deleteRecord(stats.indexOf(record))" style="background:#dc3545; color:white; border:none; padding:4px 8px; border-radius:4px;cursor:pointer;">✖</button>
+		  </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</div>
+
+<script>
+
+const app = angular.module('heroApp', []);
+
+app.filter('reverse', function() {
+  return function(items) {
+    return items.slice().reverse();
+  };
+  });
+  
+  app.controller('MainCtrl', function($scope) {
+      $scope.activeTab = 'history';
+	  $scope.selectedHero = null;
+
+
+
+      $scope.heroes = [
+        { id: 1, name: 'Орк' },
+        { id: 2, name: 'Шмига' },
+		{ id: 3, name: 'Рексар' },
+		{ id: 4, name: 'Гном' },
+		{ id: 5, name: 'Панда' },
+		{ id: 6, name: 'Маг' },
+		{ id: 7, name: 'Бабка' },
+		{ id: 8, name: 'Ліч' },
+		{ id: 9, name: 'Рейдер' },
+		{ id: 10, name: 'Варлок' },
+		{ id: 11, name: 'Драколицар' },
+		{ id: 12, name: 'Центуріон' },
+		{ id: 13, name: 'Ілюха' },
+		{ id: 14, name: 'Гоблін Алхімік' },
+		{ id: 15, name: 'Гоблін Інженер' },
+		{ id: 16, name: 'Енча' },
+		{ id: 17, name: 'Інквізитор' },
+		{ id: 18, name: 'Манабьорн' },
+		{ id: 19, name: 'Мороженка' },
+		{ id: 20, name: 'Бичок' },
+		{ id: 21, name: 'Пінгвін' },
+		{ id: 22, name: 'Темпларка' },
+		{ id: 23, name: 'Спектра' },
+		{ id: 24, name: 'Акула' },
+		{ id: 25, name: 'Огр' },
+		{ id: 26, name: 'Фея Морозу' },
+		{ id: 27, name: 'Свен' },
+		{ id: 28, name: 'Рейнджер' },
+		{ id: 29, name: 'Крадуха' },
+		{ id: 30, name: 'Токсік' },
+		{ id: 31, name: 'Снайпер' },
+		{ id: 32, name: 'Друід' },
+		{ id: 33, name: 'Пудж' },
+		{ id: 34, name: 'Жирний Рікі' },
+		{ id: 35, name: 'Нага' },
+		{ id: 36, name: 'Ковбой' },
+		{ id: 37, name: 'Мірана' },
+		{ id: 38, name: 'Черепаха' },
+		{ id: 39, name: 'Чортяка' },
+		{ id: 40, name: 'Павук' },
+		{ id: 41, name: 'Перчик' },
+		{ id: 42, name: 'Фіолетовий маг' },
+		{ id: 43, name: 'Суккуб' },
+		{ id: 44, name: 'Лицар смерті' },
+		{ id: 45, name: 'Біткоін' },
+		{ id: 46, name: 'Варвар' },
+		{ id: 47, name: 'Мурлок' },
+		{ id: 48, name: 'Паладін' },
+		{ id: 49, name: 'Пеньок' },
+		{ id: 50, name: 'Щитовик' },
+		{ id: 51, name: 'Носатий' },
+		{ id: 52, name: 'Вовчик' },
+		{ id: 53, name: 'Гриб' },
+		{ id: 54, name: 'Дракон' },
+		{ id: 55, name: 'Хускар' },
+        // Add more heroes here
+      ];
+
+
+
+	const saved = localStorage.getItem('heroStats');
+	$scope.stats = saved ? JSON.parse(saved) : [];
+	  
+	  $scope.stats.forEach(r => {
+		  r.ticks = Date.parse(r.datetime); // parses 'yyyy-mm-dd hh:mm' into ms
+		});
+
+
+      $scope.getHero = function(id) {
+        return $scope.heroes.find(h => h.id === id) || {};
+      };
+
+      $scope.addRecord = function() {
+        alert('Add record clicked!');
+      };
+	  
+	  $scope.getHeroImage = function(id){
+		return 'img/slr/'+id+'.png';
+	  };
+	  
+	  $scope.selectHero = function(hero) {
+		  $scope.selectedHero = hero;		  
+		};
+		
+
+		$scope.getHeroStats = function(heroId) {
+		  const records = $scope.stats.filter(r => r.heroId === heroId).sort((a, b) => b.ticks - a.ticks);
+		  const avg = (arr) => arr.reduce((sum, r) => sum + r.rank, 0) / arr.length || 0;
+		  return {
+			gamesPlayed: records.length,
+			avg5: avg(records.slice(0,5)),	
+			avg25: avg(records.slice(0, 25)),
+			avgAll: avg(records)
+		  };
+		};
+
+	    $scope.getSelectedHeroGames = function(heroId) {	
+			return $scope.stats.filter(r => r.heroId === heroId).slice().reverse();			
+		}
+		
+		
+		$scope.newRecord = { rank: '', datetime: getCurrentFormattedDate(), notes: '' };
+
+		$scope.addSelectedRecord = function() {
+		  if (!$scope.selectedHero) return;
+		  $scope.stats.push({
+			rank: parseInt($scope.newRecord.rank),
+			heroId: $scope.selectedHero.id,
+			datetime: $scope.newRecord.datetime,
+			notes: $scope.newRecord.notes,
+			ticks: Date.parse($scope.newRecord.datetime)
+		  });
+		  
+		  saveStats();
+		  
+		  $scope.newRecord = { rank: '', datetime: getCurrentFormattedDate(), notes: '' };
+		};
+		
+		$scope.isValidRecord = function() {
+		  const r = $scope.newRecord;
+		  if(!$scope.selectedHero)
+			return false;
+		  return (			
+			/^\d+$/.test(r.rank) &&
+			/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/.test(r.datetime) &&
+			r.notes.length <= 50
+		  );
+		};
+		
+		$scope.deleteRecord = function(index) {
+		  $scope.stats.splice(index, 1);
+		  saveStats(); // persist change
+		};
+
+
+	function getCurrentFormattedDate() {
+	  const now = new Date();
+	  const pad = (n) => n.toString().padStart(2, '0');
+	  return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}`;
+	} 
+	
+	function saveStats() {
+		const cleanStats = $scope.stats.map(r => {
+		const clone = angular.copy(r);
+		delete clone.$$hashKey;
+		return clone;
+	  });
+
+	  localStorage.setItem('heroStats', JSON.stringify(cleanStats));
+	}
+
+	
+	
+});
+</script>
+
+</body>
+</html>
