@@ -69,7 +69,7 @@
 
   .content {
     display: flex;
-    height: calc(100vh - 50px);
+    height: calc(100vh - 110px);
 	justify-content: center;
 	padding-top:50px;
 	
@@ -142,11 +142,29 @@
     bottom: 0;
     background: rgba(0,0,0,0.6);
     color: #f8f9fa;
-    width: 100%;
-    padding: 4px;
+    width: 100%;    
     font-size: 14px;
     text-align: center;
 	font-weight: bold;
+	padding: 4px 0px;
+  }
+  
+  .overlayTop {
+    position: absolute;
+    top: 0;    
+    color: #f8f9fa;
+    width: 100%;    
+    font-size: 14px;
+    text-align: center;
+	font-weight: bold;	
+  }
+  
+  .overlayTop span {
+	border-radius: 10px;    
+    background: rgba(0, 0, 0, 0.25);
+    padding: 5px;    
+    width: 25px;
+    margin-top: 3px;   
   }
   
   .stThumb {
@@ -200,6 +218,10 @@
   <div class="left-panel">
     <div class="grid">
       <div class="grid-item" ng-repeat="hero in heroes" ng-click="selectHero(hero)">
+		<div class="overlayTop" ng-if="hero.games>0">
+		<span style="float:left; margin-left: 3px">{{hero.games}}</span>
+		<span style="float:right; margin-right: 3px">{{hero.avgRank | number:1}}</span>
+		</div>
         <img ng-src="{{getHeroImage(hero.id)}}">
         <div class="overlay">{{hero.name}}</div>
       </div>
@@ -259,7 +281,7 @@
         'background-color': record.rank == 1 ? '#c39011' :
                            record.rank == 2 ? 'gray' :
                            record.rank == 3 ? '#7B6139' : ''
-      }" ng-repeat="record in getSelectedHeroGames(selectedHero.id) track by $index">
+      }" ng-repeat="record in getSelectedHeroGames(selectedHero.id) | orderBy:'-ticks' track by $index">
           <td style="text-align:center;font-size:32px;font-weight:bold">{{record.rank}}</td>          
           <td style="text-align:center">{{record.datetime}}</td>
           <td>{{record.notes}}</td>
@@ -349,14 +371,18 @@ app.filter('reverse', function() {
       ];
 
 
+	$scope.heroes.forEach(h => { h.games = 0; h.totalScore = 0; });
 
 	const saved = localStorage.getItem('heroStats');
 	$scope.stats = saved ? JSON.parse(saved) : [];
 	  
 	  $scope.stats.forEach(r => {
 		  r.ticks = Date.parse(r.datetime); // parses 'yyyy-mm-dd hh:mm' into ms
+		  $scope.heroes[r.heroId-1].games++;
+		  $scope.heroes[r.heroId-1].totalScore += r.rank;		  
 		});
-
+	
+	  $scope.heroes.forEach(h => { if(h.games>0) h.avgRank = h.totalScore / h.games; });
 
       $scope.getHero = function(id) {
         return $scope.heroes.find(h => h.id === id) || {};
