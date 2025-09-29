@@ -3,7 +3,7 @@ name: Daily Missile Stats Update
 
 on:
   schedule:
-    - cron: '0 10 * * *'  # Runs daily at 10:00 UTC
+    - cron: '27 11 * * *'  
   workflow_dispatch:
 
 jobs:
@@ -34,5 +34,8 @@ jobs:
           git config user.name "GitHub Action"
           git config user.email "action@github.com"
           git add mdata/kaggle_missile_attacks_daily.json
-          git commit -m "Daily update"
-          git push
+          git diff --cached --quiet || (
+            git commit -m "Daily update"
+            git push
+          )
+
