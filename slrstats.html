@@ -22,6 +22,7 @@
     border-bottom: 1px solid #495057;
 	position:sticky;
 	top:0;
+	z-index: 1000;
   }
 
   .tabs {
@@ -238,7 +239,7 @@
 		  <option value="" disabled selected>Місце</option>
 		  <option ng-repeat="n in [1,2,3,4,5,6,7,8]" value="{{n}}">{{n}}</option>
 	</select>	  
-	  <input type="text" ng-model="newRecord.datetime" placeholder="yyyy-mm-dd hh:mm" pattern="\d{4}-\d{2}-\d{2} \d{2}:\d{2}" style="min-width: 160px; flex: 2;" />
+	  <input type="datetime-local" ng-model="newRecord.datetime" placeholder="yyyy-mm-dd hh:mm"  style="min-width: 160px; flex: 2;" />
 	  <input type="text" ng-model="newRecord.notes" placeholder="Інфо (до 50 символів)" maxlength="50" style="min-width: 160px; flex: 2;" />
 	  <button class="add-btn" ng-click="addSelectedRecord()" ng-disabled="!isValidRecord()">Додати Гру</button>	  
 	</div>
@@ -397,9 +398,9 @@ app.filter('reverse', function() {
 		  $scope.stats.push({
 			rank: parseInt($scope.newRecord.rank),
 			heroId: $scope.selectedHero.id,
-			datetime: $scope.newRecord.datetime,
+			datetime: getLocalDatetimeString($scope.newRecord.datetime) ,
 			notes: $scope.newRecord.notes,
-			ticks: Date.parse($scope.newRecord.datetime)
+			ticks: $scope.newRecord.datetime.getTime()
 		  });
 		  
 		  saveStats();
@@ -412,8 +413,7 @@ app.filter('reverse', function() {
 		  if(!$scope.selectedHero)
 			return false;
 		  return (			
-			/^\d+$/.test(r.rank) &&
-			/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/.test(r.datetime) &&
+			/^\d+$/.test(r.rank) &&			
 			r.notes.length <= 50
 		  );
 		};
@@ -425,10 +425,18 @@ app.filter('reverse', function() {
 
 
 	function getCurrentFormattedDate() {
-	  const now = new Date();
-	  const pad = (n) => n.toString().padStart(2, '0');
-	  return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}`;
+	  let dt = new Date();
+	   dt.setSeconds(0);
+	  dt.setMilliseconds(0);
+	  return dt;
+
 	} 
+	
+	function getLocalDatetimeString(date) {
+	  const pad = n => n.toString().padStart(2, '0');
+	  return `${date.getFullYear()}-${pad(date.getMonth()+1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
+	}
+
 	
 	function saveStats() {
 		const cleanStats = $scope.stats.map(r => {
