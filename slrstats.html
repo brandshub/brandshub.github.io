@@ -170,6 +170,22 @@
   .stThumb {
 	width:80px;
   }
+  
+  .gstats {
+	line-height:39px;
+  }
+  
+  .sort-dropdown {
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.sort-dropdown select {
+  margin-left: 8px;
+  padding: 4px;
+  min-height:32px;
+}
+
 </style>
 
 </head>
@@ -177,8 +193,10 @@
 
 <header>
   <div class="tabs">
+	<div class="gstats" style="padding-right:15px;">Всього ігор: {{stats.length}}</div>
     <div class="tab" ng-class="{active: activeTab === 'history'}" ng-click="activeTab = 'history'">Історія</div>
     <div class="tab" ng-class="{active: activeTab === 'grid'}" ng-click="activeTab = 'grid'">Усі Герої</div>
+	<div class="gstats" style="padding-left:15px;">Середнє місце: {{avgPlace | number:1}}</div>
   </div>  
 </header>
 
@@ -216,8 +234,16 @@
 
 <div ng-show="activeTab === 'grid'" style="width:100%;display:flex">
   <div class="left-panel">
+  <div class="sort-dropdown">
+  <label for="heroSort">Сортувати за:</label>
+  
+  <select id="heroSort" ng-model="selectedSortKey"
+        ng-options="opt.key as opt.label for opt in sortOptions">
+	</select>
+</div>
+
     <div class="grid">
-      <div class="grid-item" ng-repeat="hero in heroes" ng-click="selectHero(hero)">
+      <div class="grid-item" ng-repeat="hero in heroes | heroSort:selectedSortKey:sortHeroes" ng-click="selectHero(hero)">
 		<div class="overlayTop" ng-if="hero.games>0">
 		<span style="float:left; margin-left: 3px">{{hero.games}}</span>
 		<span style="float:right; margin-right: 3px">{{hero.avgRank | number:1}}</span>
@@ -299,6 +325,13 @@
 
 const app = angular.module('heroApp', []);
 
+app.filter('heroSort', function() {
+  return function(input, sortKey, sortFn) {
+    return sortFn(input, sortKey);
+  };
+});
+
+
 app.filter('reverse', function() {
   return function(items) {
     return items.slice().reverse();
@@ -307,8 +340,46 @@ app.filter('reverse', function() {
   
   app.controller('MainCtrl', function($scope) {
       $scope.activeTab = 'history';
-	  $scope.selectedHero = null;
+	  $scope.selectedHero = null;	  
+	  $scope.avgPlace = 0.0;
+	  
+	  
+	 $scope.sortHeroes = function(heroes, sortKey) {
+  if (!Array.isArray(heroes)) return heroes;
 
+  return heroes.slice().sort((a, b) => {
+    switch (sortKey) {
+      case 'nameAsc':
+        return a.name?.localeCompare(b.name, 'uk') || 0;
+      case 'nameDesc':
+        return b.name?.localeCompare(a.name, 'uk') || 0;
+      case 'gamesDesc':
+        return (b.games || 0) - (a.games || 0);
+      case 'avgRankDesc':
+        return -(b.avgRank || 0) + (a.avgRank || 0);
+      default:
+        return 0;
+    }
+  });
+};
+
+
+
+		const SORT_KEY = 'heroSortOrder';
+
+		$scope.sortOptions = [
+		  { label: 'Імя ↑', key: 'nameAsc' },
+		  { label: 'Імя ↓', key: 'nameDesc' },
+		  { label: 'Кількість ігор', key: 'gamesDesc' },
+		  { label: 'Середнє місце', key: 'avgRankDesc' }
+		];
+
+		$scope.selectedSortKey = localStorage.getItem(SORT_KEY) || 'gamesDesc';
+		
+
+		$scope.$watch('selectedSortKey', function(newKey) {
+		  localStorage.setItem(SORT_KEY, newKey);		  
+		});
 
 
       $scope.heroes = [
@@ -378,13 +449,18 @@ app.filter('reverse', function() {
 	const saved = localStorage.getItem('heroStats');
 	$scope.stats = saved ? JSON.parse(saved) : [];
 	  
+	  $scope.totalRank = 0;
 	  $scope.stats.forEach(r => {
 		  r.ticks = Date.parse(r.datetime); // parses 'yyyy-mm-dd hh:mm' into ms
 		  $scope.heroes[r.heroId-1].games++;
-		  $scope.heroes[r.heroId-1].totalScore += r.rank;		  
+		  $scope.heroes[r.heroId-1].totalScore += r.rank;		
+		  $scope.totalRank += r.rank;		  
 		});
 	
-	  $scope.heroes.forEach(h => { if(h.games>0) h.avgRank = h.totalScore / h.games; });
+	  if($scope.stats.length>0)
+		$scope.avgPlace = $scope.totalRank / $scope.stats.length;
+	  
+	  $scope.heroes.forEach(h => { if(h.games>0) h.avgRank = h.totalScore / h.games; else h.avgRank = 9;});
 
       $scope.getHero = function(id) {
         return $scope.heroes.find(h => h.id === id) || {};
@@ -423,13 +499,22 @@ app.filter('reverse', function() {
 
 		$scope.addSelectedRecord = function() {
 		  if (!$scope.selectedHero) return;
-		  $scope.stats.push({
+		  
+		  let newRec = {
 			rank: parseInt($scope.newRecord.rank),
 			heroId: $scope.selectedHero.id,
 			datetime: getLocalDatetimeString($scope.newRecord.datetime) ,
 			notes: $scope.newRecord.notes,
 			ticks: $scope.newRecord.datetime.getTime()
-		  });
+		  };
+		  
+		  $scope.selectedHero.games++;
+		  $scope.selectedHero.totalScore += newRec.rank;
+		  $scope.selectedHero.avgRank = $scope.selectedHero.totalScore / $scope.selectedHero.games;
+		  
+		  $scope.stats.push(newRec);	
+		  $scope.totalRank += newRec.rank;
+		  $scope.avgPlace = $scope.totalRank / $scope.stats.length;		  
 		  
 		  saveStats();
 		  
@@ -448,6 +533,15 @@ app.filter('reverse', function() {
 		
 		$scope.deleteRecord = function(index) {
 		  $scope.stats.splice(index, 1);
+		  let sum = 0;
+			for(let i=0;i<$scope.stats.length;i++)
+			sum+= $scope.stats[i].rank;
+			
+		  if($scope.stats.length > 0)
+			$scope.avgPlace = sum / $scope.stats.length;
+		else
+			$scope.avgPlace = 0;
+			
 		  saveStats(); // persist change
 		};
 
