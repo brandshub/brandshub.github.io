@@ -196,7 +196,8 @@
 	<div class="gstats" style="padding-right:15px;">Всього ігор: {{stats.length}}</div>
     <div class="tab" ng-class="{active: activeTab === 'history'}" ng-click="activeTab = 'history'">Історія</div>
     <div class="tab" ng-class="{active: activeTab === 'grid'}" ng-click="activeTab = 'grid'">Усі Герої</div>
-	<div class="gstats" style="padding-left:15px;">Середнє місце: {{avgPlace | number:1}}</div>
+	<div class="gstats" style="padding-left:15px;cursor:pointer" ng-click="showAllPlaced=!showAllPlaced" ng-show="!showAllPlaced">Середнє місце: {{avgPlace | number:1}}</div>
+	<div class="gstats" style="padding-left:15px;cursor:pointer" ng-click="showAllPlaced=!showAllPlaced" ng-show="showAllPlaced">{{getAllPlacesString()}}</div>
   </div>  
 </header>
 
@@ -342,7 +343,7 @@ app.filter('reverse', function() {
       $scope.activeTab = 'history';
 	  $scope.selectedHero = null;	  
 	  $scope.avgPlace = 0.0;
-	  
+	  $scope.showAllPlaced = false;
 	  
 	 $scope.sortHeroes = function(heroes, sortKey) {
   if (!Array.isArray(heroes)) return heroes;
@@ -362,7 +363,7 @@ app.filter('reverse', function() {
     }
   });
 };
-
+		$scope.allPlaces = new Int32Array(8);
 
 
 		const SORT_KEY = 'heroSortOrder';
@@ -454,7 +455,8 @@ app.filter('reverse', function() {
 		  r.ticks = Date.parse(r.datetime); // parses 'yyyy-mm-dd hh:mm' into ms
 		  $scope.heroes[r.heroId-1].games++;
 		  $scope.heroes[r.heroId-1].totalScore += r.rank;		
-		  $scope.totalRank += r.rank;		  
+		  $scope.totalRank += r.rank;		
+		  $scope.allPlaces[r.rank-1]++;
 		});
 	
 	  if($scope.stats.length>0)
@@ -478,7 +480,10 @@ app.filter('reverse', function() {
 		  $scope.selectedHero = hero;		  
 		};
 		
-
+	  $scope.getAllPlacesString = function() {
+		return $scope.allPlaces.join('/');
+	  
+	  }
 		$scope.getHeroStats = function(heroId) {
 		  const records = $scope.stats.filter(r => r.heroId === heroId).sort((a, b) => b.ticks - a.ticks);
 		  const avg = (arr) => arr.reduce((sum, r) => sum + r.rank, 0) / arr.length || 0;
@@ -516,6 +521,8 @@ app.filter('reverse', function() {
 		  $scope.totalRank += newRec.rank;
 		  $scope.avgPlace = $scope.totalRank / $scope.stats.length;		  
 		  
+		  $scope.allPlaces[newRec.rank-1]++;
+		  
 		  saveStats();
 		  
 		  $scope.newRecord = { rank: '', datetime: getCurrentFormattedDate(), notes: '' };
@@ -532,16 +539,27 @@ app.filter('reverse', function() {
 		};
 		
 		$scope.deleteRecord = function(index) {
+		  let r = $scope.stats[index].rank;
+		  let hero = $scope.heroes.filter(r => r.id === $scope.stats[index].heroId)[0];
+		  hero.games--;
+		  hero.totalScore -=  r;
+		  if(hero.games>0)
+			hero.avgRank = hero.totalScore / hero.games;
+		  else
+			hero.avgRank = 9;
+		  
+		  
+		  
+		  
 		  $scope.stats.splice(index, 1);
-		  let sum = 0;
-			for(let i=0;i<$scope.stats.length;i++)
-			sum+= $scope.stats[i].rank;
-			
+		  $scope.totalRank -= r;		
+		  
 		  if($scope.stats.length > 0)
-			$scope.avgPlace = sum / $scope.stats.length;
+			$scope.avgPlace =  $scope.totalRank / $scope.stats.length;
 		else
 			$scope.avgPlace = 0;
-			
+		  
+		  $scope.allPlaces[r-1]--;
 		  saveStats(); // persist change
 		};
 
