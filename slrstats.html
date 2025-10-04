@@ -159,11 +159,10 @@
 	font-weight: bold;	
   }
   
-  .overlayTop span {
+  .overlayTop span.rrr {
 	border-radius: 10px;    
     background: rgba(0, 0, 0, 0.25);
-    padding: 5px;    
-    width: 25px;
+    padding: 5px;  
     margin-top: 3px;   
   }
   
@@ -186,6 +185,49 @@
   min-height:32px;
 }
 
+.visually-hidden {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.image-label {
+  display: inline-block;
+  cursor: pointer;
+  padding: 4px 4px 0px;
+  border-radius: 6px;
+  transition: box-shadow 0.2s;
+}
+
+.image-label img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+input[type="radio"]:checked + .image-label {
+  box-shadow: 0 0 0 2px #007bff;
+}
+
+.icon-selector {
+  cursor:pointer;
+}
+
+
+#heroStats td {
+	padding:0px;
+	
+}
+
+.h32 {
+ line-height:32px;
+}
+
+img.heroClass {
+	height: 25px;
+    width: 25px;
+    padding-top: 5px;
+}
 </style>
 
 </head>
@@ -234,21 +276,42 @@
   </div>
 
 <div ng-show="activeTab === 'grid'" style="width:100%;display:flex">
-  <div class="left-panel">
-  <div class="sort-dropdown">
-  <label for="heroSort">Сортувати за:</label>
+  <div class="left-panel" style="scrollbar-width:none">
+  <div class="sort-dropdown" style="display:flex">
+  
+  <label for="heroSort" class="h32">Сортувати за:</label>
   
   <select id="heroSort" ng-model="selectedSortKey"
         ng-options="opt.key as opt.label for opt in sortOptions">
 	</select>
+	<div style="display:flex;margin-left:20px;" class="h32">
+	<label for="heroSort" style="margin-right:15px">Фільтрувати за:</label>
+	<div ng-click="filterClass=''" style="cursor:pointer;line-height:32px;">Усі</div>&nbsp;
+	<div ng-repeat="icon in iconList" class="icon-selector">
+	  <input type="radio"
+			 id="{{icon}}"
+			 name="filterClass"
+			 ng-model="$parent.filterClass"
+			 ng-value="icon"
+			 class="visually-hidden" />
+	  <label for="{{icon}}" class="image-label">
+		<img ng-src="img/slr/classes/{{icon}}.png" alt="{{icon}}" />
+	  </label>
+	</div>
+</div>
 </div>
 
     <div class="grid">
-      <div class="grid-item" ng-repeat="hero in heroes | heroSort:selectedSortKey:sortHeroes" ng-click="selectHero(hero)">
-		<div class="overlayTop" ng-if="hero.games>0">
-		<span style="float:left; margin-left: 3px">{{hero.games}}</span>
-		<span style="float:right; margin-right: 3px">{{hero.avgRank | number:1}}</span>
+      <div class="grid-item" ng-repeat="hero in heroes | optionalFilter:filterClass | heroSort:selectedSortKey:sortHeroes" ng-click="selectHero(hero)">
+		<div class="overlayTop">
+		
+		<span style="float:left; margin-left: 5px">
+		<img class="heroClass" ng-repeat="img in getHeroSkills(hero)" ng-src="{{img}}" alt="class" class="hero-img">
+		</span>
+		
+		<span ng-if="hero.games>0" style="float:right; margin-right: 3px" class="rrr">{{hero.games}} / {{hero.avgRank | number:1}}</span>
 		</div>
+		
         <img ng-src="{{getHeroImage(hero.id)}}">
         <div class="overlay">{{hero.name}}</div>
       </div>
@@ -257,11 +320,21 @@
 
   <div class="right-panel">
 	  <div ng-if="selectedHero" style="margin-bottom: 20px; display: flex; gap: 20px;">
-	  <img ng-src="{{getHeroImage(selectedHero.id)}}" style="width: 150px; height: 150px; object-fit: cover; border-radius: 8px;">
+	  <div>
+	  <img ng-src="{{getHeroImage(selectedHero.id)}}" style="width: 150px; height: 150px; object-fit: cover; border-radius: 8px;">	        
+	  </div>
+
 	  <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;background-color: #212529;" id="selHero">
   <tr>
     <td style="padding: 8px; color: #adb5bd;">Герой</td>
-    <td style="padding: 8px; width:100px;text-align:right;font-size:24px;font-weight:bold">{{selectedHero.name}}</td>
+    <td style="padding: 8px; width:125px;text-align:right;font-size:24px;font-weight:bold">{{selectedHero.name}}
+	
+	</td>
+  </tr>
+  <tr>
+  <td>
+  </td>
+  <td style="text-align:right"><img style="width:25px;height:25px"" ng-repeat="img in getHeroSkills(selectedHero)" ng-src="{{img}}" alt="class" class="hero-img"></td>
   </tr>
   <tr>
     <td style="padding: 8px; color: #adb5bd;">Ігр зіграно</td>
@@ -292,15 +365,13 @@
 	  <input type="text" ng-model="newRecord.notes" placeholder="Інфо (до 50 символів)" maxlength="50" style="min-width: 160px; flex: 2;" />
 	  <button class="add-btn" ng-click="addSelectedRecord()" ng-disabled="!isValidRecord()">Додати Гру</button>	  
 	</div>
-	
-  
-    <table>
+    <table id="heroStats">
       <thead>
         <tr>
           <th>Місце</th>          
           <th>Дата</th>
           <th>Інфо</th>
-		  <th  style="width:30px"></th>
+		  <th style="width:30px"></th>
         </tr>
       </thead>
       <tbody>
@@ -312,7 +383,7 @@
           <td style="text-align:center;font-size:32px;font-weight:bold">{{record.rank}}</td>          
           <td style="text-align:center">{{record.datetime}}</td>
           <td>{{record.notes}}</td>
-		  <td>
+		  <td style="padding-left:5px">
 			<button ng-click="deleteRecord(stats.indexOf(record))" style="background:#dc3545; color:white; border:none; padding:4px 8px; border-radius:4px;cursor:pointer;">✖</button>
 		  </td>
         </tr>
@@ -338,12 +409,25 @@ app.filter('reverse', function() {
     return items.slice().reverse();
   };
   });
+
+app.filter('optionalFilter', function() {
+  return function(items, criteria) {
+    if (!criteria) return items; // handles null, undefined, empty string
+    return items.filter(function(item) {
+      // Replace with your actual matching logic
+      return item.t && item.t.toLowerCase().includes(criteria.toLowerCase());
+    });
+  };
+});
+
+
   
   app.controller('MainCtrl', function($scope) {
       $scope.activeTab = 'history';
 	  $scope.selectedHero = null;	  
 	  $scope.avgPlace = 0.0;
 	  $scope.showAllPlaced = false;
+	  $scope.filterClass = null;
 	  
 	 $scope.sortHeroes = function(heroes, sortKey) {
   if (!Array.isArray(heroes)) return heroes;
@@ -382,69 +466,86 @@ app.filter('reverse', function() {
 		  localStorage.setItem(SORT_KEY, newKey);		  
 		});
 
+	$scope.iconList = [ 'attack','evade','crit','health','ulti','healer','poison','freeze','shield','wound','sprite','rage','speed'];
+ 
+	$scope.getHeroSkills = function (hero) {		
+		if(!hero.t)
+		return [];
+		
+		let split = hero.t.split('|');		
+		let arr = [];		
+		for(let i=0;i<split.length;i++) {		 
+			arr.push("img/slr/classes/"+split[i]+".png");
+		}
+		
+		return arr;
+	}
+
 
       $scope.heroes = [
-        { id: 1, name: 'Орк' },
-        { id: 2, name: 'Шмига' },
-		{ id: 3, name: 'Рексар' },
-		{ id: 4, name: 'Гном' },
-		{ id: 5, name: 'Панда' },
-		{ id: 6, name: 'Маг' },
-		{ id: 7, name: 'Бабка' },
-		{ id: 8, name: 'Ліч' },
-		{ id: 9, name: 'Рейдер' },
-		{ id: 10, name: 'Варлок' },
-		{ id: 11, name: 'Драколицар' },
-		{ id: 12, name: 'Центуріон' },
-		{ id: 13, name: 'Іллюха' },
-		{ id: 14, name: 'Гоблін Алхімік' },
+        { id: 1, name: 'Орк', t:'attack'},
+        { id: 2, name: 'Шмига', t:'evade'},
+		{ id: 3, name: 'Рексар', t:'crit'},
+		{ id: 4, name: 'Гном' , t:'health'},
+		{ id: 5, name: 'Панда', t:'healer' },
+		{ id: 6, name: 'Маг' ,t:'ulti'},
+		{ id: 7, name: 'Бабка' , t:'poison'},
+		{ id: 8, name: 'Ліч', t:'freeze'},
+		{ id: 9, name: 'Рейдер', t:''},
+		{ id: 10, name: 'Варлок', t:'rage' },
+		{ id: 11, name: 'Драколицар', t:'attack|poison' },
+		{ id: 12, name: 'Центуріон', t:'shield|rage' },
+		{ id: 13, name: 'Іллюха', t:'crit|evade' },
+		{ id: 14, name: 'Гоблін Алхімік', t:'healer|wound' },
 		{ id: 15, name: 'Гоблін Інженер' },
-		{ id: 16, name: 'Енча' },
-		{ id: 17, name: 'Інквізитор' },
-		{ id: 18, name: 'Іллідан?' },
-		{ id: 19, name: 'Мороженка' },
-		{ id: 20, name: 'Бичок' },
-		{ id: 21, name: 'Пінгвін' },
-		{ id: 22, name: 'Темпларка' },
-		{ id: 23, name: 'Спектра' },
-		{ id: 24, name: 'Акула' },
-		{ id: 25, name: 'Огр' },
-		{ id: 26, name: 'ЦМка' },
-		{ id: 27, name: 'Свен' },
-		{ id: 28, name: 'Рейнджер' },
-		{ id: 29, name: 'Суккуб' },
-		{ id: 30, name: 'Токсік' },
-		{ id: 31, name: 'Снайпер' },
-		{ id: 32, name: 'Друід' },
-		{ id: 33, name: 'Пудж' },
-		{ id: 34, name: 'Жирний Рікі' },
-		{ id: 35, name: 'Нага' },
+		{ id: 16, name: 'Енча', t:'ulti|sprite' },
+		{ id: 17, name: 'Інквізитор', t:'healer|sprite' },
+		{ id: 18, name: 'Іллідан?', t:'attack|evade' },
+		{ id: 19, name: 'Мороженка', t:'attack|freeze' },
+		{ id: 20, name: 'Бичок',  t:'attack|health' },
+		{ id: 21, name: 'Пінгвін', t:'healer|freeze'},
+		{ id: 22, name: 'Темпларка', t:'evade|poison' },
+		{ id: 23, name: 'Спектра', t:'evade|shield'},
+		{ id: 24, name: 'Акула', t:'health|freeze' },
+		{ id: 25, name: 'Огр', t:'crit|ulti' },
+		{ id: 26, name: 'ЦМка', t:'ulti|freeze' },
+		{ id: 27, name: 'Свен', t:'crit|health' },
+		{ id: 28, name: 'Рейнджер', t:'ulti' },
+		{ id: 29, name: 'Суккуб', t:'health|ulti'},
+		{ id: 30, name: 'Токсік', t:'healer|poison' },
+		{ id: 31, name: 'Снайпер', t:'crit' },
+		{ id: 32, name: 'Друід', t:'sprite' },
+		{ id: 33, name: 'Пудж', t:'health|sprite' },
+		{ id: 34, name: 'Жирний Рікі', t:'wound|sprite' },
+		{ id: 35, name: 'Нага', t:'freeze|wound' },
 		{ id: 36, name: 'Ковбой' },
-		{ id: 37, name: 'Мірана' },
-		{ id: 38, name: 'Черепаха' },
-		{ id: 39, name: 'Чортяка' },
-		{ id: 40, name: 'Павук' },
-		{ id: 41, name: 'Перчик' },
-		{ id: 42, name: 'Рано-маг' },
-		{ id: 43, name: 'Демонесса' },
-		{ id: 44, name: 'Лицар смерті' },
+		{ id: 37, name: 'Мірана', t:'attack|ulti' },
+		{ id: 38, name: 'Черепаха', t:'shield' },
+		{ id: 39, name: 'Чортяка', t:'health|healer' },
+		{ id: 40, name: 'Павук', t:'crit|poison' },
+		{ id: 41, name: 'Перчик', t:'wound|rage' },
+		{ id: 42, name: 'Рано-маг', t:'wound' },
+		{ id: 43, name: 'Демонесса', t:'ulti|rage' },
+		{ id: 44, name: 'Лицар смерті', t:'crit|freeze' },
 		{ id: 45, name: 'Біткоін' },
-		{ id: 46, name: 'Варвар' },
-		{ id: 47, name: 'Мурлок' },
-		{ id: 48, name: 'Паладін' },
-		{ id: 49, name: 'Пеньок' },
-		{ id: 50, name: 'Щитовик' },
-		{ id: 51, name: 'Носатий' },
-		{ id: 52, name: 'Вовчик' },
-		{ id: 53, name: 'Гриб' },
-		{ id: 54, name: 'Дракон' },
+		{ id: 46, name: 'Варвар', t:'crit|health' },
+		{ id: 47, name: 'Мурлок', t:'poison|freeze' },
+		{ id: 48, name: 'Паладін', t:'healer|shield' },
+		{ id: 49, name: 'Пеньок' , t:'shield|sprite'},
+		{ id: 50, name: 'Щитовик', t:'health|shield' },
+		{ id: 51, name: 'Носатий', t:'ulti|wound' },
+		{ id: 52, name: 'Вовчик', t:'attack|healer' },
+		{ id: 53, name: 'Гриб' , t:'poison|sprite'},
+		{ id: 54, name: 'Дракон', t:'health' },
 		{ id: 55, name: 'Хускар' },
-		{ id: 56, name: 'Скаймаг' },
+		{ id: 56, name: 'Скаймаг', t:'speed' },
 		{ id: 57, name: 'Канонір' },
         // Add more heroes here
       ];
 
-
+	
+	
+	
 	$scope.heroes.forEach(h => { h.games = 0; h.totalScore = 0; });
 
 	const saved = localStorage.getItem('heroStats');
