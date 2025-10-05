@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html ng-app="heroApp" ng-controller="MainCtrl">
 <head>
+  <link rel="icon" type="image/png" href="/icons/slricon.png">
   <meta charset="UTF-8">
   <title>Hero Stats Dashboard</title>
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
@@ -277,14 +278,15 @@ img.heroClass {
 
 <div ng-show="activeTab === 'grid'" style="width:100%;display:flex">
   <div class="left-panel" style="scrollbar-width:none">
-  <div class="sort-dropdown" style="display:flex">
-  
+  <div class="sort-dropdown" style="display:flex;flex-direction: row;flex-wrap: wrap;">
+  <div style="margin-right:20px;">
   <label for="heroSort" class="h32">Сортувати за:</label>
   
   <select id="heroSort" ng-model="selectedSortKey"
         ng-options="opt.key as opt.label for opt in sortOptions">
 	</select>
-	<div style="display:flex;margin-left:20px;" class="h32">
+	</div>
+	<div style="display:flex;" class="h32">
 	<label for="heroSort" style="margin-right:15px">Фільтрувати за:</label>
 	<div ng-click="filterClass=''" style="cursor:pointer;line-height:32px;">Усі</div>&nbsp;
 	<div ng-repeat="icon in iconList" class="icon-selector">
@@ -321,38 +323,28 @@ img.heroClass {
   <div class="right-panel">
 	  <div ng-if="selectedHero" style="margin-bottom: 20px; display: flex; gap: 20px;">
 	  <div>
-	  <img ng-src="{{getHeroImage(selectedHero.id)}}" style="width: 150px; height: 150px; object-fit: cover; border-radius: 8px;">	        
+		<img ng-src="{{getHeroImage(selectedHero.id)}}" style="width: 150px; height: 150px; object-fit: cover; border-radius: 8px;">	        
 	  </div>
-
-	  <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;background-color: #212529;" id="selHero">
-  <tr>
-    <td style="padding: 8px; color: #adb5bd;">Герой</td>
-    <td style="padding: 8px; width:125px;text-align:right;font-size:24px;font-weight:bold">{{selectedHero.name}}
-	
-	</td>
-  </tr>
-  <tr>
-  <td>
-  </td>
-  <td style="text-align:right"><img style="width:25px;height:25px"" ng-repeat="img in getHeroSkills(selectedHero)" ng-src="{{img}}" alt="class" class="hero-img"></td>
-  </tr>
-  <tr>
-    <td style="padding: 8px; color: #adb5bd;">Ігр зіграно</td>
-    <td style="padding: 8px;width:100px;text-align:right">{{getHeroStats(selectedHero.id).gamesPlayed}}</td>
-  </tr>
-  <tr>
-    <td style="padding: 8px; color: #adb5bd;">Середнє Місце (Останні 5)</td>
-    <td style="padding: 8px;width:100px;text-align:right">{{getHeroStats(selectedHero.id).avg5 | number:1}}</td>
-  </tr>
-  <tr>
-    <td style="padding: 8px; color: #adb5bd;">Середнє Місце (Останні 25)</td>
-    <td style="padding: 8px;width:100px;text-align:right">{{getHeroStats(selectedHero.id).avg25 | number:1}}</td>
-  </tr>
-  <tr>
-    <td style="padding: 8px; color: #adb5bd;">Середнє Місце (Увесь час)</td>
-    <td style="padding: 8px;width:100px;text-align:right">{{getHeroStats(selectedHero.id).avgAll | number:1}}</td>
-  </tr>
-</table>
+	  <div>	  
+	  	<div style="display:flex">
+			<div style="font-size:24px;font-weight:bold">{{selectedHero.name}}</div>
+			<div style="display:flex;align-items: center; margin-left:5px; margin-top: -5px;"><img style="width:25px;height:25px"" ng-repeat="img in getHeroSkills(selectedHero)" ng-src="{{img}}" alt="class" class="hero-img"></div><br/><br/>
+		</div>
+		Пасивка: <span ng-bind-html="selectedHero.pt"></span><br/><br/><span ng-bind-html="selectedHero.pd"></span><br/><br/>
+		Ульта: <span ng-bind-html="selectedHero.ut"></span><br/><br/><span ng-bind-html="selectedHero.ud"></span>
+	  </div>	 
+	</div>
+	<div>
+	 <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;background-color: #212529;" id="selHero">		 
+		  <tr>
+			<td style="padding: 8px; color: #adb5bd;">Ігр зіграно</td>
+			<td style="padding: 8px;width:100px;text-align:right">{{getHeroStats(selectedHero.id).gamesPlayed}}</td>
+		  </tr>
+		  <tr>
+			<td style="padding: 8px; color: #adb5bd;">Середнє Місце (Останні 5/25/*)</td>
+			<td style="padding: 8px;width:100px;text-align:right">{{getHeroStats(selectedHero.id).avg5 | number:1}} / {{getHeroStats(selectedHero.id).avg25 | number:1}} / {{getHeroStats(selectedHero.id).avgAll | number:1}}</td>
+		  </tr>	
+		</table>
 	</div>
 
 	<div ng-if="selectedHero == null" style='color:red;font-size:24px;padding-bottom:15px'>Виберіть героя щоб додати гру!</div>
@@ -422,7 +414,7 @@ app.filter('optionalFilter', function() {
 
 
   
-  app.controller('MainCtrl', function($scope) {
+  app.controller('MainCtrl', function($scope, $sce) {
       $scope.activeTab = 'history';
 	  $scope.selectedHero = null;	  
 	  $scope.avgPlace = 0.0;
@@ -524,7 +516,7 @@ app.filter('optionalFilter', function() {
 		{ id: 39, name: 'Чортяка', t:'health|healer' },
 		{ id: 40, name: 'Павук', t:'crit|poison' },
 		{ id: 41, name: 'Перчик', t:'wound|rage' },
-		{ id: 42, name: 'Рано-маг', t:'wound' },
+		{ id: 42, name: 'Керфуфуфла', t:'wound' },
 		{ id: 43, name: 'Демонесса', t:'ulti|rage' },
 		{ id: 44, name: 'Лицар смерті', t:'crit|freeze' },
 		{ id: 45, name: 'Біткоін' },
@@ -563,7 +555,11 @@ app.filter('optionalFilter', function() {
 	  if($scope.stats.length>0)
 		$scope.avgPlace = $scope.totalRank / $scope.stats.length;
 	  
-	  $scope.heroes.forEach(h => { if(h.games>0) h.avgRank = h.totalScore / h.games; else h.avgRank = 9;});
+	  $scope.heroes.forEach(h => { 
+	  if(h.games>0) 
+		h.avgRank = h.totalScore / h.games; 
+	  else h.avgRank = 9;	 
+	  });
 
       $scope.getHero = function(id) {
         return $scope.heroes.find(h => h.id === id) || {};
@@ -663,7 +659,476 @@ app.filter('optionalFilter', function() {
 		  $scope.allPlaces[r-1]--;
 		  saveStats(); // persist change
 		};
+		
+		
+		$scope.abilities = [
+		  {
+			"heroId":1,
+			"n": "BLADE CHIEF",
+			"pt": "KILLING INSTINCT",
+			"pd": "Each battle increases the hero's <font color='#A1B7E0'>ATK</font> by 2",
+			"ut": "PENALTY SLASH",
+			"ud": "Slashes out a blade of light towards the enemy, dealing (<font color='#2CCD2C'>130</font>+Self ATK*4) Phys.DMG to the enemy."
+		  },
+		  {
+			"heroId":2,
+			"n": "HIDDEN BLADE",
+			"pt": "MASTERFUL ESCAPE",
+			"pd": "Each defeat increases the hero's <font color='#627eec'>Dodge</font> by 1.",
+			"ut": "DART COMBO",
+			"ud": "Throws 2 darts, each dealing <font color='#2CCD2C'>100</font> Mag.DMG to the enemy, while increasing self <font color='#627eec'>Dodge</font> by 10 for 4s."
+		  },
+		  {
+			"heroId":3,
+			"n": "RAGING COMMANDER",
+			"pt": "LETHAL ATTACK",
+			"pd": "Increases the initial <font color='#ff2429'>CRIT DMG</font> multiplier by 40%.",
+			"ut": "BOMB BOOM",
+			"ud": "Throws a bomb, dealing (<font color='#2CCD2C'>240</font>+<font color='#ff2429'>CRIT</font>*3) <font color='#e2a600'>Holy DMG</font> to the enemy, while reducing the enemy's Max HP by the same amount."
+		  },
+		  {
+			"heroId":4,
+			"n": "DWARFY LORD",
+			"pt": "BATTLE-HARDENED",
+			"pd": "Each battle increases the hero's <font color='#ff9e39'>Max HP</font> by 25",
+			"ut": "STORM HAMMER",
+			"ud": "Throws a steel hammer at the enemy, dealing (<font color='#2CCD2C'>150</font>+Hero's <font color='#ff9e39'>Max HP</font>*<font color='#2CCD2C'>6</font>) Mag.DMG to the enemy."
+		  },
+		  {
+			"heroId":5,
+			"n": "PANDA WARRIOR",
+			"pt": "BOOZE GUARD",
+			"pd": "Each time the hero takes damage, there is a 40% chance to <font color='#eebc15'>recover</font> (Hero Level+5) HP.",
+			"ut": "BONDING TOAST",
+			"ud": "Instantly <font color='#eebc15'>recovers</font> <font color='#2CCD2C'>120</font> HP, while throwing a jar of wine, dealing <font color='#2CCD2C'>200</font> Mag.DMG to the enemy."
+		  },
+		  {
+			"heroId":6,
+			"n": "MYSTIC MAGE",
+			"pt": "ENERGY STACK",
+			"pd": "After the battle begins, each time the <font color='#60ffc9'>ultimate skill</font> is released, the damage of the <font color='#60ffc9'>ultimate skill</font> is increased by 50%, with a maximum increase of 300%",
+			"ut": "MAGIC ORB",
+			"ud": "Summons an energy-formed magic orb that flies towards the enemy, dealing <font color='#2CCD2C'>300</font> Mag.DMG upon hitting the enemy."
+		  },
+		  {
+			"heroId":7,
+			"n": "VENOM SORCERER",
+			"pt": "VENOM DEEPENING",
+			"pd": "Increases all <font color='#0f7f03'>Poison</font> DMG the enemy received by (Hero Level*6).",
+			"ut": "POTENT VENOM",
+			"ud": "Throws a toxic orb that, upon hitting the enemy, inflicts <font color='#2CCD2C'>160</font> stacks of <font color='#0f7f03'>Poison</font> on them."
+		  },
+		  {
+			"heroId":8,
+			"n": "FROSTBORNE LORDDEEP",
+			"pt": "FREEZE",
+			"pd": "Increases stacks of <font color='#80cdff'>Freeze</font> inflicted on enemies by 20%.",
+			"ut": "METEOR ICEFALL",
+			"ud": "Summons ice blocks to fall from the sky, stunning the enemy for <font color='#2CCD2C'>0.8</font>s and dealing <font color='#2CCD2C'>300</font> Phys.DMG."
+		  },
+		  {
+			"heroId":38,
+			"n": "ROYAL KNIGHT",
+			"pt": "NOBLE GEAR",
+			"pd": "Reduces the natural decay of the <font color='#775b46'>Shield</font> by 15%.",
+			"ut": "SHIELD MASTERY",
+			"ud": "Summons a shield array that adds <font color='#2CCD2C'>65</font> stacks of <font color='#775b46'>Shield</font> every 0.5s, lasting for 2s."
+		  },
+		  {
+			"heroId":42,
+			"n": "KERFUFFLE APOSTLE",
+			"pt": "EVIL INVASION",
+			"pd": "When an enemy's HP drops below 33%, instantly inflicts 50+Hero Level*5) stacks of <font color='#674d7d'>Wound</font> on them. Can only be triggered once per battle.",
+			"ut": "TWIN ORBS",
+			"ud": "Summons two orbs to attack the enemy, dealing <font color='#2CCD2C'>150</font> Phys.DMG and <font color='#2CCD2C'>150</font> Mag.DMG respectively."
+		  },
+		  {
+			"heroId":30,
+			"n": "PLAGUE WARLOCK",
+			"pt": "VENOM HEALING",
+			"pd": "Whenever the enemy takes <font color='#0f7f03'>Poison</font> DMG, <font color='#eebc15'>recovers</font> HP equal to 15% of that damage, at least <font color='#eebc15'>recovering</font> 1.",
+			"ut": "PLAGUE FLUX",
+			"ud": "Instantly <font color='#eebc15'>recovers</font> <font color='#2CCD2C'>150</font> HP, while also throwing a poison bomb that inflicts <font color='#2CCD2C'>100</font> stacks of <font color='#0f7f03'>Poison</font> on the enemy."
+		  },
+		  {
+			"heroId":50,
+			"n": "TRIBE WARRIOR",
+			"pt": "HP ENHANCE",
+			"pd": "Each unique <font color='#775b46'>Shield branch</font> skill possessed increases the hero's <font color='#ff9e39'>Max HP</font> by 35.",
+			"ut": "VITALITY SHIELD",
+			"ud": "Instantly grants self (Hero Max HP*<font color='#2CCD2C'>7%</font>) stacks of <font color='#775b46'>Shield</font>, while hurling a battle axe at the enemy, dealing <font color='#2CCD2C'>170</font> Phys.DMG."
+		  },
+		  {
+			"heroId":37,
+			"n": "TIGER SHOOTER",
+			"pt": "LUNAR BLESSING",
+			"pd": "Each Ultimate cast increases <font color='#A1B7E0'>ATK SPD</font> by 30%, lasting for 3s.",
+			"ut": "LUNAR THUNDERPEN",
+			"ud": "Summons lightning to strike the enemy instantly, dealing <font color='#2CCD2C'>200</font> Mag.DMG. Additionally, increases self <font color='#A1B7E0'>ATK</font> by <font color='#2CCD2C'>3</font>. This effect can stack."
+		  },
+		  {
+			"heroId":13,
+			"n": "DEMON SHADOW",
+			"pt": "EVIL RESURGENCE",
+			"pd": "During the battle, increases both <font color='#627eec'>Dodge</font> and <font color='#ff2429'>CRIT</font> by {1} every <font color='#eebc15'>1.5</font>s, up to 10.",
+			"ut": "STORM RAVAGE",
+			"ud": "Summons a storm to blow towards the enemy, dealing Mag.DMG equal to (<font color='#627eec'>Dodge</font>+<font color='#ff2429'>CRIT</font>)*<font color='#2CCD2C'>4</font>)."
+		  },
+		  {
+			"heroId":35,
+			"n": "NAGA QUEEN",
+			"pt": "FREEZE CURSE",
+			"pd": "Every 30 stacks of <font color='#80cdff'>Freeze</font> inflicted on the enemy additionally applies 25 stacks of <font color='#674d7d'>Wound</font> to the enemy.",
+			"ut": "ICEBURST BOMB",
+			"ud": "Launches 6 ice bombs, each dealing <font color='#2CCD2C'>30</font> Mag.DMG on hit and inflicting <font color='#2CCD2C'>30</font> stacks of <font color='#80cdff'>Freeze</font>."
+		  },
+		  {
+			"heroId":20,
+			"n": "BULL HEAD CHIEF",
+			"pt": "FIGHT WITH GROWING VALOUR",
+			"pd": "For every 100 points that the <font color='#ff9e39'>current health value</font> of the hero is less than the <font color='#ff9e39'>maximum health value</font>, the <font color='#A1B7E0'>attack power</font> increases by 1 point.",
+			"ut": "SHOCKWAVE",
+			"ud": "Launch 2 energy waves at the enemy. Each energy wave deals <font color='#2CCD2C'>100</font> points of magical damage. For every 15 points of <font color='#A1B7E0'>attack power</font>, an additional energy wave is launched."
+		  },
+		  {
+			"heroId":44,
+			"n": "THE TYRANT OF FROST SHADOW",
+			"pt": "PIERCING COLD FROST",
+			"pd": "For every 2 stacks of <font color='#80cdff'>Freeze</font> on the enemy, your <font color='#ff2429'>Critical Strike Damage</font> will be increased by 1%.",
+			"ut": "FROZEN CAGE",
+			"ud": "Envelop the enemies in frost. Add <font color='#2CCD2C'>10</font> stacks of <font color='#80cdff'>Freeze</font> to them every 0.5 s. During this period, the physical damage you deal will definitely <font color='#ff2429'>Critical Strike</font>, lasting for 2 s."
+		  },
+		  {
+			"heroId":48,
+			"n": "HOLY KNIGHT",
+			"pt": "REPEL EVIL",
+			"pd": "Whenever the enemy casts the <font color='#60ffc9'>Ultimate</font>, there is a 80% chance to gain {1} stacks of <font color='#775b46'>Shield</font> on the hero.",
+			"ut": "SACRED VERDICT",
+			"ud": "Summons a sacred hammer to descend from the sky, dealing (<font color='#2CCD2C'>200</font>+Self <font color='#775b46'>Shield</font> Stacks) Mag.DMG to the enemy, while <font color='#eebc15'>recovering</font> HP equal to 60% of that damage."
+		  },
+		  {
+			"heroId":51,
+			"n": "ASTRAL MAGE",
+			"pt": "ENERGY DRAIN",
+			"pd": "Each time the hero takes Mag.DMG, there is a 100$ chance to recover 1 <font color='#60ffc9'>Energy</font>.",
+			"ut": "Raven's Verdict",
+			"ud": "Summons a crow to strike the enemy, dealing <font color='#2CCD2C'>220</font> Mag.DMG. Each 1 stacks of <font color='#674d7d'>Wound</font> on the enemy increases <font color='#60ffc9'>Ultimate DMG</font> this time by 1%."
+		  },
+		  {
+			"heroId":22,
+			"n": "SHADOW ASSASSIN",
+			"pt": "DODGE STEAL",
+			"pd": "When a battle starts, steals 5 <font color='#627eec'>Dodge</font> from the enemy.",
+			"ut": "WHEEL OF REVENGE",
+			"ud": "Throws a venom wheel at the enemy to deal <font color='#2CCD2C'>120</font> Phys.DMG. On hit, inflicts (Sum of <font color='#627eec'>Dodge</font> of Both Sides*<font color='#2CCD2C'>2</font>) stacks of <font color='#0f7f03'>Poison</font>."
+		  },
+		  {
+			"heroId":32,
+			"n": "JUNGLE PROPHET",
+			"pt": "SUPPORTIVE AURA",
+			"pd": "<font color='#ff91d2'>Sprites</font> get (Hero Level *1.5) reduced damage.",
+			"ut": "ENTANGLEMENT",
+			"ud": "Summons vines to entangle the enemy, dealing <font color='#2CCD2C'>90</font> Mag.DMG every 1s for 3s. Each <font color='#ff91d2'>Sprite</font> on the battlefield when casting the Ultimate extends the duration of the vines by 1s."
+		  },
+		  {
+			"heroId":34,
+			"n": "CHAOS OVERLORD",
+			"pt": "WICKED REFORM",
+			"pd": "When a <font color='#ff91d2'>Sprite</font> dies, it inflicts (30+<font color='#ff91d2'>Sprite's</font> Max HP*5%) stacks of <font color='#674d7d'>Wound</font> on the enemy.",
+			"ut": "COMMAND MINIONS",
+			"ud": "Summons a meteor to crash down on the enemy, dealing <font color='#2CCD2C'>200</font> Phys.DMG. If a <font color='#ff91d2'>Sprite</font> is alive on the battlefield, an additional <font color='#ff91d2'>Sprite</font> with (<font color='#2CCD2C'>50</font> + Hero Level * 10) HP is summoned."
+		  },
+		  {
+			"heroId":11,		  
+			"n": "VENOM DRAGONIER",
+			"pt": "VICTORY CHASE",
+			"pd": "Increases self <font color='#A1B7E0'>ATK SPD</font> by 6% for every 10% reduction of the enemy's current HP compared to the Max HP.",
+			"ut": "VIRULENT GALE",
+			"ud": "Summons a virulent wind around the enemy, instantly inflicting <font color='#2CCD2C'>70</font> stacks of <font color='#0f7f03'>Poison</font> on them. For the next 3s, each Base Attack that hits the enemy inflicts an additional <font color='#2CCD2C'>10</font> stacks of <font color='#0f7f03'>Poison</font>."
+		  },
+		  {
+			"heroId":26,
+			"n": "FROST MAGE",
+			"pt": "ICY WISDOM",
+			"pd": "Whenever the <font color='#80cdff'>Freeze</font> effect is added to an enemy, there is a 80% probability to recover 1 points of <font color='#60ffc9'>Energy</font>.",
+			"ut": "BLIZZARD",
+			"ud": "Summon {0} pieces of ice to fall from the sky and smash into enemies. Each piece of ice deals <font color='#2CCD2C'>60</font> points of magic damage. For every 25 stacks of <font color='#80cdff'>Freeze</font> on the enemy, an additional 1 pieces of ice will be summoned."
+		  },
+		  {
+			"heroId":14,
+			"n": "ALCHEMIST",
+			"pt": "ACID BOMB",
+			"pd": "Every time the hero has cumulatively endured damage equal to 10% of the <font color='#ff9e39'>maximum HP</font>, it will add 10 stacks of <font color='#674d7d'>Wound</font> to the enemy.",
+			"ut": "CHEMICAL STORM",
+			"ud": "Recover <font color='#2CCD2C'>50</font> health every <font color='#eebc15'>0.8</font> s, lasting 4 s. During this period, all <font color='#674d7d'>Wound</font> applied are increased by an additional <font color='#2CCD2C'>5</font> stacks."
+		  },
+		  {
+			"heroId":23,
+			"n": "GOD OF VENGEANCE",
+			"pt": "RISING SHADOWS",
+			"pd": "When the hero's <font color='#ff9e39'>HP</font> falls below 40%, increase <font color='#627eec'>Dodge</font> by 10 points.",
+			"ut": "SHADOW EMPOWERMENT",
+			"ud": "Apply <font color='#775b46'>Shield</font> equal to (<font color='#627eec'>Dodge</font>*3) to yourself with Shadow Empowerment, while throwing a Shadow Dagger to deal <font color='#2CCD2C'>200</font> physical damage to enemies."
+		  },
+		  {
+			"heroId":17,
+			"n": "SPRITE PRIEST",
+			"pt": "SHADOW SHIFT",
+			"pd": "When a <font color='#ff91d2'>Sprite</font> is present, the hero's <font color='#eebc15'>HP Regen</font> is reduced by 50%, but each <font color='#eebc15'>recovery</font> deals (<font color='#eebc15'>HP Regen Amount</font>*200%) Mag.DMG to the enemy.",
+			"ut": "ARROW OF AGONY",
+			"ud": "Launching a Shadow Arrow deals <font color='#2CCD2C'>210</font> points of magic damage to the enemy and reduces the enemy's recovery by 80% within 3 s."
+		  },
+		  {
+			"heroId":15,
+			"n": "GOBLIN ENGINEER",
+			"pt": "ENGINEERING UPGRADE",
+			"pd": "increase Mag.DMG by 2 points for each different skill you possess.",
+			"ut": "FIREPOWER COVERAGE",
+			"ud": "Fire 10 rockets to bombard the enemy, each rocket dealing (25 + Hero Level * 1.5) physical damage."
+		  },
+		  {
+			"heroId":18,
+			"n": "EVIL BREAKER",
+			"pt": "NULLIFY ATTACK",
+			"pd": "Each Base Attack has a 75% chance to reduce the enemy's <font color='#60ffc9'>Energy</font> by 1.",
+			"ut": "VOID BURST",
+			"ud": "Concentrates void energy to strike the enemy, instantly dealing (<font color='#2CCD2C'>300</font>+[<font color='#627eec'>Self Dodge</font>-<font color='#627eec'>Enemy Dodge</font>]*5) Mag.DMG."
+		  },
+		  {
+			"heroId":25,
+			"n": "FLAME COLOSSUS",
+			"pt": "CHAIN CAST",
+			"pd": "The Ultimate has a (30+<font color='#ff2429'>Self Crit</font>*0.8)%) chance to cast again, up to 4 additional casts. (Recasts do not count towards the Ultimate usage limit).",
+			"ut": "FIREBALL",
+			"ud": "Hurls a fireball at the enemy, dealing <font color='#2CCD2C'>200</font> Mag.DMG and stunning them for 0.3s on hit."
+		  },
+		  {
+			"heroId":24,
+			"n": "DEEPSEA GIANT",
+			"pt": "RESILIENT SKIN",
+			"pd": "Every 20 HP lost reduces the hero's <font color='#0f7f03'>Poison</font>, <font color='#80cdff'>Freeze</font>, and <font color='#674d7d'>Wound</font> by 1 stacks each.",
+			"ut": "SURGING TIDE",
+			"ud": "Summons a waterspout engulfed in crashing waves to strike the enemy, dealing (<font color='#2CCD2C'>100</font>+Self <font color='#ff9e39'>Lost HP</font>*3%) Mag.DMG and inflicting an equal amount of <font color='#80cdff'>Freeze</font> stacks on the enemy."
+		  },
+		  {
+			"heroId":53,
+			"n": "TOXIC MUSHROOM",
+			"pt": "ACTIVE TOXIN",
+			"pd": "When you have a sprite alive on the field, enemies take additional <font color='#0f7f03'>poison damage</font> equal to (enemy hero's <font color='#ff9e39'>current health</font>*{0:p}).",
+			"ut": "CORROSIVE POISON",
+			"ud": "Concentrate venom to damage enemies, reducing their <font color='#A1B7E0'>attack speed</font> by {0:plr} and adding <font color='#2CCD2C'>{2:lr}</font> stacks of <font color='#0f7f03'>poison</font> every {1:h} s for {3} s."
+		  },
+		  {
+			"heroId":49,
+			"n": "TREANT GUARD",
+			"pt": "THORN COUNTER",
+			"pd": "For every {0} damage actually blocked by the hero's <font color='#775b46'>Shield</font>, the <font color='#ff91d2'>Sprite</font> fires an energy blast at the enemy and deals {1} Mag.DMG.",
+			"ut": "NATURE WARD",
+			"ud": "Summons a <font color='#ff91d2'>Sprite</font> with {0} HP, granting the hero <font color='#2CCD2C'>{1:r}</font> stacks of <font color='#775b46'>Shield</font>, while reducing the ally <font color='#ff91d2'>Sprite's DMG Share</font> to {2:p}, lasting for {3}s."
+		  },
+		  {
+			"heroId":52,
+			"n": "LUNAR HUNTER",
+			"pt": "HUNTER'S FEAST",
+			"pd": "Normal attacks deal bonus magic damage based on a percentage of the enemy’s <font color='#ff9e39'>current HP</font>.and <font color='#eebc15'>recover</font> the same amount of HP.",
+			"ut": "FRENZY STANCE",
+			"ud": "Go into a frenzy! Stealing {0:p} of the enemy’s <font color='#A1B7E0'>attack speed</font> and increasing your HP <font color='#eebc15'>recovery</font> effect by <font color='#2CCD2C'>{1:lr}</font> for {2}s."
+		  },
+		  {
+			"heroId":28,
+			"n": "FOREST RANGER",
+			"pt": "ARROW HAIL",
+			"pd": "Fires {1} arrows at the enemy every {0}s, each dealing {2} Phys.DMG. Each time the Ultimate is cast, it advances the next arrow hail by {3}s.",
+			"ut": "VEILED ARROW",
+			"ud": "Fires a massive light arrow dealing <font color='#2CCD2C'>{0:r}</font> Mag.DMG to the enemy, and dodges the next {1} instances of Phys.DMG."
+		  },
+		  {
+			"heroId":27,
+			"n": "BLOODTHIRSTY BERSERKER",
+			"pt": "FLESH AND BLOOD PROLIFERATION",
+			"pd": "When a <font color='#ff2429'>Critical Hit</font> occurs, steal (the maximum health value of your own hero * {0:p}) points of <font color='#ff9e39'>Maximum Health</font> from the enemy hero.",
+			"ut": "FLESH AND BLOOD SEGMENTATION",
+			"ud": "Summon sharp blades to divide the enemies, instantly dealing (<font color='#2CCD2C'>{0:lr}</font> + the difference between the two sides' <font color='#ff9e39'>Maximum Health</font> * {1:p}) points of physical damage."
+		  },
+		  {
+			"heroId":10,
+			"n": "FURIOUS MAGE",
+			"pt": "TOUCH TRIGGER",
+			"pd": "When <font color='#ff9e39'>the enemy's HP</font> drops below {0:p}, every {1}s, increases the hero's <font color='#92122b'>Rage</font> by {2}, lasting for {3}s. Can only be triggered once per battle.",
+			"ut": "DESTRUCTION BEAM",
+			"ud": "Emits a beam charged with destructive energy, dealing ({0:vlr}+<font color='#92122b'>Sum of Rage of Both Sides</font>) Mag.DMG on the enemy."
+		  },
+		  {
+			"heroId":43,
+			"n": "PYROMANCER",
+			"pt": "BLAZING ENERGY",
+			"pd": "Gain {1} <font color='#60ffc9'>Energy</font> for every {0} <font color='#90172f'>Rage</font> accumulated.",
+			"ut": "Flying Fire Meteor",
+			"ud": "Deals (<font color='#2CCD2C'>{0:lr}</font>+<font color='#90172f'>Current Rage</font>*{1:plr}) magic damage to enemies."
+		  },
+		  {
+			"heroId":33,
+			"n": "STITCHED BEHEMOTH",
+			"pt": "FLESH REMODEL",
+			"pd": "After a <font color='#ff91d2'>Sprite</font> dies, the hero's {0:p} HP will be reshaped into a new <font color='#ff91d2'>Sprite</font>. Reshaping is not possible when the <font color='#ff9e39'>hero's HP</font> is below {1}.",
+			"ut": "WRAITH STRIKE",
+			"ud": "Sends out a shockwave dealing (<font color='#2CCD2C'>{0:r}</font>+<font color='#ff91d2'>Number of Sprites Summoned</font> This Battle*<font color='#2CCD2C'>{1:r}</font>) Mag.DMG to the enemy."
+		  },
+		  {
+			"heroId":12,
+			"n": "SILENT GUARD",
+			"pt": "RAISE THE SOLID SHIELD HIGH",
+			"pd": "In the enraged state, each stack of <font color='#775b46'>shield</font> can block an additional {0} points of damage.",
+			"ut": "PSIONIC ECHO",
+			"ud": "Condense energy and descend from the sky, dealing (<font color='#2CCD2C'>{0:lr}</font> + the actual damage blocked by the shields accumulated during the two ultimate skill releases <font color='#775b46'>cumulative shield actual damage blocked</font> * {1:p}) points of magic damage to enemy heroes."
+		  },
+		  {
+			"heroId":21,
+			"n": "Penguin Captain",
+			"pt": "COLD NOURISHMENT",
+			"pd": "Every {0:h} s, <font color='#eebc15'>recover</font> yourself for ({1} + {2:p} * enemy's <font color='#80cdff'>Freeze stacks</font>) HP.",
+			"ut": "FROST ORB",
+			"ud": "Launching an orb, deals (<font color='#2CCD2C'>{0:lr}</font> + <font color='#eebc15'>total HP recovered during travel</font> * {1:p}) magic damage to the enemy."
+		  },
+		  {
+			"heroId":40,
+			"n": "BLOODSHED MONARCH",
+			"pt": "VENOMOUS FANG",
+			"pd": "Your <font color='#0f7f03'>Poison DMG</font> can also critically hit,with a fixed {0:p} chance.",
+			"ut": "VENOM WRAP",
+			"ud": "Standing on toxic marshland, inflicts <font color='#2CCD2C'>{1:r}</font> stacks of <font color='#0f7f03'>Poison</font> on enemies every {0}s, accelerating <font color='#0f7f03'>Poison</font> DMG application by {2:p}, lasting for {3}s."
+		  },
+		  {
+			"heroId":19,
+			"n": "GLACIAL SPRITE",
+			"pt": "MOIST VAPOR",
+			"pd": "Each time the <font color='#A1B7E0'>Base Attack</font> hits the enemy, it inflicts an additional (<font color='#A1B7E0'>Self Base Attack Count</font>-<font color='#A1B7E0'>Enemy Base Attack Count</font>) stacks of <font color='#80cdff'>Freeze</font>.",
+			"ut": "ELEMENTAL MIGHT",
+			"ud": "Increases the hero's <font color='#A1B7E0'>ATK SPD</font> by {0:p}, which ends after launching the Base Attack <font color='#2CCD2C'>{1:r}</font> times."
+		  },
+		  {
+			"heroId":41,
+			"n": "PEPPER SHOOTER",
+			"pt": "BULLET BURST",
+			"pd": "For every {0} points of <font color='#90172f'>Rage</font> accumulated, fire a bullet that deals {1} magic damage. If a single bullet deals more than {2} damage to an enemy hero, another bullet is fired.",
+			"ut": "ENCHANTED BULLET",
+			"ud": "Fire a bullet and curse the enemy, lasting for {4} s. During this period, apply <font color='#2CCD2C'>{3:lr}</font> stacks of <font color='#674d7d'>Wound</font> to the enemy every {2} s."
+		  },
+		  {
+			"heroId":16,
+			"n": "WOODLAND DRYAD",
+			"pt": "WILD ASSISTANCE",
+			"pd": "Every {0} s after battle starts, a <font color='#ff91d2'>SPRITE</font> will come to your aid with ({1}+hero level*{2}) health.",
+			"ut": "SAVAGE GROWTH",
+			"ud": "Unleash the power of the wild, dealing (<font color='#2CCD2C'>{0:lr}</font> + <font color='#2CCD2C'>{1:lr}</font> * number of <font color='#ff91d2'>SPRITE</font> on the field) magic damage to enemies. And recover {2} health to the <font color='#ff91d2'>SPRITE</font> with the lowest health percentage."
+		  },
+		  {
+			"heroId":29,
+			"n": "EVIL SPIRIT MATRIARCH",
+			"pt": "EVIL SPIRIT TREASURE BEAD",
+			"pd": "Recover an additional ({1} * <font color='#ff9e39'>percentage of current lost health</font>) points of <font color='#60ffc9'>energy</font> every {0} s.",
+			"ut": "SOUL SIPHON",
+			"ud": "Send out evil spirits flying towards the enemies, dealing (<font color='#2CCD2C'>{0:lr}</font> + the <font color='#ff9e39'>maximum health</font> of the enemy heroes * {1:p}) points of magic damage, and stealing the <font color='#ff9e39'>maximum health</font> equal to the amount of damage the enemy heroes have received."
+		  },
+		  {
+			"heroId":9,
+			"n": "WOLF HUNTER",
+			"pt": "WEALTH PLUNDER",
+			"pd": "Gain {0} gold after each victorious battle,while the opponent loses {1} gold,with a ({2:p}+Player Hero Level * {3:p}) chance to plunder double.",
+			"ut": "NET TOSS",
+			"ud": "Throw a net to ensnare the enemy, stunning them for {0} s (unable to attack, dodge, or use ultimate skills)."
+		  },
+		  {
+			"heroId":5,
+			"n": "TRIBAL WARSOUL",
+			"pt": "BLOODLUST",
+			"pd": "The TRIBAL WARSOUL is filled with a desire for battle, increasing player damage by +{0}.",
+			"ut": "SPEAR OF SACRIFICE",
+			"ud": "Throw a spear of light at the enemy, dealing ({0} + Player Damage * {1}) magic damage upon hit."
+		  },
+		  {
+			"heroId":31,
+			"n": "DWARVEN VETERAN",
+			"pt": "HEADSHOT",
+			"pd": "Each <font color='#ff2429'>critical strike</font> will inflict an additional stun for {0} s after dealing damage to the enemy.",
+			"ut": "RAPID FIRE",
+			"ud": "Launch continuous explosive shells, dealing <font color='#2CCD2C'>{1:lr}</font> points of physical damage to enemies every {0} s,lasting for {2} s."
+		  },
+		  {
+			"heroId":46,
+			"n": "WARLORD",
+			"pt": "Warhammer Pursuit",
+			"pd": "Each <font color='#ff2429'>Crit</font> deals bonus damage based on {0:p} of the <font color='#ff9e39'>HERO's</font> Max HP.",
+			"ut": "Inferno of Strife",
+			"ud": "Unleashes {0} flames from all around, striking enemies. Each flame deals <font color='#2CCD2C'>{1:lr}</font> Physical Damage."
+		  },
+		  {
+			"heroId":39,
+			"n": "DEMON DUKE",
+			"pt": "Abyssal Amplification",
+			"pd": "During combat, {0:p} of <font color='#eebc15'>healing received</font> increases the <font color='#ff9e39'>HERO's</font> Max HP for this battle.",
+			"ut": "Flames of Retribution",
+			"ud": "Hurls Flames of Retribution at an enemy, dealing (<font color='#2CCD2C'>{0:lr}</font> + sum of both <font color='#ff9e39'>HEROES'</font> Max HP * {1:p}) Magic Damage."
+		  },
+		  {
+			"heroId":47,
+			"n": "CHILLLIGHT PROPHET",
+			"pt": "Plague Frost Orb",
+			"pd": "When applying <font color='#0f7f03'>Poison</font> to an enemy, there is a {0:p} chance to also inflict {1} stacks of <font color='#80cdff'>Freeze</font>.",
+			"ut": "Freezing Venom",
+			"ud": "Throw {0} frost venom vials at the enemy. Each vial applies <font color='#2CCD2C'>{1:lr}</font> stacks of <font color='#0f7f03'>Poison</font> and <font color='#80cdff'>Freeze</font>.For every {2:p} HP the enemy loses, throw {3} extra vials."
+		  },
+		  {
+			"heroId":45,
+			"n": "LORD STINGY",
+			"pt": "Accumulate Wealth",
+			"pd": "Increases the basic interest cap by {0} gold.",
+			"ut": "Power of Money",
+			"ud": "Throws a gold bomb that deals (<font color='#2CCD2C'>{0:lr}</font> + current Gold * {1:p}) Physical Damage to the enemy."
+		  },
+		  {
+			"heroId":54,
+			"n": "Dragon Overlord",
+			"pt": "Overlord's Form",
+			"pd": "For each unique skill you possess, increase <font color='#ff9e39'>Max HP</font> by {0}.",
+			"ut": "Tyrant's Breath",
+			"ud": "Unleash dragonfire, dealing (<font color='#2CCD2C'>{0:lr}</font> + combined level of both heroes * {1}) Magic Damage to the target."
+		  },
+		  {
+			"heroId":36,
+			"n": "Bounty Hunter",
+			"pt": "Golden Decadence",
+			"pd": "Gain {1} gold whenever you acquire {0} common skills in a round.",
+			"ut": "Silver Bullet Barrage",
+			"ud": "Fire {1} silver bullets at the enemy, each dealing <font color='#2CCD2C'>{0:lr}</font> Holy Damage. For every {2} Gold the enemy has, fire {3} additional bullets."
+		  },
+		  {
+			"heroId":56,
+			"n": "Sky Hurricane",
+			"pt": "Storm Momentum",
+			"pd": "When dealing damage, {0:p} chance to gain {1} stacks of <font color='#5d82af'>Haste</font>.",
+			"ut": "Thousand Blade Gale",
+			"ud": "Summon a storm around the enemy, dealing <font color='#2CCD2C'>{1:lr}</font> magic dmg every {0:h}s for {2}s."
+		  },
+		  {
+			"heroId":57,
+			"n": "Goblin Gunner",
+			"pt": "Special Delivery",
+			"pd": "Whenever you fire a non-basic attack projectile, fire a copy of it that deals {0:p} of the original projectile's damage.",
+			"ut": "Barrage",
+			"ud": "Fire {0} random non-basic attack projectiles, each dealing at least <font color='#2CCD2C'>{1:lr}</font> damage."
+		  }
+		];
 
+	$scope.heroes.forEach(h => { 
+	  let abilities = $scope.abilities.find(p => p.heroId === h.id) || {};
+	  if(abilities) {
+		h.pt = $sce.trustAsHtml(abilities.pt);
+		h.pd = $sce.trustAsHtml(abilities.pd);
+		h.ut = $sce.trustAsHtml(abilities.ut);
+		h.ud = $sce.trustAsHtml(abilities.ud);
+	  }
+	  });
 
 	function getCurrentFormattedDate() {
 	  let dt = new Date();
