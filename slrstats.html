@@ -334,8 +334,8 @@ img.heroClass {
 		<b style="color:#d96a6a">Ульта:</b> <span ng-bind-html="selectedHero.ud"></span>
 	  </div>	 
 	</div>
-	<div>
-	 <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;background-color: #212529;" id="selHero">		 
+	<div ng-if="selectedHero">
+	 <table  style="width: 100%; border-collapse: collapse; margin-bottom: 20px;background-color: #212529;" id="selHero">		 
 		  <tr>
 			<td style="padding: 8px; color: #adb5bd;">Ігр зіграно</td>
 			<td style="padding: 8px;width:100px;text-align:right">{{getHeroStats(selectedHero.id).gamesPlayed}}</td>
@@ -492,7 +492,7 @@ app.filter('optionalFilter', function() {
 		{ id: 15, name: 'Гоблін Інженер' },
 		{ id: 16, name: 'Енча', t:'ulti|sprite' },
 		{ id: 17, name: 'Інквізитор', t:'healer|sprite' },
-		{ id: 18, name: 'Іллідан?', t:'attack|evade' },
+		{ id: 18, name: 'Антимаг', t:'attack|evade' },
 		{ id: 19, name: 'Мороженка', t:'attack|freeze' },
 		{ id: 20, name: 'Бичок',  t:'attack|health' },
 		{ id: 21, name: 'Пінгвін', t:'healer|freeze'},
@@ -525,7 +525,7 @@ app.filter('optionalFilter', function() {
 		{ id: 48, name: 'Паладін', t:'healer|shield' },
 		{ id: 49, name: 'Пеньок' , t:'shield|sprite'},
 		{ id: 50, name: 'Щитовик', t:'health|shield' },
-		{ id: 51, name: 'Носатий', t:'ulti|wound' },
+		{ id: 51, name: 'Ґоґа', t:'ulti|wound' },
 		{ id: 52, name: 'Вовчик', t:'attack|healer' },
 		{ id: 53, name: 'Гриб' , t:'poison|sprite'},
 		{ id: 54, name: 'Дракон', t:'health' },
@@ -770,7 +770,7 @@ app.filter('optionalFilter', function() {
 			"heroId":13,
 			"n": "DEMON SHADOW",
 			"pt": "EVIL RESURGENCE",
-			"pd": "During the battle, increases both <font color='#627eec'>Dodge</font> and <font color='#ff2429'>CRIT</font> by {1} every <font color='#eebc15'>1.5</font>s, up to 10.",
+			"pd": "During the battle, increases both <font color='#627eec'>Dodge</font> and <font color='#ff2429'>CRIT</font> by 1 every <font color='#eebc15'>1.5</font>s, up to 10.",
 			"ut": "STORM RAVAGE",
 			"ud": "Summons a storm to blow towards the enemy, dealing Mag.DMG equal to (<font color='#627eec'>Dodge</font>+<font color='#ff2429'>CRIT</font>)*<font color='#2CCD2C'>4</font>)."
 		  },
@@ -810,7 +810,7 @@ app.filter('optionalFilter', function() {
 			"heroId":51,
 			"n": "ASTRAL MAGE",
 			"pt": "ENERGY DRAIN",
-			"pd": "Each time the hero takes Mag.DMG, there is a 100$ chance to recover 1 <font color='#60ffc9'>Energy</font>.",
+			"pd": "Each time the hero takes Mag.DMG, there is a 100% chance to recover 1 <font color='#60ffc9'>Energy</font>.",
 			"ut": "Raven's Verdict",
 			"ud": "Summons a crow to strike the enemy, dealing <font color='#2CCD2C'>220</font> Mag.DMG. Each 1 stacks of <font color='#674d7d'>Wound</font> on the enemy increases <font color='#60ffc9'>Ultimate DMG</font> this time by 1%."
 		  },
@@ -852,7 +852,7 @@ app.filter('optionalFilter', function() {
 			"pt": "ICY WISDOM",
 			"pd": "Whenever the <font color='#80cdff'>Freeze</font> effect is added to an enemy, there is a 80% probability to recover 1 points of <font color='#60ffc9'>Energy</font>.",
 			"ut": "BLIZZARD",
-			"ud": "Summon {0} pieces of ice to fall from the sky and smash into enemies. Each piece of ice deals <font color='#2CCD2C'>60</font> points of magic damage. For every 25 stacks of <font color='#80cdff'>Freeze</font> on the enemy, an additional 1 pieces of ice will be summoned."
+			"ud": "Summon 5 pieces of ice to fall from the sky and smash into enemies. Each piece of ice deals <font color='#2CCD2C'>60</font> points of magic damage. For every 25 stacks of <font color='#80cdff'>Freeze</font> on the enemy, an additional 1 pieces of ice will be summoned."
 		  },
 		  {
 			"heroId":14,
@@ -956,7 +956,7 @@ app.filter('optionalFilter', function() {
 			"pt": "TOUCH TRIGGER",
 			"pd": "When <font color='#ff9e39'>the enemy's HP</font> drops below 75%, every 0.5s, increases the hero's <font color='#92122b'>Rage</font> by 30, lasting for 5s. Can only be triggered once per battle.",
 			"ut": "DESTRUCTION BEAM",
-			"ud": "Emits a beam charged with destructive energy, dealing (font color='#2CCD2C'>200</font>+<font color='#92122b'>Sum of Rage of Both Sides</font>) Mag.DMG on the enemy."
+			"ud": "Emits a beam charged with destructive energy, dealing (<font color='#2CCD2C'>200</font>+<font color='#92122b'>Sum of Rage of Both Sides</font>) Mag.DMG on the enemy."
 		  },
 		  {
 			"heroId":43,
@@ -1010,7 +1010,7 @@ app.filter('optionalFilter', function() {
 			"heroId":41,
 			"n": "PEPPER SHOOTER",
 			"pt": "BULLET BURST",
-			"pd": "For every 100 points of <font color='#90172f'>Rage</font> accumulated, fire a bullet that deals 120 magic damage. If a single bullet deals more than {2} damage to an enemy hero, another bullet is fired.",
+			"pd": "For every 100 points of <font color='#90172f'>Rage</font> accumulated, fire a bullet that deals 120 magic damage. If a single bullet deals more than 120 damage to an enemy hero, another bullet is fired.",
 			"ut": "ENCHANTED BULLET",
 			"ud": "Fire a bullet and curse the enemy, lasting for 4 s. During this period, apply <font color='#2CCD2C'>30</font> stacks of <font color='#674d7d'>Wound</font> to the enemy every <font color='#eebc15'>1</font> s."
 		  },
