@@ -72,7 +72,7 @@
     display: flex;
     height: calc(100vh - 110px);
 	justify-content: center;
-	padding-top:50px;
+	padding-top:20px;
 	
   }
 
@@ -229,6 +229,35 @@ img.heroClass {
     width: 25px;
     padding-top: 5px;
 }
+
+.popup-overlay {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center;
+  z-index: 9999;
+}
+.popup-box {
+  background: #212529; padding: 20px; border-radius: 6px; width: 400px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+}
+
+.header-button {
+  display: inline-block;
+  background-color: #007bff;
+  color: white;
+  padding: 6px 12px;
+  margin-left: 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  text-align: center;
+  user-select: none;
+}
+
+.header-button:hover {
+  background-color: #0056b3;
+}
+
+
 </style>
 
 </head>
@@ -243,8 +272,26 @@ img.heroClass {
 	<div class="gstats" style="padding-left:15px;cursor:pointer" ng-click="showAllPlaced=!showAllPlaced" ng-show="showAllPlaced">{{getAllPlacesString()}}</div>
   </div>  
 </header>
+<div style="text-align: right; margin-top: 8px; color:gray !important; font-size:13px;margin-right:12px">
+  <a href="" style="color: gray;text-decoration: none;" ng-click="exportStats()">Експорт</a> |
+  <a href="" style="color: gray;text-decoration: none;" ng-click="importStats()">Імпорт</a>
+</div>
 
 <div class="content">
+<div ng-show="showExportImportPopup" class="popup-overlay">
+  <div class="popup-box">
+    <h3 style="margin-top:0px">{{popupMode === 'export' ? 'Експорт' : 'Імпорт'}}</h3>
+	<span ng-show="popupMode === 'import'">Імпортовані дані НЕ замінять збережені. Для повернення до збережених - оновіть сторінку.</span><br/><br/>
+    <textarea ng-model="popupBase64" rows="6" ng-readonly="popupMode === 'export'"
+              onclick="this.select()" style="width:100%; font-family:monospace;"></textarea>
+    <div style="text-align:right; margin-top:8px;">
+	  <div class="header-button" ng-if="popupMode === 'import'" ng-click="confirmImport()">Імпорт</div>
+	  <div class="header-button" ng-if="popupMode === 'export'" ng-click="copyToClipboard()">Копіювати</div>
+	  <div class="header-button" style=" background-color: #495057;" ng-click="closePopup()">Закрити</div>	  
+	</div>
+
+  </div>
+</div>
   <div class="center-panel" ng-show="activeTab === 'history'">
     <table>
       <thead>
@@ -269,7 +316,7 @@ img.heroClass {
           <td style="text-align:center">{{record.datetime}}</td>
           <td>{{record.notes}}</td>
 		  <td>
-			<button ng-click="deleteRecord(stats.indexOf(record))" style="background:#dc3545; color:white; border:none; padding:4px 8px; border-radius:4px;cursor:pointer;">✖</button>
+			<button ng-if="!isImportedData" ng-click="deleteRecord(stats.indexOf(record))" style="background:#dc3545; color:white; border:none; padding:4px 8px; border-radius:4px;cursor:pointer;">✖</button>
 		  </td>
         </tr>
       </tbody>
@@ -347,8 +394,8 @@ img.heroClass {
 		</table>
 	</div>
 
-	<div ng-if="selectedHero == null" style='color:red;font-size:24px;padding-bottom:15px'>Виберіть героя щоб додати гру!</div>
-	<div style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;">
+	<div ng-if="selectedHero == null && !isImportedData" style='color:red;font-size:24px;padding-bottom:15px'>Виберіть героя щоб додати гру!</div>
+	<div ng-if="!isImportedData" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;">
 	<select ng-model="newRecord.rank" style="min-width: 80px; flex: 1; min-height: 32px;">
 		  <option value="" disabled selected>Місце</option>
 		  <option ng-repeat="n in [1,2,3,4,5,6,7,8]" value="{{n}}">{{n}}</option>
@@ -376,7 +423,7 @@ img.heroClass {
           <td style="text-align:center">{{record.datetime}}</td>
           <td>{{record.notes}}</td>
 		  <td style="padding-left:5px">
-			<button ng-click="deleteRecord(stats.indexOf(record))" style="background:#dc3545; color:white; border:none; padding:4px 8px; border-radius:4px;cursor:pointer;">✖</button>
+			<button ng-if="!isImportedData" ng-click="deleteRecord(stats.indexOf(record))" style="background:#dc3545; color:white; border:none; padding:4px 8px; border-radius:4px;cursor:pointer;">✖</button>
 		  </td>
         </tr>
       </tbody>
@@ -1129,6 +1176,100 @@ app.filter('optionalFilter', function() {
 		h.ud = $sce.trustAsHtml(abilities.ud);
 	  }
 	  });
+	  
+	$scope.importStats = function () {
+	  $scope.popupMode = 'import';
+	  $scope.popupBase64 = '';
+	  $scope.showExportImportPopup = true;
+	};
+
+	$scope.copyToClipboard = function () {
+	  const textarea = document.querySelector('textarea[ng-model="popupBase64"]');
+	  if (textarea) {
+		textarea.select();
+		document.execCommand('copy');		
+		$scope.closePopup();
+	  }
+	};
+
+	$scope.exportStats = function () {
+	  const buffer = new ArrayBuffer($scope.stats.length * 10);
+	  const view = new DataView(buffer);
+
+	  $scope.stats.forEach((stat, i) => {
+		const offset = i * 10;
+		view.setUint8(offset, stat.heroId);
+		view.setUint8(offset + 1, stat.rank);
+		view.setBigUint64(offset + 2, BigInt(stat.ticks), true);
+	  });
+
+	  const binary = new Uint8Array(buffer);
+	  const base64 = btoa(String.fromCharCode(...binary));
+
+	  $scope.popupMode = 'export';
+	  $scope.popupBase64 = base64;
+	  $scope.showExportImportPopup = true;
+	  
+	   setTimeout(() => {
+		const textarea = document.querySelector('textarea[ng-model="popupBase64"]');
+		if (textarea) textarea.select();
+	  }, 0);
+
+	};
+
+	$scope.confirmImport = function () {
+	  const base64 = $scope.popupBase64;
+	  if (!base64) return;
+
+	  const binaryStr = atob(base64);
+	  const binary = new Uint8Array(binaryStr.length);
+	  for (let i = 0; i < binaryStr.length; i++) {
+		binary[i] = binaryStr.charCodeAt(i);
+	  }
+
+	  const view = new DataView(binary.buffer);
+	  const stats = [];
+	  for (let i = 0; i < binary.length; i += 10) {
+		const heroId = view.getUint8(i);
+		const rank = view.getUint8(i + 1);
+		const ticks = Number(view.getBigUint64(i + 2, true));
+		const datetime = getLocalDatetimeString(new Date(ticks));
+		stats.push({ heroId, rank, ticks, datetime });
+	  }
+
+	  $scope.stats = stats;
+	  
+	  $scope.selectedHero = null;	  
+	  $scope.avgPlace = 0.0;
+	  $scope.heroes.forEach(h => { h.games = 0; h.totalScore = 0; });
+	  
+	  $scope.totalRank = 0;
+	  $scope.stats.forEach(r => {
+		  r.ticks = Date.parse(r.datetime); // parses 'yyyy-mm-dd hh:mm' into ms
+		  $scope.heroes[r.heroId-1].games++;
+		  $scope.heroes[r.heroId-1].totalScore += r.rank;		
+		  $scope.totalRank += r.rank;		
+		  $scope.allPlaces[r.rank-1]++;
+		});
+	
+	  if($scope.stats.length>0)
+		$scope.avgPlace = $scope.totalRank / $scope.stats.length;
+	  
+	  $scope.heroes.forEach(h => { 
+	  if(h.games>0) 
+		h.avgRank = h.totalScore / h.games; 
+	  else h.avgRank = 9;	 
+	  });
+	  
+	  $scope.isImportedData = true;
+	  $scope.closePopup();
+	};
+
+
+	$scope.closePopup = function () {
+	  $scope.showExportImportPopup = false;
+	  $scope.popupBase64 = '';
+	};
 
 	function getCurrentFormattedDate() {
 	  let dt = new Date();
@@ -1145,11 +1286,15 @@ app.filter('optionalFilter', function() {
 
 	
 	function saveStats() {
+		if( $scope.isImportedData )
+			return;
+			
 		const cleanStats = $scope.stats.map(r => {
 		const clone = angular.copy(r);
 		delete clone.$$hashKey;
 		return clone;
 	  });
+
 
 	  localStorage.setItem('heroStats', JSON.stringify(cleanStats));
 	}
