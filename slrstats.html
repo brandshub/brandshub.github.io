@@ -505,7 +505,7 @@ app.filter('optionalFilter', function() {
 		  localStorage.setItem(SORT_KEY, newKey);		  
 		});
 
-	$scope.iconList = [ 'attack','evade','crit','health','ulti','healer','poison','freeze','shield','wound','sprite','rage','speed'];
+	$scope.iconList = [ 'attack','evade','crit','health','ulti','healer','poison','freeze','shield','wound','sprite','rage','speed','flex'];
  
 	$scope.getHeroSkills = function (hero) {		
 		if(!hero.t)
@@ -530,7 +530,7 @@ app.filter('optionalFilter', function() {
 		{ id: 6, name: 'Маг' ,t:'ulti'},
 		{ id: 7, name: 'Бабка' , t:'poison'},
 		{ id: 8, name: 'Ліч', t:'freeze'},
-		{ id: 9, name: 'Рейдер', t:''},
+		{ id: 9, name: 'Рейдер', t:'flex'},
 		{ id: 10, name: 'Варлок', t:'rage' },
 		{ id: 11, name: 'Драколицар', t:'attack|poison' },
 		{ id: 12, name: 'Центуріон', t:'shield|rage' },
@@ -557,7 +557,7 @@ app.filter('optionalFilter', function() {
 		{ id: 33, name: 'Пудж', t:'health|sprite' },
 		{ id: 34, name: 'Жирний Рікі', t:'wound|sprite' },
 		{ id: 35, name: 'Нага', t:'freeze|wound' },
-		{ id: 36, name: 'Ковбой' },
+		{ id: 36, name: 'Ковбой', t:'flex'},
 		{ id: 37, name: 'Мірана', t:'attack|ulti' },
 		{ id: 38, name: 'Черепаха', t:'shield' },
 		{ id: 39, name: 'Чортяка', t:'health|healer' },
@@ -566,7 +566,7 @@ app.filter('optionalFilter', function() {
 		{ id: 42, name: 'Керфуфуфла', t:'wound' },
 		{ id: 43, name: 'Демонесса', t:'ulti|rage' },
 		{ id: 44, name: 'Лицар смерті', t:'crit|freeze' },
-		{ id: 45, name: 'Біткоін' },
+		{ id: 45, name: 'Біткоін', t:'flex' },
 		{ id: 46, name: 'Варвар', t:'crit|health' },
 		{ id: 47, name: 'Мурлок', t:'poison|freeze' },
 		{ id: 48, name: 'Паладін', t:'healer|shield' },
@@ -576,9 +576,9 @@ app.filter('optionalFilter', function() {
 		{ id: 52, name: 'Вовчик', t:'attack|healer' },
 		{ id: 53, name: 'Гриб' , t:'poison|sprite'},
 		{ id: 54, name: 'Дракон', t:'health' },
-		{ id: 55, name: 'Хускар' },
+		{ id: 55, name: 'Хускар', t:'flex' },
 		{ id: 56, name: 'Скаймаг', t:'speed' },
-		{ id: 57, name: 'Канонір' },
+		{ id: 57, name: 'Канонір', t:'flex' },
         // Add more heroes here
       ];
 
@@ -1236,7 +1236,8 @@ app.filter('optionalFilter', function() {
 		const datetime = getLocalDatetimeString(new Date(ticks));
 		stats.push({ heroId, rank, ticks, datetime });
 	  }
-
+	  
+	  $scope.allPlaces = new Int32Array(8);
 	  $scope.stats = stats;
 	  
 	  $scope.selectedHero = null;	  
