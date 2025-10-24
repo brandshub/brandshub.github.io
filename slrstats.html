@@ -195,14 +195,15 @@
 .image-label {
   display: inline-block;
   cursor: pointer;
-  padding: 4px 4px 0px;
+  padding: 1px 4px 0px;
   border-radius: 6px;
   transition: box-shadow 0.2s;
+  height:32px;
 }
 
 .image-label img {
   width: 24px;
-  height: 24px;
+  height: 32px;
   object-fit: contain;
 }
 
@@ -222,6 +223,7 @@ input[type="radio"]:checked + .image-label {
 
 .h32 {
  line-height:32px;
+ height:32px;
 }
 
 img.heroClass {
@@ -344,7 +346,7 @@ img.heroClass {
 			 ng-value="icon"
 			 class="visually-hidden" />
 	  <label for="{{icon}}" class="image-label">
-		<img ng-src="img/slr/classes/{{icon}}.png" alt="{{icon}}" />
+		<img ng-src="img/slr/classes/{{icon}}.png" alt="{{icon}}" style="height:32px"/>
 	  </label>
 	</div>
 </div>
@@ -536,7 +538,7 @@ app.filter('optionalFilter', function() {
 		{ id: 12, name: 'Центуріон', t:'shield|rage' },
 		{ id: 13, name: 'Іллюха', t:'crit|evade' },
 		{ id: 14, name: 'Гоблін Алхімік', t:'healer|wound' },
-		{ id: 15, name: 'Гоблін Інженер' },
+		{ id: 15, name: 'Гоблін Інженер', t:'flex' },
 		{ id: 16, name: 'Енча', t:'ulti|sprite' },
 		{ id: 17, name: 'Інквізитор', t:'healer|sprite' },
 		{ id: 18, name: 'Антимаг', t:'attack|evade' },
@@ -1025,7 +1027,7 @@ app.filter('optionalFilter', function() {
 			"heroId":12,
 			"n": "SILENT GUARD",
 			"pt": "RAISE THE SOLID SHIELD HIGH",
-			"pd": "In the enraged state, each stack of <font color='#775b46'>shield</font> can block an additional 0.8 points of damage.",
+			"pd": "In the <font color='#92122b'>enraged state</font>, each stack of <font color='#775b46'>shield</font> can block an additional 0.8 points of damage.",
 			"ut": "PSIONIC ECHO",
 			"ud": "Condense energy and descend from the sky, dealing (<font color='#2CCD2C'>260</font> + the actual damage blocked by the shields accumulated during the two ultimate skill releases <font color='#775b46'>cumulative shield actual damage blocked</font> * 20%) points of magic damage to enemy heroes."
 		  },
