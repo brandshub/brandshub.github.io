@@ -581,6 +581,8 @@ app.filter('optionalFilter', function() {
 		{ id: 55, name: 'Хускар', t:'flex' },
 		{ id: 56, name: 'Скаймаг', t:'speed' },
 		{ id: 57, name: 'Канонір', t:'flex' },
+		{ id: 58, name: 'Солдафон', t:'crit|shield' },
+		{ id: 59, name: 'Архангел', t:'flex' },
         // Add more heroes here
       ];
 
@@ -771,7 +773,7 @@ app.filter('optionalFilter', function() {
 			"heroId":8,
 			"n": "FROSTBORNE LORDDEEP",
 			"pt": "FREEZE",
-			"pd": "Increases stacks of <font color='#80cdff'>Freeze</font> inflicted on enemies by 20%.",
+			"pd": "Increases stacks of <font color='#80cdff'>Freeze</font> inflicted on enemies by 30%.",
 			"ut": "METEOR ICEFALL",
 			"ud": "Summons ice blocks to fall from the sky, stunning the enemy for <font color='#2CCD2C'>0.8</font>s and dealing <font color='#2CCD2C'>300</font> Phys.DMG."
 		  },
@@ -1083,7 +1085,7 @@ app.filter('optionalFilter', function() {
 			"heroId":9,
 			"n": "WOLF HUNTER",
 			"pt": "WEALTH PLUNDER",
-			"pd": "Gain 30 gold after each victorious battle,while the opponent loses 30 gold,with a (20%+Player Hero Level * 4%) chance to plunder double.",
+			"pd": "After each victorious battle, plunder (20 + Victories*15) GOLD from the opponent, but not exceeding 65 GOLD.",
 			"ut": "NET TOSS",
 			"ud": "Throw a net to ensnare the enemy, stunning them for 2 s (unable to attack, dodge, or use ultimate skills)."
 		  },
@@ -1123,7 +1125,7 @@ app.filter('optionalFilter', function() {
 			"heroId":47,
 			"n": "CHILLLIGHT PROPHET",
 			"pt": "Plague Frost Orb",
-			"pd": "When applying <font color='#0f7f03'>Poison</font> to an enemy, there is a 25% nce to also inflict 15 stacks of <font color='#80cdff'>Freeze</font>.",
+			"pd": "When applying <font color='#0f7f03'>Poison</font> to an enemy, there is a 33% chance to also inflict 15 stacks of <font color='#80cdff'>Freeze</font>.",
 			"ut": "Freezing Venom",
 			"ud": "Throw 4 frost venom vials at the enemy. Each vial applies <font color='#2CCD2C'>30</font> stacks of <font color='#0f7f03'>Poison</font> and <font color='#80cdff'>Freeze</font>.For every 10% HP the enemy loses, throw 1 extra vials."
 		  },
@@ -1155,7 +1157,7 @@ app.filter('optionalFilter', function() {
 			"heroId":56,
 			"n": "Sky Hurricane",
 			"pt": "Storm Momentum",
-			"pd": "When dealing damage, 25% chance to gain 25 stacks of <font color='#5d82af'>Haste</font>.",
+			"pd": "When dealing damage, 33% chance to gain 25 stacks of <font color='#5d82af'>Haste</font>.",
 			"ut": "Thousand Blade Gale",
 			"ud": "Summon a storm around the enemy, dealing <font color='#2CCD2C'>40</font> magic dmg every <font color='#eebc15'>0.5</font>s for 3s."
 		  },
@@ -1165,7 +1167,23 @@ app.filter('optionalFilter', function() {
 			"pt": "Special Delivery",
 			"pd": "Whenever you fire a non-basic attack projectile, fire a copy of it that deals 25% of the original projectile's damage.",
 			"ut": "Barrage",
-			"ud": "Fire 4 random non-basic attack projectiles, each dealing at least <font color='#2CCD2C'>30</font> damage."
+			"ud": "Fire 5 random non-basic attack projectiles, each dealing at least <font color='#2CCD2C'>30</font> damage."
+		  },
+		  {
+			"heroId":58,
+			"n": "Vanguar Soldier",
+			"pt": "",
+			"pd": "When your <font color='#775b46'>SHIELD</font> blocks damage, there is a (25 + <font color='#ff2429'>own CRIT</font> X 0.6)% chance to deal (1+This blocked damage X 0.2) physical damage to the enemy.",
+			"ut": "",
+			"ud": "Hurl a boomerang shield, dealing <font color='#2CCD2C'>80</font> physical damage and granting the hero <font color='#2CCD2C'>80</font> stack(s) of <font color='#775b46'>SHIELD</font> upon its return. If the attack lands a <font color='#ff2429'>CRITICAL STRIKE</font>, the shield is thrown again."
+		  },
+		  {
+			"heroId":59,
+			"n": "Sin Crusher",
+			"pt": "",
+			"pd": "Earn 25 gold whenever you acquire a <font color='#775b46'>Counter Skill</font>.",
+			"ut": "",
+			"ud": "Call down 3 holy blades from the heavens, each dealing <font color='#2CCD2C'>100</font> magic damage. Gain 1 additional sword for every max-level <font color='#775b46'>Counter Skill</font>."
 		  }
 		];
 
