@@ -468,7 +468,11 @@ app.filter('optionalFilter', function() {
 	  $scope.selectedHero = null;	  
 	  $scope.avgPlace = 0.0;
 	  $scope.showAllPlaced = false;
-	  $scope.filterClass = null;
+	  $scope.filterClass = null;	  
+	  
+	  $scope.$watch('selectedHero', function() {
+		refreshDt();
+	  });
 	  
 	 $scope.sortHeroes = function(heroes, sortKey) {
   if (!Array.isArray(heroes)) return heroes;
@@ -710,6 +714,16 @@ app.filter('optionalFilter', function() {
 		  $scope.allPlaces[r-1]--;
 		  saveStats(); // persist change
 		};
+		
+		function refreshDt() {
+			if(!$scope.newRecord)
+				$scope.newRecord = { rank: '', datetime: getCurrentFormattedDate(), notes: '' };
+			else
+				$scope.newRecord.datetime = getCurrentFormattedDate();
+			$scope.$digest();
+		}
+		
+		setInterval(refreshDt, 1*60*1000);
 		
 		
 		$scope.abilities = [
