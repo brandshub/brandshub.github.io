@@ -585,8 +585,9 @@ app.filter('optionalFilter', function() {
 		{ id: 55, name: 'Хускар', t:'flex' },
 		{ id: 56, name: 'Скаймаг', t:'speed' },
 		{ id: 57, name: 'Канонір', t:'flex' },
-		{ id: 58, name: 'Солдафон', t:'crit|shield' },
+		{ id: 58, name: 'Вікінг', t:'crit|shield' },
 		{ id: 59, name: 'Архангел', t:'flex' },
+		{ id: 60, name: 'Колючка', t:'health' },
         // Add more heroes here
       ];
 
@@ -829,7 +830,7 @@ app.filter('optionalFilter', function() {
 			"pt": "LUNAR BLESSING",
 			"pd": "Each Ultimate cast increases <font color='#A1B7E0'>ATK SPD</font> by 30%, lasting for 3s.",
 			"ut": "LUNAR THUNDERPEN",
-			"ud": "Summons lightning to strike the enemy instantly, dealing <font color='#2CCD2C'>200</font> Mag.DMG. Additionally, increases self <font color='#A1B7E0'>ATK</font> by <font color='#2CCD2C'>3</font>. This effect can stack."
+			"ud": "Summons lightning to strike the enemy instantly, dealing <font color='#2CCD2C'>200</font> Mag.DMG. Additionally, increases self <font color='#A1B7E0'>ATK</font> by <font color='#2CCD2C'>6</font>. This effect can stack."
 		  },
 		  {
 			"heroId":13,
@@ -917,7 +918,7 @@ app.filter('optionalFilter', function() {
 			"pt": "ICY WISDOM",
 			"pd": "Whenever the <font color='#80cdff'>Freeze</font> effect is added to an enemy, there is a 80% probability to recover 1 points of <font color='#60ffc9'>Energy</font>.",
 			"ut": "BLIZZARD",
-			"ud": "Summon 5 pieces of ice to fall from the sky and smash into enemies. Each piece of ice deals <font color='#2CCD2C'>60</font> points of magic damage. For every 25 stacks of <font color='#80cdff'>Freeze</font> on the enemy, an additional 1 pieces of ice will be summoned."
+			"ud": "Summon 5 pieces of ice to fall from the sky and smash into enemies. Each piece of ice deals <font color='#2CCD2C'>60</font> points of magic damage. For every 20 stacks of <font color='#80cdff'>Freeze</font> on the enemy, an additional 1 pieces of ice will be summoned."
 		  },
 		  {
 			"heroId":14,
@@ -963,7 +964,7 @@ app.filter('optionalFilter', function() {
 			"heroId":25,
 			"n": "FLAME COLOSSUS",
 			"pt": "CHAIN CAST",
-			"pd": "The Ultimate has a (30+<font color='#ff2429'>Self Crit</font>*0.8)%) chance to cast again, up to 4 additional casts. (Recasts do not count towards the Ultimate usage limit).",
+			"pd": "The Ultimate has a (35+<font color='#ff2429'>Self Crit</font>*0.8)%) chance to cast again, up to 4 additional casts. (Recasts do not count towards the Ultimate usage limit).",
 			"ut": "FIREBALL",
 			"ud": "Hurls a fireball at the enemy, dealing <font color='#2CCD2C'>200</font> Mag.DMG and stunning them for 0.3s on hit."
 		  },
@@ -1021,7 +1022,7 @@ app.filter('optionalFilter', function() {
 			"pt": "TOUCH TRIGGER",
 			"pd": "When <font color='#ff9e39'>the enemy's HP</font> drops below 75%, every 0.5s, increases the hero's <font color='#92122b'>Rage</font> by 30, lasting for 5s. Can only be triggered once per battle.",
 			"ut": "DESTRUCTION BEAM",
-			"ud": "Emits a beam charged with destructive energy, dealing (<font color='#2CCD2C'>200</font>+<font color='#92122b'>Sum of Rage of Both Sides</font>) Mag.DMG on the enemy."
+			"ud": "Emits a beam charged with destructive energy, dealing (<font color='#2CCD2C'>180</font>+<font color='#92122b'>Sum of Rage of Both Sides</font>) Mag.DMG on the enemy."
 		  },
 		  {
 			"heroId":43,
@@ -1045,7 +1046,7 @@ app.filter('optionalFilter', function() {
 			"pt": "RAISE THE SOLID SHIELD HIGH",
 			"pd": "In the <font color='#92122b'>enraged state</font>, each stack of <font color='#775b46'>shield</font> can block an additional 0.8 points of damage.",
 			"ut": "PSIONIC ECHO",
-			"ud": "Condense energy and descend from the sky, dealing (<font color='#2CCD2C'>260</font> + the actual damage blocked by the shields accumulated during the two ultimate skill releases <font color='#775b46'>cumulative shield actual damage blocked</font> * 20%) points of magic damage to enemy heroes."
+			"ud": "Condense energy and descend from the sky, dealing (<font color='#2CCD2C'>230</font> + the actual damage blocked by the shields accumulated during the two ultimate skill releases <font color='#775b46'>cumulative shield actual damage blocked</font> * 20%) points of magic damage to enemy heroes."
 		  },
 		  {
 			"heroId":21,
@@ -1059,7 +1060,7 @@ app.filter('optionalFilter', function() {
 			"heroId":40,
 			"n": "BLOODSHED MONARCH",
 			"pt": "VENOMOUS FANG",
-			"pd": "Your <font color='#0f7f03'>Poison DMG</font> can also critically hit,with a fixed 15% chance.",
+			"pd": "Your <font color='#0f7f03'>Poison DMG</font> can also critically hit,with a fixed 20% chance.",
 			"ut": "VENOM WRAP",
 			"ud": "Standing on toxic marshland, inflicts <font color='#2CCD2C'>20</font> stacks of <font color='#0f7f03'>Poison</font> on enemies every <font color='#eebc15'>0.5</font>s, accelerating <font color='#0f7f03'>Poison</font> DMG application by 50%, lasting for 2.5s."
 		  },
@@ -1099,7 +1100,7 @@ app.filter('optionalFilter', function() {
 			"heroId":9,
 			"n": "WOLF HUNTER",
 			"pt": "WEALTH PLUNDER",
-			"pd": "After each victorious battle, plunder (20 + Victories*15) GOLD from the opponent, but not exceeding 65 GOLD.",
+			"pd": "After each victorious battle, plunder (20 + Victories*105) GOLD from the opponent, but not exceeding 50 GOLD.",
 			"ut": "NET TOSS",
 			"ud": "Throw a net to ensnare the enemy, stunning them for 2 s (unable to attack, dodge, or use ultimate skills)."
 		  },
@@ -1187,7 +1188,7 @@ app.filter('optionalFilter', function() {
 			"heroId":58,
 			"n": "Vanguar Soldier",
 			"pt": "",
-			"pd": "When your <font color='#775b46'>SHIELD</font> blocks damage, there is a (25 + <font color='#ff2429'>own CRIT</font> X 0.6)% chance to deal (1+This blocked damage X 0.2) physical damage to the enemy.",
+			"pd": "When your <font color='#775b46'>SHIELD</font> blocks damage, there is a (25 + <font color='#ff2429'>own CRIT</font> X 0.6)% chance to deal (1+This blocked damage X 0.2) Mag. damage to the enemy.",
 			"ut": "",
 			"ud": "Hurl a boomerang shield, dealing <font color='#2CCD2C'>80</font> physical damage and granting the hero <font color='#2CCD2C'>80</font> stack(s) of <font color='#775b46'>SHIELD</font> upon its return. If the attack lands a <font color='#ff2429'>CRITICAL STRIKE</font>, the shield is thrown again."
 		  },
@@ -1197,7 +1198,15 @@ app.filter('optionalFilter', function() {
 			"pt": "",
 			"pd": "Earn 25 gold whenever you acquire a <font color='#775b46'>Counter Skill</font>.",
 			"ut": "",
-			"ud": "Call down 3 holy blades from the heavens, each dealing <font color='#2CCD2C'>100</font> magic damage. Gain 1 additional sword for every max-level <font color='#775b46'>Counter Skill</font>."
+			"ud": "Call down 4 holy blades from the heavens, each dealing <font color='#2CCD2C'>80</font> magic damage. Gain 1 additional sword for every max-level <font color='#775b46'>Counter Skill</font>."
+		  },
+		  {
+			"heroId":60,
+			"n": "FATAL THORNS",
+			"pt": "",
+			"pd": "For every 1 points of player <font color=#ff9e39>HEALTH</font> lost, increase 15 points of <font color=#ff9e39>maximum HP</font>.",
+			"ut": "",
+			"ud": "Jet spikes deal (<font color='#2CCD2C'>200</font>+<font color=#ff9e39>lost player HP</font>*<font color='#2CCD2C'>5</font>%) magic damage to the enemy."
 		  }
 		];
 
