@@ -588,6 +588,9 @@ app.filter('optionalFilter', function() {
 		{ id: 58, name: 'Вікінг', t:'crit|shield' },
 		{ id: 59, name: 'Архангел', t:'flex' },
 		{ id: 60, name: 'Колючка', t:'health' },
+		{ id: 61, name: 'Ведмідь', t:'freeze|rage' },
+		{ id: 62, name: 'Катапульта', t:'crit|shield' },
+		{ id: 63, name: 'Анубіс', t:'freeze|sprite' },
         // Add more heroes here
       ];
 
@@ -1207,6 +1210,30 @@ app.filter('optionalFilter', function() {
 			"pd": "For every 1 points of player <font color=#ff9e39>lost player's HP</font> lost, increase 15 points of <font color=#ff9e39>maximum HP</font>.",
 			"ut": "",
 			"ud": "Jet spikes deal (<font color='#2CCD2C'>200</font>+<font color=#ff9e39>lost player's HP</font>*<font color='#2CCD2C'>5</font>) magic damage to the enemy."
+		  },
+		  {
+			"heroId":61,
+			"n": "FROSTBORN PITCHER",
+			"pt": "",
+			"pd": "When <font color='#90172f'>FURY</font> ends, stun the enemy for 1s. Every 10 stack of <font color='#80cdff'>Freeze</font> on the enemy during <font color=#90172f>FURY</font>, adds 0.1s to the stun.",
+			"ut": "",
+			"ud": "Hurl a snowball at the enemy, dealing <font color='#2CCD2C'>260</font> Magic Damage. If you are under the <color=#90172f>FURY</color> state, inflict <font color='#2CCD2C'>150</font> stacks of <font color=#80cdff>FREEZE</font>."
+		  },
+		  {
+			"heroId":62,
+			"n": "GOBLIN CATAPULT",
+			"pt": "",
+			"pd": "Whenever you gain <font color=#775b46>SHIELD</font>, (10+ your <font color=#ff2429>CRIT</font> * 1)% chance to gain 30 more stacks of <font color=#775b46>SHIELD</font>.",
+			"ut": "",
+			"ud": "Enter a charging state lasting 3s, launching two large stones that deal <font color='#2CCD2C'>120</font> Physical Damage. For every 60 stacks of <font color=#775b46>SHIELD</font> gained during the charging state, launch one more stone."
+		  },
+		  {
+			"heroId":63,
+			"n": "UNDEAD GUARDIAN",
+			"pt": "",
+			"pd": "Every <font color='eebc15'>1</font>s, heal your <font color=#ff91d2>Sprite</font> for (enemy <font color=#80cdff>Freeze</font> stacks * 0.5) HP, minimum 15. (<font color=#ff91d2>Sprite</font> healing does not trigger <font color=#eebc15>Heal</font> branch skills).",
+			"ut": "",
+			"ud": "Fires an Ice Orb at the enemy, dealing <font color='#2CCD2C'>280</font> Magic Damage on hit. Damage increases by <font color='#2CCD2C'>50</font> for each Star Level of the <font color=#80cdff>Freeze</font> or <font color=#ff91d2>Sprite</font> branch"
 		  }
 		];
 
